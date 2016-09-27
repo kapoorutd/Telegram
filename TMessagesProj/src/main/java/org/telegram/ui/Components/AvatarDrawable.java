@@ -77,6 +77,8 @@ public class AvatarDrawable extends Drawable {
         this(chat, false);
     }
 
+
+
     public AvatarDrawable(TLRPC.User user, boolean profile) {
         this();
         isProfile = profile;
@@ -84,6 +86,27 @@ public class AvatarDrawable extends Drawable {
             setInfo(user.id, user.first_name, user.last_name, false);
         }
     }
+
+
+    public AvatarDrawable(TLRPC.TelegramUsers user, boolean profile) {
+        this();
+        isProfile = profile;
+        if (user != null) {
+            try {
+                String name[] = user.name.split(" ");
+                setInfo(Integer.parseInt(user.id), name[0],name.length!=1?name[1]:null, false);
+            } catch (Exception e) {
+                try {
+                    setInfo(Integer.parseInt(user.id), "default", "default", false);
+                } catch (Exception eee){
+
+                }
+            }
+        }
+    }
+
+
+
 
     public AvatarDrawable(TLRPC.Chat chat, boolean profile) {
         this();

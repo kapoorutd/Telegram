@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="divider">#dcdcdc</color>
+    <color name="black">#000000</color>
+    <color name="light_black">#ff252525</color>
+    <color name="header">#ff5374a0</color>
+    <color name="gallery_background_color">#ff000000</color>
+    <color name="divider_drawer">#262626</color>
+
 </resources>

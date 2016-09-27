@@ -1069,24 +1069,24 @@ public class AndroidUtilities {
     }*/
 
     public static void checkForCrashes(Activity context) {
-        CrashManager.register(context, BuildVars.DEBUG_VERSION ? BuildVars.HOCKEY_APP_HASH_DEBUG : BuildVars.HOCKEY_APP_HASH, new CrashManagerListener() {
+       /* CrashManager.register(context, BuildVars.DEBUG_VERSION ? BuildVars.HOCKEY_APP_HASH_DEBUG : BuildVars.HOCKEY_APP_HASH, new CrashManagerListener() {
             @Override
             public boolean includeDeviceData() {
                 return true;
             }
-        });
+        });*/
     }
 
     public static void checkForUpdates(Activity context) {
-        if (BuildVars.DEBUG_VERSION) {
+       /* if (BuildVars.DEBUG_VERSION) {
             UpdateManager.register(context, BuildVars.DEBUG_VERSION ? BuildVars.HOCKEY_APP_HASH_DEBUG : BuildVars.HOCKEY_APP_HASH);
-        }
+        }*/
     }
 
     public static void unregisterUpdates() {
-        if (BuildVars.DEBUG_VERSION) {
+  /*      if (BuildVars.DEBUG_VERSION) {
             UpdateManager.unregister();
-        }
+        }*/
     }
 
     public static void addToClipboard(CharSequence str) {

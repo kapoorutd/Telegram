@@ -16,6 +16,7 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.support.widget.RecyclerView;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.ui.Cells.AdvertiesmentCell;
 import org.telegram.ui.Cells.DialogCell;
 import org.telegram.ui.Cells.LoadingCell;
 
@@ -69,16 +70,18 @@ public class DialogsAdapter extends RecyclerView.Adapter {
         if (!MessagesController.getInstance().dialogsEndReached) {
             count++;
         }
+        count = count + count/5 -1;
         currentCount = count;
         return count;
     }
 
     public TLRPC.TL_dialog getItem(int i) {
         ArrayList<TLRPC.TL_dialog> arrayList = getDialogsArray();
-        if (i < 0 || i >= arrayList.size()) {
+        /*if (i < 0 || i >= arrayList.size()) {
             return null;
-        }
-        return arrayList.get(i);
+        }*/
+        int itemId = i - (i+1)/6;
+        return arrayList.get(itemId);
     }
 
     @Override
@@ -101,30 +104,55 @@ public class DialogsAdapter extends RecyclerView.Adapter {
         } else if (viewType == 1) {
             view = new LoadingCell(mContext);
         }
+        else if(viewType == 2){
+            view = new AdvertiesmentCell(mContext);
+        }
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
         return new Holder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
+        int position = i;
         if (viewHolder.getItemViewType() == 0) {
             DialogCell cell = (DialogCell) viewHolder.itemView;
-            cell.useSeparator = (i != getItemCount() - 1);
-            TLRPC.TL_dialog dialog = getItem(i);
+
+            cell.useSeparator = (position != getItemCount() - 1);
+            //TLRPC.TL_dialog dialog = getItem(i);
+            TLRPC.TL_dialog dialog = getItem(position);
+            /*ell.useSeparator = (i != getItemCount() - 1);
+            TLRPC.TL_dialog dialog = getItem(i);*/
             if (dialogsType == 0) {
                 if (AndroidUtilities.isTablet()) {
                     cell.setDialogSelected(dialog.id == openedDialogId);
                 }
             }
-            cell.setDialog(dialog, i, dialogsType);
+
+            cell.setDialog(dialog, position - (position+1)/6, dialogsType);
+            // cell.setDialog(dialog, i, dialogsType);
         }
     }
 
     @Override
     public int getItemViewType(int i) {
-        if (i == getDialogsArray().size()) {
+        if( i != 0 && (i+1)%6 == 0)
+        {
+            return 2;
+        }
+        else {
+            if (i == getDialogsArray().size() + getDialogsArray().size()/5) {
+                return 1;
+
+            }		}
+        return 0;
+    }
+
+}
+
+
+        /*    if (i == getDialogsArray().size()) {
             return 1;
         }
         return 0;
-    }
-}
+    }*/
+

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+
+
+    <ProgressBar
+        android:id="@+id/pb_load"
+        android:layout_width="50dp"
+        android:layout_centerInParent="true"
+       android:visibility="gone"
+        android:layout_height="50dp" />
+
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@drawable/cats"
+        android:textSize="18sp"
+        android:textColor="@color/common_plus_signin_btn_text_dark"
+        android:text="No Friends found."
+        android:layout_height="wrap_content" />
+
+
+
+
+    <org.telegram.socialuser.GridViewWithHeaderAndFooter
+        android:numColumns="auto_fit"
+        android:gravity="center"
+        android:columnWidth="70dp"
+
+        android:stretchMode="columnWidth"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/back_panel"
+        android:id="@+id/grid"
+        />
+
+
+    <FrameLayout
+        android:id="@+id/back_panel"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/paypal_btn_id"
+            android:layout_width="200dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:text="@string/premium_features"
+            android:layout_alignBottom="@+id/grid"
+            android:layout_alignParentBottom="true"
+            android:background="@color/header"
+            android:layout_marginBottom="60dp"
+            android:textColor="#ffffff"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:layout_gravity="bottom"
+            android:focusableInTouchMode="true"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/bottom_panel"
+            >
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:id="@+id/backview"
+
+                />
+            <View
+                android:id="@+id/black_view"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:background="#ff252525"
+                android:layout_weight="3"></View>
+        </LinearLayout>
+    </FrameLayout></RelativeLayout>

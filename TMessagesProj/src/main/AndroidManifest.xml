@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.telegram.messenger"
+    xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto">
+
+    <uses-sdk android:minSdkVersion="9"
+        tools:overrideLibrary="com.paypal.android.sdk.payments"/>
 
     <supports-screens android:anyDensity="true"
                       android:largeScreens="true"
@@ -52,6 +56,12 @@
         android:largeHeap="true"
         android:theme="@style/Theme.TMessages.Start"
         android:manageSpaceActivity="org.telegram.ui.ManageSpaceActivity">
+
+
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
 
         <activity
             android:name="org.telegram.ui.LaunchActivity"
@@ -116,6 +126,11 @@
             </intent-filter>
             <meta-data android:name="android.service.chooser.chooser_target_service" android:value=".TgChooserTargetService" />
         </activity>
+
+
+        <activity android:name="org.telegram.payment.PaymentManager"
+            android:label=""></activity>
+
         <activity
             android:name="org.telegram.ui.ManageSpaceActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

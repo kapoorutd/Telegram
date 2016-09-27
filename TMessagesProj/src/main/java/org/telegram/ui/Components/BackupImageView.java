@@ -73,6 +73,11 @@ public class BackupImageView extends View {
         setImage(null, path, filter, thumb, null, null, null, null, 0);
     }
 
+
+    public void setImage(TLObject path, String filter, Drawable thumb, boolean showSocialImage) {
+        setImage(path, null, filter, thumb, null, null, null, null, 0, showSocialImage);
+    }
+
     public void setOrientation(int angle, boolean center) {
         imageReceiver.setOrientation(angle, center);
     }
@@ -133,5 +138,24 @@ public class BackupImageView extends View {
             imageReceiver.setImageCoords(0, 0, getWidth(), getHeight());
         }
         imageReceiver.draw(canvas);
+
     }
+
+
+
+
+
+
+    public void setImage(TLObject path, String httpUrl, String filter, Drawable thumb, Bitmap thumbBitmap, TLRPC.FileLocation thumbLocation, String thumbFilter,
+                         String ext, int size, boolean showSocialImage) {
+        if (thumbBitmap != null) {
+            thumb = new BitmapDrawable(null, thumbBitmap);
+        }
+        imageReceiver.setImage(path, httpUrl, filter, thumb, thumbLocation, thumbFilter, size, ext, false, showSocialImage);
+    }
+
+
+
+
+
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:BannerView="http://schemas.android.com/apk/lib/com.smaato.soma"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <com.smaato.soma.BannerView
+        android:id="@+id/bannerView"
+        android:layout_width="match_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_height="50dip"
+        android:gravity="center"
+        BannerView:autoReloadFrequency="10"
+        BannerView:adSpaceId="130134592"
+        BannerView:publisherId="1100022161"
+        BannerView:loadNewBanner="true"
+        >
+
+
+    </com.smaato.soma.BannerView>
+
+
+
+</FrameLayout>

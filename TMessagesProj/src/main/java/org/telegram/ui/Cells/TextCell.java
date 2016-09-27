@@ -106,6 +106,15 @@ public class TextCell extends FrameLayout {
         imageView.setPadding(0, AndroidUtilities.dp(7), 0, 0);
     }
 
+    public void setTextAndPremiumIcon(String text, int resId,int res1) {
+        textView.setText(text);
+        imageView.setImageResource(res1);
+        imageView.setVisibility(VISIBLE);
+        //  valueTextView.setVisibility(INVISIBLE);
+        valueImageView.setImageResource(resId);
+        valueImageView.setVisibility(VISIBLE);
+        imageView.setPadding(0, AndroidUtilities.dp(7), 0, 0);
+    }
     public void setTextAndValue(String text, String value) {
         textView.setText(text);
         valueTextView.setText(value);

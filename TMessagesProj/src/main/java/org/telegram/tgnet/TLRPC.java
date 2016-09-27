@@ -8,6 +8,8 @@
 
 package org.telegram.tgnet;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13854,6 +13856,175 @@ public class TLRPC {
 		}
 	}
 
+
+
+
+	//////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+	public static class TelegramUsers{
+
+
+		@Expose
+		public String name;
+		@Expose public String username;
+		@Expose public String phone;
+		@Expose public String cCode;
+		@Expose public String sex;
+		@Expose public String dob;
+		@Expose public String id;
+		@Expose public UserProfilePhoto photo;
+		@Expose public String userId;
+		@Expose public String visibility;
+		@Expose public String userHash;
+
+		public String getUserId() {
+			return userId;
+		}
+
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+
+		public String getVisibility() {
+			return visibility;
+		}
+
+		public void setVisibility(String visibility) {
+			this.visibility = visibility;
+		}
+
+		public String getUserHash() {
+			return userHash;
+		}
+
+		public void setUserHash(String userHash) {
+			this.userHash = userHash;
+		}
+
+		public String getname() {
+			return name;
+		}
+
+		public void setname(String first_name) {
+			this.name = first_name;
+		}
+
+		/*public String getLast_name() {
+			return last_name;
+		}*/
+
+		/*//public void setLast_name(String last_name) {
+			this.last_name = last_name;
+		}*/
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+		public String getPhone() {
+			return phone;
+		}
+
+		public void setPhone(String phone) {
+			this.phone = phone;
+		}
+
+		public String getcCode() {
+			return cCode;
+		}
+
+		public void setcCode(String cCode) {
+			this.cCode = cCode;
+		}
+
+		public String getSex() {
+			return sex;
+		}
+
+		public void setSex(String sex) {
+			this.sex = sex;
+		}
+
+		public String getDob() {
+			return dob;
+		}
+
+		public void setDob(String dob) {
+			this.dob = dob;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public UserProfilePhoto getPhoto() {
+			return photo;
+		}
+
+		public void setPhoto(UserProfilePhoto photo) {
+			this.photo = photo;
+		}
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	public static class TL_geoChat extends Chat {
 		public static int constructor = 0x75eaea5a;
 
@@ -20952,6 +21123,134 @@ public class TLRPC {
             }
         }
     }
+
+
+	////////////////////////////////////////////
+
+
+	public static class SocialUserResponse {
+
+
+		@Expose public String name;
+		@Expose public String username;
+		@Expose public String phone;
+		@Expose public String cCode;
+		@Expose public String sex;
+		@Expose public String dob;
+		@Expose public String id;
+		@Expose public UserProfilePhoto photo;
+		@Expose public String userId;
+		@Expose public String visibility;
+		@Expose public String userHash;
+
+		public String getUserId() {
+			return userId;
+		}
+
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+
+		public String getVisibility() {
+			return visibility;
+		}
+
+		public void setVisibility(String visibility) {
+			this.visibility = visibility;
+		}
+
+		public String getUserHash() {
+			return userHash;
+		}
+
+		public void setUserHash(String userHash) {
+			this.userHash = userHash;
+		}
+
+		public String getname() {
+			return name;
+		}
+
+		public void setname(String first_name) {
+			this.name = first_name;
+		}
+
+		/*public String getLast_name() {
+			return last_name;
+		}*/
+
+		/*//public void setLast_name(String last_name) {
+			this.last_name = last_name;
+		}*/
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+		public String getPhone() {
+			return phone;
+		}
+
+		public void setPhone(String phone) {
+			this.phone = phone;
+		}
+
+		public String getcCode() {
+			return cCode;
+		}
+
+		public void setcCode(String cCode) {
+			this.cCode = cCode;
+		}
+
+		public String getSex() {
+			return sex;
+		}
+
+		public void setSex(String sex) {
+			this.sex = sex;
+		}
+
+		public String getDob() {
+			return dob;
+		}
+
+		public void setDob(String dob) {
+			this.dob = dob;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public UserProfilePhoto getPhoto() {
+			return photo;
+		}
+
+		public void setPhoto(UserProfilePhoto photo) {
+			this.photo = photo;
+		}
+	}
+
+
+
+	///////////////////////////////////////////////////
+
+
+
+
+
+
+
+
 
     public static class TL_message_old3 extends TL_message {
         public static int constructor = 0xa7ab1991;

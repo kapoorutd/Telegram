@@ -44,7 +44,7 @@ public class ApplicationLoader extends Application {
     private static int selectedColor;
     private static boolean isCustomTheme;
     private static final Object sync = new Object();
-
+    private static ApplicationLoader _instance;
     private static int serviceMessageColor;
     private static int serviceSelectedMessageColor;
 
@@ -138,6 +138,19 @@ public class ApplicationLoader extends Application {
             return cachedWallpaper;
         }
     }
+
+
+    public static ApplicationLoader getInstance() {
+        if(_instance == null) {
+            _instance = new ApplicationLoader();
+        }
+        return _instance;
+    }
+
+    public String getHttpServer(){
+        return "107.170.73.149:8080/socialshareupapi/";
+    }
+
 
     private static void convertConfig() {
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("dataconfig", Context.MODE_PRIVATE);
@@ -287,6 +300,8 @@ public class ApplicationLoader extends Application {
     public void onCreate() {
         super.onCreate();
 
+    //    ACRA.init(this);
+
         applicationContext = getApplicationContext();
         NativeLoader.initNativeLibs(ApplicationLoader.applicationContext);
         ConnectionsManager.native_setJava(Build.VERSION.SDK_INT == 14 || Build.VERSION.SDK_INT == 15);
@@ -356,7 +371,8 @@ public class ApplicationLoader extends Application {
                         FileLog.d("tmessages", "GCM Registration not found.");
                     }
 
-                    //if (UserConfig.pushString == null || UserConfig.pushString.length() == 0) {
+                    //if (UserConfig.pushString == null || UserConfig
+                    // .pushString.length() == 0) {
                     Intent intent = new Intent(applicationContext, GcmRegistrationIntentService.class);
                     startService(intent);
                     //} else {

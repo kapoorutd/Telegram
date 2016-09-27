@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:layout_width="match_parent">
+
+     <ScrollView
+         android:layout_width="match_parent"
+         android:layout_height="match_parent">
+
+
+      <LinearLayout
+           android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_marginTop="0dp"
+
+            android:background="#ffffff"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_margin="10dp"
+                android:layout_width="fill_parent"
+                android:layout_height="100dp"
+                android:id="@+id/location_bottom_view"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <org.telegram.ui.Components.BackupImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:id="@+id/user_avatar_view"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="13dp"
+                    android:layout_gravity="top"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22dp"
+                    android:textColor="#000000"
+                    android:layout_marginLeft="88dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginRight="12dp"
+                    android:id="@+id/user_name_label"
+                    android:text="Ram Bhawan"
+                    android:layout_gravity="top"
+                    android:maxLines="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="88dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginRight="12dp"
+                    android:textColor="#999999"
+                    android:text="@string/Online"
+                    android:id="@+id/user_staus_label"
+                    android:layout_gravity="top"
+                    android:maxLines="1"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="88dp"
+                    android:layout_marginTop="60dp"
+                    android:layout_marginRight="12dp"
+                    android:textColor="#999999"
+                    android:text="India"
+                    android:id="@+id/id_country"
+                    android:layout_gravity="top"
+                    android:maxLines="1"/>
+
+            </FrameLayout>
+<!--
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:padding="10dp"
+                android:background="#F1F0F0"/>-->
+         <!--  <RelativeLayout
+               android:id="@+id/location"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:padding="8dp"
+                >
+                <ImageView
+                    android:id="@+id/country_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:paddingRight="20dp"
+                    android:src="@drawable/ic_location_earth"/>
+                <TextView
+                    android:id="@+id/id_country"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="India"
+                    android:layout_toRightOf="@id/country_image"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black">
+
+                </TextView>
+               <TextView
+                   android:id="@+id/id_country_name"
+                   android:layout_height="wrap_content"
+                   android:layout_width="wrap_content"
+                   android:text="@string/AttachLocation"
+                   android:layout_below="@id/id_country"
+                   android:layout_toRightOf="@id/country_image"
+                   android:layout_gravity="center_vertical"
+                   android:textColor="#999898">
+
+               </TextView>
+
+           </RelativeLayout>-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:background="#F1F0F0"/>
+
+          <!--  <RelativeLayout
+                android:id="@+id/number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                >
+                <ImageView
+                    android:id="@+id/number_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_call"/>
+                <TextView
+                    android:id="@+id/id_number"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="9452414322"
+                    android:layout_toRightOf="@id/number_image"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black">
+
+                </TextView>
+                <TextView
+                    android:id="@+id/id_number_name"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/Phone"
+                    android:layout_below="@id/id_number"
+                    android:layout_toRightOf="@id/number_image"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#999898">
+
+                </TextView>
+
+            </RelativeLayout>-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mutualfrinds"
+                android:layout_marginTop="10dp"
+
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="30dp"
+                android:textColor="@color/black"/>
+
+            <ProgressBar
+                android:id="@+id/pb_load"
+                android:layout_width="50dp"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                android:layout_height="50dp" />
+
+            <org.telegram.socialuser.GridViewWithHeaderAndFooter
+                android:numColumns="auto_fit"
+                android:gravity="center"
+                android:columnWidth="70dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:stretchMode="columnWidth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/grid"
+                />
+
+            <TextView
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:visibility="gone"
+                android:background="@drawable/cats"
+                android:textSize="18sp"
+                android:textColor="@color/common_plus_signin_btn_text_dark"
+                android:text="No Mutual Friends found.."
+                android:layout_height="match_parent" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+              <!--  <Button
+                    android:id="@+id/save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:background="@drawable/button_selector1"
+                    android:textColor="#ffffff"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp"
+                    android:text="Wink"
+                    />-->
+            </LinearLayout>
+       </LinearLayout></ScrollView>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:layout_gravity="bottom"
+            android:focusableInTouchMode="true"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/bottom_panel"
+            >
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:id="@+id/backview"
+
+                />
+            <View
+                android:id="@+id/black_view"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:background="#ff252525"
+                android:layout_weight="3"></View>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

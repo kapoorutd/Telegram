@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:layout_width="match_parent">
+    <ProgressBar
+        android:id="@+id/pb_load"
+        android:layout_width="50dp"
+        android:layout_centerInParent="true"
+        android:background="#ffffff"
+        android:visibility="gone"
+        android:layout_height="50dp" />
+
+
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="150dp"
+        android:scrollbars="vertical"
+        >
+        <LinearLayout
+        android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_margin="10dp"
+            android:background="#ffffff"
+        android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="80dp"
+                android:layout_above="@+id/map_view"
+                android:id="@+id/location_bottom_view"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <org.telegram.ui.Components.BackupImageView
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:id="@+id/user_avatar_view"
+                    android:layout_marginLeft="12dp"
+
+                    android:layout_gravity="center_vertical"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22dp"
+                    android:textColor="#000000"
+                    android:layout_marginLeft="88dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="12dp"
+                    android:id="@+id/user_name_label"
+                    android:text="Ram Bhawan"
+                    android:layout_gravity="top"
+                    android:maxLines="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="88dp"
+                    android:layout_marginTop="52dp"
+                    android:layout_marginRight="12dp"
+                    android:textColor="#999999"
+                    android:text="@string/Online"
+                    android:id="@+id/user_staus_label"
+                    android:layout_gravity="top"
+                    android:maxLines="1"/>
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:padding="10dp"
+                android:background="#F1F0F0"/>
+           <RelativeLayout
+               android:id="@+id/location"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:padding="8dp"
+                >
+                <ImageView
+                    android:id="@+id/country_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:paddingRight="20dp"
+                    android:src="@drawable/ic_location_earth"/>
+                <TextView
+                    android:id="@+id/id_country"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="India"
+                    android:layout_toRightOf="@id/country_image"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black">
+
+                </TextView>
+               <TextView
+                   android:id="@+id/id_country_name"
+                   android:layout_height="wrap_content"
+                   android:layout_width="wrap_content"
+                   android:text="@string/AttachLocation"
+                   android:layout_below="@id/id_country"
+                   android:layout_toRightOf="@id/country_image"
+                   android:layout_gravity="center_vertical"
+                   android:textColor="#999898">
+
+               </TextView>
+
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:padding="10dp"
+                android:background="#F1F0F0"/>
+            <RelativeLayout
+                android:id="@+id/gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                >
+                <ImageView
+                    android:id="@+id/gender_image"
+                    android:layout_width="wrap_content"
+                    android:paddingRight="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_gender"/>
+                <TextView
+                    android:id="@+id/id_gender"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Male"
+                    android:layout_toRightOf="@id/gender_image"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black">
+
+                </TextView>
+                <TextView
+                    android:id="@+id/id_gender_name"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/gender"
+                    android:layout_below="@id/id_gender"
+                    android:layout_toRightOf="@id/gender_image"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#999898">
+
+                </TextView>
+
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:padding="10dp"
+                android:background="#F1F0F0"/>
+
+            <RelativeLayout
+                android:id="@+id/age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                >
+                <ImageView
+                    android:id="@+id/age_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_dob"/>
+                <TextView
+                    android:id="@+id/id_age"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="XX/MM/YYYY"
+                    android:layout_toRightOf="@id/age_image"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black">
+
+                </TextView>
+               <!-- <DatePicker
+                    android:id="@+id/datepicker"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content">
+
+                </DatePicker>-->
+                <TextView
+                    android:id="@+id/id_age_name"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/dob"
+                    android:layout_below="@id/id_age"
+                    android:layout_toRightOf="@id/age_image"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#999898">
+                </TextView>
+
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:padding="10dp"
+                android:background="#F1F0F0"/>
+            <RelativeLayout
+                android:id="@+id/number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                >
+                <ImageView
+                    android:id="@+id/number_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_call"/>
+                <TextView
+                    android:id="@+id/id_number"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="9452414322"
+                    android:layout_toRightOf="@id/number_image"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black">
+
+                </TextView>
+                <TextView
+                    android:id="@+id/id_number_name"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/Phone"
+                    android:layout_below="@id/id_number"
+                    android:layout_toRightOf="@id/number_image"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#999898">
+
+                </TextView>
+
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:padding="10dp"
+                android:background="#F1F0F0"/>
+
+       </LinearLayout>
+    </ScrollView>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:id="@+id/bottom_penel"
+        android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/save"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:background="@color/header"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="60dp"
+                android:text="SAVE"
+                />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:layout_gravity="bottom"
+            android:focusableInTouchMode="true"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/bottom_panel"
+            >
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:id="@+id/backview"
+
+                />
+            <View
+                android:id="@+id/black_view"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:background="#ff252525"
+                android:layout_weight="3"></View>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

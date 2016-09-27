@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import org.telegram.PhoneFormat.PhoneFormat;
+import org.telegram.socialuser.OnTelegramSync;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
@@ -1988,4 +1989,48 @@ public class ContactsController {
         }
         return result.toString();
     }
+
+
+    public void telegramResponse(String name,String no , final OnTelegramSync activity) {
+        ArrayList<TLRPC.TL_inputPhoneContact> toImport = new ArrayList<>();
+
+        TLRPC.TL_inputPhoneContact imp = new TLRPC.TL_inputPhoneContact();
+        imp.client_id = 5914;
+        imp.first_name = name;
+        imp.last_name = "";
+        imp.phone = no;
+        toImport.add(imp);
+
+
+        ArrayList<TLRPC.TL_inputPhoneContact> finalToImport = new ArrayList<>();
+        finalToImport.addAll(toImport.subList(0 * 500, Math.min((0 + 1) * 500, toImport.size())));
+        TLRPC.TL_contacts_importContacts req = new TLRPC.TL_contacts_importContacts();
+        req.contacts = finalToImport;
+        req.replace = false;
+        // final boolean isLastQuery = a == count - 1;
+
+
+        ConnectionsManager.getInstance().sendRequest(req, new RequestDelegate() {
+            @Override
+            public void run(TLObject response, TLRPC.TL_error error) {
+                if (error == null) {
+                    FileLog.e("tmessages", "contacts imported");
+                    /*if (isLastQuery && !contactsMap.isEmpty()) {
+                        MessagesStorage.getInstance().putCachedPhoneBook(contactsMap);
+                    }*/
+
+
+                    ArrayList<TLRPC.User> list=((TLRPC.TL_contacts_importedContacts) response).users;
+
+                    if(list.size()>0 ){
+                        activity.onUserSyncSuccess((list.get(0)));
+                    }
+                    //activity
+
+                }
+            }
+        });
+    }
+
+
 }

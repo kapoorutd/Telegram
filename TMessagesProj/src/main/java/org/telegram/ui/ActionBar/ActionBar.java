@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.AnimatorListenerAdapterProxy;
@@ -56,7 +57,7 @@ public class ActionBar extends FrameLayout {
     private boolean allowOverlayTitle;
     private CharSequence lastTitle;
     private boolean castShadows = true;
-
+    private  TextView textView;
     protected boolean isSearchFieldVisible;
     protected int itemsBackgroundColor;
     private boolean isBackOverlayVisible;
@@ -217,6 +218,45 @@ public class ActionBar extends FrameLayout {
 
         return actionMode;
     }
+
+
+    ////////////////////////////////////////////////////////
+
+    public void setTextLast(String text) {
+        if (textView == null) {
+            createTextLast();
+        }
+        textView.setText(text);
+        textView.setTextColor(0xffffffff);
+    }
+
+    private void createTextLast() {
+        if (textView != null) {
+            return;
+        }
+        textView = new TextView(getContext());
+        textView.setPadding(0,30,AndroidUtilities.dp(1), 0);
+        addView(textView, LayoutHelper.createFrame(54, 54, Gravity.RIGHT | Gravity.TOP));
+
+       /* backButtonImageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isSearchFieldVisible) {
+                    closeSearchField();
+                    return;
+                }
+                if (actionBarMenuOnItemClick != null) {
+                    actionBarMenuOnItemClick.onItemClick(-1);
+                }
+            }
+        });*/
+    }
+
+    ///////////////////////////////////////////////////////////
+
+
+
+
 
     public void showActionMode() {
         if (actionMode == null || actionModeVisible) {

@@ -64,6 +64,8 @@ import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.browser.Browser;
+import org.telegram.payment.PaymentManager;
+import org.telegram.payment.UserPaymentInfo;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.SerializedData;
@@ -119,8 +121,12 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     private int overscrollRow;
     private int emptyRow;
     private int numberSectionRow;
-    private int numberRow;
-    private int usernameRow;
+  //  private int numberRow;
+    private int myprofileRow;
+    private int premiumFeature;
+
+    private int preferencerow;
+  //  private int usernameRow;
     private int settingsSectionRow;
     private int settingsSectionRow2;
     private int enableAnimationsRow;
@@ -236,8 +242,12 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         overscrollRow = rowCount++;
         emptyRow = rowCount++;
         numberSectionRow = rowCount++;
-        numberRow = rowCount++;
-        usernameRow = rowCount++;
+      /*  numberRow = rowCount++;
+        usernameRow = rowCount++;*/
+          myprofileRow = rowCount++;
+          preferencerow = rowCount++;
+
+        premiumFeature=rowCount++;
         settingsSectionRow = rowCount++;
         settingsSectionRow2 = rowCount++;
         notificationRow = rowCount++;
@@ -414,7 +424,28 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                     presentFragment(new NotificationsSettingsActivity());
                 } else if (i == backgroundRow) {
                     presentFragment(new WallpapersActivity());
-                } else if (i == askQuestionRow) {
+                }
+
+                else if(i==premiumFeature){
+
+                    SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    if(false/*pp.getString("social_id","").equals("")*/) {
+                        presentFragment(new MyProfileActivity());
+                    }
+                    else
+                    {
+                        if(UserPaymentInfo.getInstatance().getPaymentStatus() ==UserPaymentInfo.paidUser  && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase("")) ){
+                            Toast.makeText(getParentActivity(),"YOU HAVE ALREADY SUBSCRIBED",Toast.LENGTH_SHORT).show();
+                        }else {
+                            PaymentManager.createIntent(getParentActivity());
+                        }
+
+                        // PaymentManager.createIntent(getParentActivity());
+                    }
+                }
+
+
+                else if (i == askQuestionRow) {
                     if (getParentActivity() == null) {
                         return;
                     }
@@ -630,11 +661,27 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                     linearLayout.addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
                     builder.setCustomView(linearLayout);
                     showDialog(builder.create());
-                } else if (i == usernameRow) {
+                } /*else if (i == usernameRow) {
                     presentFragment(new ChangeUsernameActivity());
                 } else if (i == numberRow) {
                     presentFragment(new ChangePhoneHelpActivity());
-                } else if (i == stickersRow) {
+                }*/
+
+                else if (i == preferencerow) {
+                    SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    if(pp.getString("social_id","").equals("")) {
+                        presentFragment(new MyProfileActivity());
+                    }
+                    else {
+                        presentFragment(new PreferencesActivity());
+                    }
+                } else if (i ==myprofileRow /*numberRow*/) {
+
+                    presentFragment(new MyProfileActivity());
+                }
+
+
+                else if (i == stickersRow) {
                     presentFragment(new StickersActivity());
                 } else if (i == cacheRow) {
                     presentFragment(new CacheControlActivity());
@@ -1178,9 +1225,9 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
         @Override
         public boolean isEnabled(int i) {
-            return i == textSizeRow || i == enableAnimationsRow || i == notificationRow || i == backgroundRow || i == numberRow ||
+            return i == textSizeRow || i == enableAnimationsRow || i == notificationRow || i == backgroundRow || i == myprofileRow || i==premiumFeature /*|| i == numberRow*/ ||
                     i == askQuestionRow || i == sendLogsRow || i == sendByEnterRow || i == autoplayGifsRow || i == privacyRow || i == wifiDownloadRow ||
-                    i == mobileDownloadRow || i == clearLogsRow || i == roamingDownloadRow || i == languageRow || i == usernameRow ||
+                    i == mobileDownloadRow || i == clearLogsRow || i == roamingDownloadRow || i == languageRow || i == preferencerow/*|| i == usernameRow*/ ||
                     i == switchBackendButtonRow || i == telegramFaqRow || i == contactsSortRow || i == contactsReimportRow || i == saveToGalleryRow ||
                     i == stickersRow || i == cacheRow || i == raiseToSpeakRow || i == privacyPolicyRow || i == customTabsRow || i == directShareRow || i == versionRow;
         }
@@ -1304,7 +1351,8 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 } else if (i == mediaDownloadSection2) {
                     ((HeaderCell) view).setText(LocaleController.getString("AutomaticMediaDownload", R.string.AutomaticMediaDownload));
                 } else if (i == numberSectionRow) {
-                    ((HeaderCell) view).setText(LocaleController.getString("Info", R.string.Info));
+                    ((HeaderCell) view).setText(LocaleController.getString("socialsetting", R.string.socialsetting));
+                 // ((HeaderCell) view).setText(LocaleController.getString("Info", R.string.Info));
                 }
             } else if (type == 5) {
                 if (view == null) {
@@ -1390,7 +1438,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                         text = LocaleController.getString("NoMediaAutoDownload", R.string.NoMediaAutoDownload);
                     }
                     textCell.setTextAndValue(value, text, true);
-                } else if (i == numberRow) {
+                } /*else if (i == numberRow) {
                     TLRPC.User user = UserConfig.getCurrentUser();
                     String value;
                     if (user != null && user.phone != null && user.phone.length() != 0) {
@@ -1408,10 +1456,27 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                         value = LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty);
                     }
                     textCell.setTextAndValue(value, LocaleController.getString("Username", R.string.Username), false);
-                }
+                }*/
             }
+
+            else if(type == 7){
+                    if (view == null) {
+                        view = new TextSettingsCell(mContext);
+                    }
+                    TextSettingsCell textCell = (TextSettingsCell) view;
+
+                    if(i==premiumFeature){
+                        textCell.setTextAndIcon("Upgrade to Premium",R.drawable.icpre,true);
+                    }else if (i == myprofileRow/*numberRow*/) {
+                        textCell.setText(LocaleController.getString("myprofile", R.string.myprofile), true);
+                    } else if (i == preferencerow) {
+                        textCell.setText(LocaleController.getString("preferences", R.string.preferences), true);
+                    }
+                }
+
             return view;
         }
+
 
         @Override
         public int getItemViewType(int i) {
@@ -1426,18 +1491,22 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 return 2;
             } else if (i == versionRow) {
                 return 5;
-            } else if (i == wifiDownloadRow || i == mobileDownloadRow || i == roamingDownloadRow || i == numberRow || i == usernameRow) {
+            } else if (i == wifiDownloadRow || i == mobileDownloadRow || i == roamingDownloadRow /*||*/ /*i == numberRow || i == usernameRow*/) {
                 return 6;
             } else if (i == settingsSectionRow2 || i == messagesSectionRow2 || i == supportSectionRow2 || i == numberSectionRow || i == mediaDownloadSection2) {
                 return 4;
-            } else {
+            }
+            else if (i == myprofileRow || i == preferencerow|| i==premiumFeature) {
+                return 7;
+            }
+            else {
                 return 2;
             }
         }
 
         @Override
         public int getViewTypeCount() {
-            return 7;
+            return 8;
         }
 
         @Override

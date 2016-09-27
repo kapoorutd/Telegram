@@ -568,6 +568,146 @@ public class ImageReceiver implements NotificationCenter.NotificationCenterDeleg
         }
     }
 
+    ///////////////////////////////////////////\
+
+
+    public void setImage(TLObject fileLocation, String httpUrl, String filter, Drawable thumb,
+                         TLRPC.FileLocation thumbLocation, String thumbFilter, int size, String ext,
+                         boolean cacheOnly, boolean showSocialImage) {
+        if (setImageBackup != null) {
+            setImageBackup.fileLocation = null;
+            setImageBackup.httpUrl = null;
+            setImageBackup.thumbLocation = null;
+            setImageBackup.thumb = null;
+        }
+
+        if ((fileLocation == null && httpUrl == null && thumbLocation == null)
+                || (fileLocation != null && !(fileLocation instanceof TLRPC.FileLocation)
+                && !(fileLocation instanceof TLRPC.TL_fileEncryptedLocation)
+                && !(fileLocation instanceof TLRPC.TL_document))) {
+            recycleBitmap(null, false);
+            recycleBitmap(null, true);
+            currentKey = null;
+            currentExt = ext;
+            currentThumbKey = null;
+            currentThumbFilter = null;
+            currentImageLocation = null;
+            currentHttpUrl = null;
+            currentFilter = null;
+            currentCacheOnly = false;
+            staticThumb = thumb;
+            currentAlpha = 1;
+            currentThumbLocation = null;
+            currentSize = 0;
+            currentImage = null;
+            bitmapShader = null;
+            ImageLoader.getInstance().cancelLoadingForImageReceiver(this, 0);
+            if (parentView != null) {
+                if (invalidateAll) {
+                    parentView.invalidate();
+                } else {
+                    parentView.invalidate(imageX, imageY, imageX + imageW, imageY + imageH);
+                }
+            }
+            if (delegate != null) {
+                delegate.didSetImage(this, currentImage != null || currentThumb != null || staticThumb != null, currentImage == null);
+            }
+            return;
+        }
+
+
+
+        if (!(thumbLocation instanceof TLRPC.FileLocation)) {
+            thumbLocation = null;
+        }
+
+        String key = null;
+        if (fileLocation != null) {
+            if (fileLocation instanceof TLRPC.FileLocation) {
+                TLRPC.FileLocation location = (TLRPC.FileLocation) fileLocation;
+                key = location.volume_id + "_" + location.local_id;
+            } else {
+                TLRPC.Document location = (TLRPC.Document) fileLocation;
+                key = location.dc_id + "_" + location.id;
+            }
+        } else if (httpUrl != null) {
+            key = Utilities.MD5(httpUrl);
+        }
+        if (key != null) {
+            if (filter != null) {
+                key += "@" + filter;
+            }
+        }
+
+        if (currentKey != null && key != null && currentKey.equals(key)) {
+            if (delegate != null) {
+                delegate.didSetImage(this, currentImage != null || currentThumb != null || staticThumb != null, currentImage == null);
+            }
+            if (!canceledLoading && !forcePreview) {
+                return;
+            }
+        }
+
+        String thumbKey = null;
+        if (thumbLocation != null) {
+            thumbKey = thumbLocation.volume_id + "_" + thumbLocation.local_id;
+            if (thumbFilter != null) {
+                thumbKey += "@" + thumbFilter;
+            }
+        }
+
+        recycleBitmap(key, false);
+        recycleBitmap(thumbKey, true);
+
+        currentThumbKey = thumbKey;
+        currentKey = key;
+        currentExt = ext;
+        currentImageLocation = fileLocation;
+        currentHttpUrl = httpUrl;
+        currentFilter = filter;
+        currentThumbFilter = thumbFilter;
+        currentSize = size;
+        currentCacheOnly = cacheOnly;
+        currentThumbLocation = thumbLocation;
+        staticThumb = thumb;
+        bitmapShader = null;
+        currentAlpha = 1.0f;
+
+        if (delegate != null) {
+            delegate.didSetImage(this, currentImage != null || currentThumb != null || staticThumb != null, currentImage == null);
+        }
+
+        ImageLoader.getInstance().loadImageForImageReceiver(this);
+        if (parentView != null) {
+            if (invalidateAll) {
+                parentView.invalidate();
+            } else {
+                parentView.invalidate(imageX, imageY, imageX + imageW, imageY + imageH);
+            }
+        }
+    }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private void checkAlphaAnimation(boolean skip) {
         if (currentAlpha != 1) {
             if (!skip) {

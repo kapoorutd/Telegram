@@ -314,6 +314,24 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                                     FileLog.e("tmessages", e);
                                 }
                             }
+
+                            else if(row == 1){
+                                try {
+                                    SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                                    if(false/*pp.getString("social_id","").equals("")*/) {
+                                       // presentFragment(new MyProfileActivity());
+                                    }
+                                    else{
+                                        Bundle args22 = new Bundle();
+                                        args22.putString("s_friend","sf");
+                                        presentFragment(new SocialFriendActivity(args22));
+                                    }
+
+                                } catch (Exception e) {
+                                    FileLog.e("tmessages", e);
+                                }
+                            }
+
                         } else if (chat_id != 0) {
                             if (row == 0) {
                                 presentFragment(new GroupInviteActivity(chat_id));

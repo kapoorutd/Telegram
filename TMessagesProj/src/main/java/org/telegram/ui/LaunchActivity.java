@@ -62,6 +62,9 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.messenger.query.DraftQuery;
+import org.telegram.payment.CheckPremiumUserRequester;
+import org.telegram.payment.UserPaymentInfo;
+import org.telegram.socialuser.BackgroundExecuter;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
@@ -75,6 +78,7 @@ import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.PasscodeView;
 import org.telegram.ui.Components.StickersAlert;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.listners.OnSocialLogin;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -84,7 +88,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LaunchActivity extends Activity implements ActionBarLayout.ActionBarLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate {
+public class LaunchActivity extends Activity implements ActionBarLayout.ActionBarLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate,OnSocialLogin {
 
     private boolean finished;
     private String videoPath;
@@ -144,6 +148,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                 }
             }
         }
+        BackgroundExecuter.getInstance().execute(new CheckPremiumUserRequester(UserPaymentInfo.getInstatance().getUserId()));
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setTheme(R.style.Theme_TMessages);
@@ -497,6 +502,24 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
             }
         });
     }
+
+    @Override
+    public void onSocialLoginSuccess() {
+
+    }
+
+    @Override
+    public void onSocialLoginError() {
+
+    }
+
+    @Override
+    public void onSocialFailer(String userid) {
+        BackgroundExecuter.getInstance().execute(new CheckPremiumUserRequester(userid));
+
+    }
+
+
 
     private class VcardData {
         String name;

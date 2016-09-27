@@ -50,6 +50,9 @@ import org.telegram.messenger.query.SearchQuery;
 import org.telegram.messenger.support.widget.LinearLayoutManager;
 import org.telegram.messenger.support.widget.RecyclerView;
 import org.telegram.messenger.FileLog;
+import org.telegram.payment.CheckPremiumUserRequester;
+import org.telegram.payment.UserPaymentInfo;
+import org.telegram.socialuser.BackgroundExecuter;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.MessagesController;
@@ -196,6 +199,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             }
         });
 
+        BackgroundExecuter.getInstance().execute(new CheckPremiumUserRequester(UserPaymentInfo.getInstatance().getUserId()));
+
+
         ActionBarMenu menu = actionBar.createMenu();
         if (!onlySelect && searchString == null) {
             passcodeItem = menu.addItem(1, R.drawable.lock_close);
@@ -256,6 +262,10 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
                 updatePasscodeButton();
             }
+
+
+
+
 
             @Override
             public void onTextChanged(EditText editText) {

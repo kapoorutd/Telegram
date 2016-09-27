@@ -456,6 +456,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         public Bitmap thumb;
         public int dialogId;
         public int index;
+        public int user_id;
         public int size;
         public int radius;
         public int clipBottomAddition;
@@ -756,6 +757,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     TLRPC.PhotoSize sizeFull = FileLoader.getClosestPhotoSizeWithSize(photo.sizes, 640);
                     if (sizeFull != null) {
                         if (setToImage == -1 && currentFileLocation != null) {
+
                             for (int b = 0; b < photo.sizes.size(); b++) {
                                 TLRPC.PhotoSize size = photo.sizes.get(b);
                                 if (size.location.local_id == currentFileLocation.local_id && size.location.volume_id == currentFileLocation.volume_id) {

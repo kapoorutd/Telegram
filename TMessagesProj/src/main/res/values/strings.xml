@@ -1203,4 +1203,51 @@
     <string name="formatterDay24H">HH:mm</string>
     <string name="formatterDay12H">h:mm a</string>
     <string name="formatDateAtTime">%1$s at %2$s</string>
+
+    /////////////////////////////
+
+
+    <string name="updateText">Social Telegram for Android has been updated. New in version 3.3.2:\n\n- Cache management: Control how much disk space Telegram uses on your device, delete cache for specific types of content.\n- Delete cache from supergroups and channels: Tap and hold on them in the chats list and \'Delete from Cache\'.\n- Sticker management: Manually rearrange your sticker packs. Pack order is now synced across all your devices.\n\nMore about this update:\nhttps://telegram.org/blog/cache-and-stickers</string>
+    <string name="updateBuild">693</string>
+
+    <!-- update strings for blackberry    -->
+    <string name="ContactUs">Contact Us</string>
+    <string name="new_chat" translatable="false">New Chat</string>
+    <string name="add_new_contact" translatable ="false">Add New Contact</string>
+    <string name="About" translatable ="false">About</string>
+    <string name="AddParticipant" translatable ="false">Add Participant</string>
+    <string name="CreateChannel" translatable ="false">Create Channel</string>
+    <string name="MailContent" translatable="false"><![CDATA[Please provide below information so we can help you to resolve your problem.<br></br>   1. Whats your Blackberry OS version?<br></br>   2. Whats your Android runtime OS version?<br></br>   3. Any Feedback/Concerns or issues?]]></string>
+
+
+    <string name="myprofile">My Profile</string>
+    <string name="preferences">Looking For Someone</string>
+    <string name="premium_features"><U>View More</U></string>
+    <string name="social_friend">Social Friends</string>
+    <string name="looking_for_someone">"Looking For Someone"</string>
+    <string name="age_group">Age</string>
+    <string name="gender">Gender</string>
+    <string name="age">Age</string>
+    <string name="lets_start">Let\'s Play</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="pleaseselectagegroup">Please select age group</string>
+    <string name="dob">Date of birth</string>
+    <string name="preferences_contant">Lets connect you to the people you always wanted to befriended with! Simply enter your choice below.</string>
+    <string name="InviteTextsocial">Hey, I found this app really fun-filled &amp; exciting, to socialize with my-kinda-people! Give a try, you too!: http://blck.by/29ei2Kq </string>
+    <string name="InviteFriends1">Invite Friends</string>
+    <string name="wink">Play</string>
+    <string name="pleaseselectvaliddate">Please select valid date</string>
+    <string name="yourpreferences">Your Preferences</string>
+    <string name="pleaseselectcountry">please select country</string>
+    <string name="mutualfrinds">Mutual Friends</string>
+    <string name="peopleyoumayknow">People you may know</string>
+
+
+    <string name="banner_home_footer">ca-app-pub-2963488631481072/3850621745<!--ca-app-pub-2963488631481072/3850621745--></string> <!--ca-app-pub-3120536913205473/5975042732-->
+    <string name="socialsetting">Social Settings</string>
+    <string name="buy_premium_content">Want to befriend with more interesting people?
+    \nTime to Switch to the paid version !
+    </string>
+
 </resources>

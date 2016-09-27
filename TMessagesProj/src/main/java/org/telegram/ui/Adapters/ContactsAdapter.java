@@ -9,6 +9,7 @@
 package org.telegram.ui.Adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,6 +19,7 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
+import org.telegram.ui.Cells.AdvertiesmentCell;
 import org.telegram.ui.Cells.DividerCell;
 import org.telegram.ui.Cells.GreySectionCell;
 import org.telegram.ui.Cells.LetterSectionCell;
@@ -28,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ContactsAdapter extends BaseSectionsAdapter {
-
     private Context mContext;
     private int onlyUsers;
     private boolean needPhonebook;
@@ -72,8 +73,13 @@ public class ContactsAdapter extends BaseSectionsAdapter {
             } else {
                 if (section - 1 < sortedUsersSectionsArray.size()) {
                     ArrayList<TLRPC.TL_contact> arr = usersSectionsDict.get(sortedUsersSectionsArray.get(section - 1));
-                    if (position < arr.size()) {
-                        return MessagesController.getInstance().getUser(arr.get(position).user_id);
+
+                    if(position != 0 && position % 5 == 0){
+                        return null;
+                    }
+                    int index = position - position/5;
+                    if (index < arr.size()) {
+                        return MessagesController.getInstance().getUser(arr.get(index).user_id);
                     }
                     return null;
                 }
@@ -95,7 +101,14 @@ public class ContactsAdapter extends BaseSectionsAdapter {
             return row < arr.size();
         } else {
             if (section == 0) {
-                if (needPhonebook || isAdmin) {
+                if (needPhonebook) {
+                    if (row == 1) {
+                        return true;
+                    } else if (row == 2) {
+
+                        return false;
+                    }
+                } else  if (isAdmin) {
                     if (row == 1) {
                         return false;
                     }
@@ -107,7 +120,7 @@ public class ContactsAdapter extends BaseSectionsAdapter {
                 return true;
             } else if (section - 1 < sortedUsersSectionsArray.size()) {
                 ArrayList<TLRPC.TL_contact> arr = usersSectionsDict.get(sortedUsersSectionsArray.get(section - 1));
-                return row < arr.size();
+                return (row  - row /5)< arr.size();
             }
         }
         return true;
@@ -145,9 +158,11 @@ public class ContactsAdapter extends BaseSectionsAdapter {
             }
         } else {
             if (section == 0) {
-                if (needPhonebook || isAdmin) {
+                if (needPhonebook) {
+                    return 3;
+                } if(isAdmin){
                     return 2;
-                } else {
+                }else {
                     return 4;
                 }
             } else if (section - 1 < sortedUsersSectionsArray.size()) {
@@ -156,6 +171,7 @@ public class ContactsAdapter extends BaseSectionsAdapter {
                 if (section - 1 != (sortedUsersSectionsArray.size() - 1) || needPhonebook) {
                     count++;
                 }
+                count = count + count / 5;
                 return count;
             }
         }
@@ -210,7 +226,13 @@ public class ContactsAdapter extends BaseSectionsAdapter {
             }
             TextCell actionCell = (TextCell) convertView;
             if (needPhonebook) {
-                actionCell.setTextAndIcon(LocaleController.getString("InviteFriends", R.string.InviteFriends), R.drawable.menu_invite);
+                if(position == 0) {
+                    actionCell.setTextAndIcon(LocaleController.getString("InviteFriends", R.string.InviteFriends), R.drawable.menu_invite);
+                } else if(position == 1){
+                    actionCell.setTextAndPremiumIcon(LocaleController.getString("peopleyoumayknow", R.string.peopleyoumayknow),R.drawable.premium1, R.drawable.ic_group);
+
+                }
+
             } else if (isAdmin) {
                 actionCell.setTextAndIcon(LocaleController.getString("InviteToGroupByLink", R.string.InviteToGroupByLink), R.drawable.menu_invite);
             } else {
@@ -227,17 +249,16 @@ public class ContactsAdapter extends BaseSectionsAdapter {
                 convertView = new TextCell(mContext);
             }
             ContactsController.Contact contact = ContactsController.getInstance().phoneBookContacts.get(position);
-            TextCell textCell = (TextCell) convertView;
             if (contact.first_name != null && contact.last_name != null) {
-                textCell.setText(contact.first_name + " " + contact.last_name);
+                ((TextCell) convertView).setText(contact.first_name + " " + contact.last_name);
             } else if (contact.first_name != null && contact.last_name == null) {
-                textCell.setText(contact.first_name);
+                ((TextCell) convertView).setText(contact.first_name);
             } else {
-                textCell.setText(contact.last_name);
+                ((TextCell) convertView).setText(contact.last_name);
             }
         } else if (type == 0) {
             if (convertView == null) {
-                convertView = new UserCell(mContext, 58, 1, false);
+                convertView = new UserCell(mContext, 58, 1,false);
                 ((UserCell) convertView).setStatusColors(0xffa8a8a8, 0xff3b84c0);
             }
 
@@ -245,17 +266,23 @@ public class ContactsAdapter extends BaseSectionsAdapter {
             ArrayList<String> sortedUsersSectionsArray = onlyUsers == 2 ? ContactsController.getInstance().sortedUsersMutualSectionsArray : ContactsController.getInstance().sortedUsersSectionsArray;
 
             ArrayList<TLRPC.TL_contact> arr = usersSectionsDict.get(sortedUsersSectionsArray.get(section - (onlyUsers != 0 && !isAdmin ? 0 : 1)));
-            TLRPC.User user = MessagesController.getInstance().getUser(arr.get(position).user_id);
+            int index = position - position/5;
+            TLRPC.User user = MessagesController.getInstance().getUser(arr.get(index).user_id);
             ((UserCell) convertView).setData(user, null, null, 0);
             if (checkedMap != null) {
-                ((UserCell) convertView).setChecked(checkedMap.containsKey(user.id), !scrolling);
+                ((UserCell) convertView).setChecked(checkedMap.containsKey(user.id), !scrolling && Build.VERSION.SDK_INT > 10);
             }
             if (ignoreUsers != null) {
-                if (ignoreUsers.containsKey(user.id)) {
-                    convertView.setAlpha(0.5f);
+               /* if (ignoreUsers.containsKey(user.id)) {
+                    ViewProxy.setAlpha(convertView, 0.5f);
                 } else {
-                    convertView.setAlpha(1.0f);
-                }
+                    ViewProxy.setAlpha(convertView, 1.0f);
+                }*/
+            }
+        }else if(type == 5){
+            if(convertView == null){
+                //if()
+                convertView = new AdvertiesmentCell(mContext);
             }
         }
         return convertView;
@@ -270,26 +297,36 @@ public class ContactsAdapter extends BaseSectionsAdapter {
             return position < arr.size() ? 0 : 4;
         } else {
             if (section == 0) {
-                if (needPhonebook || isAdmin) {
-                    if (position == 1) {
+                if (needPhonebook) {
+                    if (position == 2) {
                         return 3;
                     }
-                } else {
-                    if (position == 3) {
+                }else if (isAdmin) {
+                    if (position == 2) {
+                        return 3;
+                    }
+                }  else {
+                    if (position == 4) {
                         return 3;
                     }
                 }
                 return 2;
             } else if (section - 1 < sortedUsersSectionsArray.size()) {
+                if(position != 0 && position % 5 == 0){
+                    return 5;
+                }
                 ArrayList<TLRPC.TL_contact> arr = usersSectionsDict.get(sortedUsersSectionsArray.get(section - 1));
-                return position < arr.size() ? 0 : 4;
+                return position  < (arr.size() + arr.size()/5) ? 0 : 4;
             }
+        }
+        if(position != 0 && position % 10 == 0){
+            return 5;
         }
         return 1;
     }
 
     @Override
     public int getViewTypeCount() {
-        return 5;
+        return 6;
     }
 }
