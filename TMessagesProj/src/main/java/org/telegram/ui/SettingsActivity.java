@@ -236,6 +236,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 });
             }
         };
+
         NotificationCenter.getInstance().addObserver(this, NotificationCenter.updateInterfaces);
 
         rowCount = 0;
@@ -248,6 +249,12 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
           preferencerow = rowCount++;
 
         premiumFeature=rowCount++;
+
+        if(UserPaymentInfo.getInstatance().getPaymentStatus() ==UserPaymentInfo.paidUser
+                && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase("")) ){
+            premiumFeature=rowCount--;
+        }
+
         settingsSectionRow = rowCount++;
         settingsSectionRow2 = rowCount++;
         notificationRow = rowCount++;

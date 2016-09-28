@@ -87,7 +87,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         startService(intent);
         acttionBarSetup();
-        findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.home).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

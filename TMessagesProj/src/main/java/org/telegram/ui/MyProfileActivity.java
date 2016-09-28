@@ -51,7 +51,6 @@ import org.telegram.ui.listners.OnAddUserListner;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-
 public class MyProfileActivity extends BaseFragment implements OnAddUserListner,PhotoViewer.PhotoViewerProvider,View.OnClickListener,NotificationCenter.NotificationCenterDelegate{
     private BackupImageView avatarImageView;
     private TextView statusTextView,nameTextView;
@@ -81,7 +80,7 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
     @Override
     public View createView(final Context context) {
 
-     //   hideTabsAnsMenu();
+//        hideTabsAnsMenu();
         mcContext = context;
         currentUser = UserConfig.getCurrentUser();
         //actionBar.setBackButtonImage(R.drawable.ic_ab_back);
@@ -142,7 +141,7 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
             }
         });
 
-    //  phone_txt.setText("+"+currentUser.phone);
+        //  phone_txt.setText("+"+currentUser.phone);
         gender.setOnClickListener(this);
         dob.setOnClickListener(this);
         save_btn.setOnClickListener(this);
@@ -164,7 +163,7 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
         nameTextView.setOnClickListener(this);
         avatarImageView.setOnClickListener(this);
         phone.setOnClickListener(this);
-             statusTextView.setOnClickListener(new View.OnClickListener() {
+        statusTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getParentActivity() == null) {
@@ -184,9 +183,9 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
             }
         });
 
-       fragmentView.findViewById(R.id.backview).setOnClickListener(this);
+        fragmentView.findViewById(R.id.backview).setOnClickListener(this);
 
-     //   ApplicationLoader.getInstance().addUIListener(OnAddUserListner.class,MyProfileActivity.this);
+        ApplicationLoader.getInstance().addUIListener(OnAddUserListner.class,MyProfileActivity.this);
 
 
 
@@ -208,7 +207,7 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
                 presentFragment(new ChangeUsernameActivity());
                 break;
             case R.id.backview:
-              //  showTabsAndmenu();
+         //       showTabsAndmenu();
                 removeUIListeners();
                 break;
             case R.id.number:
@@ -225,9 +224,9 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
                 break;
             case R.id.age:
                 final Calendar c = Calendar.getInstance();
-               year = c.get(Calendar.YEAR);
-               month = c.get(Calendar.MONTH);
-               day = c.get(Calendar.DAY_OF_MONTH);
+                year = c.get(Calendar.YEAR);
+                month = c.get(Calendar.MONTH);
+                day = c.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dpd = new DatePickerDialog(mcContext,
                         new DatePickerDialog.OnDateSetListener() {
@@ -241,10 +240,10 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
                                 if(dateValidater(year1,monthOfYear,dayOfMonth)){
                                     ApplicationLoader.applicationContext.
                                             getSharedPreferences("socialuser", Activity.MODE_PRIVATE).edit()
-                                            .putString("dob", Util.getDateforserver(year1,monthOfYear,dayOfMonth)).commit();
+                                            .putString("dob",Util.getDateforserver(year1,monthOfYear,dayOfMonth)).commit();
                                     dob_txt.setText(Util.getDateforserver(year1,monthOfYear,dayOfMonth));
                                 } else{
-                                    Toast.makeText(mcContext, LocaleController.getString("pleaseselectvaliddate", R.string.pleaseselectvaliddate),Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mcContext,LocaleController.getString("pleaseselectvaliddate", R.string.pleaseselectvaliddate),Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
@@ -260,9 +259,9 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
                 currentUser = UserConfig.getCurrentUser();
                 SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
                 setContact();
-                currentUser = UserConfig.getCurrentUser();
+                currentUser =UserConfig.getCurrentUser();
 
-               TLRPC.TelegramUsers newuser = new TLRPC.TelegramUsers();
+                TLRPC.TelegramUsers newuser = new TLRPC.TelegramUsers();
                 //String dob =Util.convertDate(p.getString("dob",showDate(year,month,day)));
                 newuser.setDob(Util.convertDate(p.getString("dob","2000-02-02")));
                 newuser.setSex(p.getString("sex",getGender()));
@@ -276,16 +275,16 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
                 newuser.setPhone(currentUser.phone);
                 newuser.setUsername(currentUser.username);
                 BackgroundExecuter.getInstance().execute(new AddUserRequester(newuser,null));
-             //   finishFragment();
+                //   finishFragment();
                 break;
         }
     }
     @Override
     public void onResume() {
         super.onResume();
-     //   hideTabsAnsMenu();
+       // hideTabsAnsMenu();
         currentUser = UserConfig.getCurrentUser();
-       // ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_PHONE_HELP);
+     //   ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_PHONE_HELP);
         statusTextView.setText(LocaleController.formatUserStatus(currentUser));
         phone_txt.setText("+"+currentUser.phone);
         phone_txt.setText("+"+currentUser.phone);
@@ -313,34 +312,34 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
     @Override
     public PhotoViewer.PlaceProviderObject getPlaceForPhoto(MessageObject messageObject, TLRPC.FileLocation fileLocation, int index){
         if (fileLocation == null) {
+            return null;
+        }
+
+        TLRPC.FileLocation photoBig = null;
+        if (currentUser.id != 0) {
+            TLRPC.User user = MessagesController.getInstance().getUser(currentUser.id);
+            if (user != null && user.photo != null && user.photo.photo_big != null) {
+                photoBig = user.photo.photo_big;
+            }
+        }
+
+        if (photoBig != null && photoBig.local_id == fileLocation.local_id && photoBig.volume_id == fileLocation.volume_id && photoBig.dc_id == fileLocation.dc_id) {
+            int coords[] = new int[2];
+            avatarImageView.getLocationInWindow(coords);
+            PhotoViewer.PlaceProviderObject object = new PhotoViewer.PlaceProviderObject();
+            object.viewX = coords[0];
+            object.viewY = coords[1] - AndroidUtilities.statusBarHeight;
+            object.parentView = avatarImageView;
+            object.imageReceiver = avatarImageView.getImageReceiver();
+            object.user_id = currentUser.id;
+            object.thumb = object.imageReceiver.getBitmap();
+            object.size = -1;
+            object.radius = avatarImageView.getImageReceiver().getRoundRadius();
+          //  object.scale = ViewProxy.getScaleX(avatarImageView);
+            return object;
+        }
         return null;
     }
-
-    TLRPC.FileLocation photoBig = null;
-    if (currentUser.id != 0) {
-        TLRPC.User user = MessagesController.getInstance().getUser(currentUser.id);
-        if (user != null && user.photo != null && user.photo.photo_big != null) {
-            photoBig = user.photo.photo_big;
-        }
-    }
-
-    if (photoBig != null && photoBig.local_id == fileLocation.local_id && photoBig.volume_id == fileLocation.volume_id && photoBig.dc_id == fileLocation.dc_id) {
-        int coords[] = new int[2];
-        avatarImageView.getLocationInWindow(coords);
-        PhotoViewer.PlaceProviderObject object = new PhotoViewer.PlaceProviderObject();
-        object.viewX = coords[0];
-        object.viewY = coords[1] - AndroidUtilities.statusBarHeight;
-        object.parentView = avatarImageView;
-        object.imageReceiver = avatarImageView.getImageReceiver();
-        object.user_id = currentUser.id;
-        object.thumb = object.imageReceiver.getBitmap();
-        object.size = -1;
-        object.radius = avatarImageView.getImageReceiver().getRoundRadius();
-      //  object.scale = ViewProxy.getScaleX(avatarImageView);
-        return object;
-    }
-    return null;
-}
 
 
     @Override
@@ -435,7 +434,7 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
     public CountryAdapter.Country getcountry(String name){
         CountryAdapter k = new CountryAdapter(mcContext);
         HashMap<String, ArrayList<CountryAdapter.Country>> countries = k.getCountries();
-      //  ArrayList<String> sortedCountries = k.getSortedCountries();
+//        ArrayList<String> sortedCountries = k.getSortedCountries();
         String s = name.substring(0,1).toUpperCase();
         ArrayList<CountryAdapter.Country> dd = countries.get(s);
         for(CountryAdapter.Country selectcountry:dd){
@@ -446,12 +445,12 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
         return null;
     }
 
-private String getGender(String g){
-    if(!g.equalsIgnoreCase("")) {
-        return g.equalsIgnoreCase("m")?"Male":"Female";
+    private String getGender(String g){
+        if(!g.equalsIgnoreCase("")) {
+            return g.equalsIgnoreCase("m")?"Male":"Female";
+        }
+        return "Gender";
     }
-    return "Gender";
-}
 
     private boolean dateValidater(int yr,int mn,int dt){
         try {
@@ -520,13 +519,13 @@ private String getGender(String g){
 
     @Override
     public void setUserAddSuccess() {
-      getParentActivity().runOnUiThread(new Runnable() {
+        getParentActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-         Toast.makeText(getParentActivity(),"Profile Saved !!",Toast.LENGTH_LONG).show();
-              removeUIListeners();
+                Toast.makeText(getParentActivity(),"Profile Saved !!",Toast.LENGTH_LONG).show();
+                removeUIListeners();
 
-                      }
+            }
         });
     }
 
@@ -542,16 +541,16 @@ private String getGender(String g){
             }
         });
 
-     //   removeUIListeners();
+        //   removeUIListeners();
     }
 
 
 
 
-   public void removeUIListeners(){
-    //   ApplicationLoader.getInstance().removeUIListener(OnAddUserListner.class,MyProfileActivity.this);
-         finishFragment();
+    public void removeUIListeners(){
+        ApplicationLoader.getInstance().removeUIListener(OnAddUserListner.class,MyProfileActivity.this);
+        finishFragment();
 
-   }
+    }
 
 }

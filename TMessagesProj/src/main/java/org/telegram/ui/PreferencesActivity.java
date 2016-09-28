@@ -144,7 +144,7 @@ public class PreferencesActivity extends BaseFragment implements OnPreferencesLi
      //   hideTabsAnsMenu();
         mContext = context;
         //actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-        actionBar.setBackButtonImage(0x00000000);//todo
+        actionBar.setBackButtonImage(R.drawable.ic_ab_back);//todo
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(LocaleController.getString("preferences", R.string.preferences));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {

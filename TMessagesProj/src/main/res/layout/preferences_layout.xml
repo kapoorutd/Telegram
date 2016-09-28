@@ -223,6 +223,7 @@
             android:layout_gravity="bottom"
             android:focusableInTouchMode="true"
             android:gravity="bottom"
+            android:visibility="gone"
             android:orientation="horizontal"
             android:layout_alignParentBottom="true"
             android:id="@+id/bottom_panel"

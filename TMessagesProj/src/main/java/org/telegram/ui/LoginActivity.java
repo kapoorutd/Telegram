@@ -13,6 +13,7 @@ import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -41,12 +42,14 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
@@ -59,6 +62,11 @@ import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
+import org.telegram.socialuser.BackgroundExecuter;
+import org.telegram.socialuser.Util;
+import org.telegram.socialuser.model.CustomHttpParams;
+import org.telegram.socialuser.runable.AddUserRequester;
+import org.telegram.socialuser.runable.GetUserRequester;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
@@ -68,13 +76,16 @@ import org.telegram.messenger.Utilities;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.BaseFragment;
+import org.telegram.ui.Adapters.CountryAdapter;
 import org.telegram.ui.Components.HintEditText;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.SlideView;
+import org.telegram.ui.listners.OnSocialLogin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -84,7 +95,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class LoginActivity extends BaseFragment {
+public class LoginActivity extends BaseFragment  implements OnSocialLogin {
 
     private int currentViewNum = 0;
     private SlideView[] views = new SlideView[8];
@@ -505,6 +516,29 @@ public class LoginActivity extends BaseFragment {
                 setPage(2, true, params, false);
             }
         }
+    }
+
+    @Override
+    public void onSocialLoginSuccess() {
+        getParentActivity().runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        presentFragment(new MyProfileActivity());
+
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void onSocialLoginError() {
+
+    }
+
+    @Override
+    public void onSocialFailer(String userid) {
+
     }
 
     public class PhoneView extends SlideView implements AdapterView.OnItemSelectedListener {
@@ -951,6 +985,18 @@ public class LoginActivity extends BaseFragment {
             }
             params.putString("phoneFormated", phone);
             nextPressed = true;
+
+         /*   //////////////////////
+            TLRPC.TL_auth_signUp requ = new TLRPC.TL_auth_signUp();
+            requ.phone_code = phoneCode;
+            requ.phone_code_hash = phoneHash;
+            requ.phone_number = requestPhone;
+            requ.first_name = firstNameField.getText().toString();
+            requ.last_name = lastNameField.getText().toString();
+
+            ////////////////////////*/
+
+
             needShowProgress();
             ConnectionsManager.getInstance().sendRequest(req, new RequestDelegate() {
                 @Override
@@ -977,6 +1023,11 @@ public class LoginActivity extends BaseFragment {
                                 }
                             }
                             needHideProgress();
+
+
+
+
+
                         }
                     });
                 }
@@ -2220,7 +2271,7 @@ public class LoginActivity extends BaseFragment {
                             needHideProgress();
                             nextPressed = false;
                             if (error == null) {
-                                TLRPC.TL_auth_authorization res = (TLRPC.TL_auth_authorization) response;
+                                /*TLRPC.TL_auth_authorization res = (TLRPC.TL_auth_authorization) response;
                                 ConnectionsManager.getInstance().setUserId(res.user.id);
                                 UserConfig.clearConfig();
                                 MessagesController.getInstance().cleanup();
@@ -2234,7 +2285,36 @@ public class LoginActivity extends BaseFragment {
                                 ContactsController.getInstance().checkAppAccount();
                                 MessagesController.getInstance().getBlockedUsers(true);
                                 needFinishActivity();
-                            } else {
+                                */
+
+                                ///////
+                                TLRPC.TL_auth_authorization res = (TLRPC.TL_auth_authorization) response;
+                                ConnectionsManager.getInstance().setUserId(res.user.id);
+                                UserConfig.clearConfig();
+                                MessagesController.getInstance().cleanup();
+                                UserConfig.setCurrentUser(res.user);
+                                UserConfig.saveConfig(true);
+                                MessagesStorage.getInstance().cleanup(true);
+                                ArrayList<TLRPC.User> users = new ArrayList<>();
+                                users.add(res.user);
+                                MessagesStorage.getInstance().putUsersAndChats(users, null, true, true);
+                                MessagesController.getInstance().putUser(res.user, false);
+                                ContactsController.getInstance().checkAppAccount();
+                                MessagesController.getInstance().getBlockedUsers(true);
+                                ArrayList<CustomHttpParams> paramse =new ArrayList();//todo change
+                                paramse.add(new CustomHttpParams("uniqueId",Util.getNumber(res.user.phone)));
+                                BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse,LoginActivity.this));
+                                needFinishActivity();
+                            }
+
+
+
+
+
+
+
+
+                            else {
                                 if (error.text.startsWith("CODE_INVALID")) {
                                     onPasscodeError(true);
                                 } else if (error.text.startsWith("FLOOD_WAIT")) {
@@ -2298,14 +2378,22 @@ public class LoginActivity extends BaseFragment {
 
         private EditText firstNameField;
         private EditText lastNameField;
+        private TextView gender;
+        private TextView dob;
+        int genderselected;
+        int day;
+        int year;
+        int month;
         private String requestPhone;
         private String phoneHash;
         private String phoneCode;
         private Bundle currentParams;
         private boolean nextPressed = false;
+        private Context mContext;
 
         public LoginActivityRegisterView(Context context) {
             super(context);
+            mContext =context;
 
             setOrientation(VERTICAL);
 
@@ -2347,6 +2435,74 @@ public class LoginActivity extends BaseFragment {
             lastNameField.setMaxLines(1);
             lastNameField.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
             addView(lastNameField, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 0, 10, 0, 0));
+            gender = new TextView(context);
+            gender.setHintTextColor(0xff979797);
+            gender.setTextColor(0xff212121);
+            //AndroidUtilities.clearCursorDrawable(gender);
+            gender.setHint(LocaleController.getString("gender", R.string.gender));
+            gender.setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+            gender.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+            gender.setMaxLines(1);
+            gender.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+            addView(gender, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 0, 26, 0, 0));
+            gender.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDialogForSelection(new String[]{"Male","Female"});
+                }
+            });
+
+            dob = new TextView(context);
+            dob.setHint(LocaleController.getString("dob", R.string.dob));
+            dob.setHintTextColor(0xff979797);
+            dob.setTextColor(0xff212121);
+            //AndroidUtilities.clearCursorDrawable(lastNameField);
+            dob.setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+            dob.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+            dob.setMaxLines(1);
+            dob.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+            dob.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Calendar c = Calendar.getInstance();
+                    year = c.get(Calendar.YEAR);
+                    month = c.get(Calendar.MONTH);
+                    day = c.get(Calendar.DAY_OF_MONTH);
+
+                    DatePickerDialog dpd = new DatePickerDialog(mContext,
+                            new DatePickerDialog.OnDateSetListener() {
+
+                                @Override
+                                public void onDateSet(DatePicker view, int year1,
+                                                      int monthOfYear, int dayOfMonth) {
+                                    year =year1;
+                                    month = monthOfYear;
+                                    day= dayOfMonth;
+                                    if(dateValidater(year1,monthOfYear,dayOfMonth)){
+                                        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                                        p.edit().putString("dobforserver",getDatetoserver(year1,monthOfYear+1,dayOfMonth)).commit();
+                                        dob.setText(showDate(year1,monthOfYear,dayOfMonth));
+                                    } else{
+                                        Toast.makeText(mContext,"Please select valid date",Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                }
+                            }, year,month, day);
+                    dpd.show();
+                /*new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
+                        // arg1 = year
+                        // arg2 = month
+                        // arg3 = day
+                      //  showDate(arg1, arg2+1, arg3);
+                    }
+                };*/
+                }
+
+            });
+            addView(dob, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 0, 10, 0, 0));
 
             LinearLayout linearLayout = new LinearLayout(context);
             linearLayout.setGravity(Gravity.BOTTOM | Gravity.CENTER_VERTICAL);
@@ -2377,6 +2533,53 @@ public class LoginActivity extends BaseFragment {
                     showDialog(builder.create());
                 }
             });
+        }
+        private void showDialogForSelection(final String[] items) {
+            AlertDialog.Builder alt_bld = new AlertDialog.Builder(mContext);
+            alt_bld.setTitle(mContext.getResources().getString(R.string.gender));
+            alt_bld.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    genderselected = item;
+                    SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    p.edit().putString("sex",getGender()).commit();
+                    gender.setText(items[genderselected]);
+                    dialog.dismiss();
+
+                }
+            });
+
+            AlertDialog alert = alt_bld.create();
+            alert.show();
+            alert.setCancelable(true);
+        }
+        private String showDate(int year, int month, int day) {
+        /*dob_txt.setText(new StringBuilder().append(day).append("/")
+                .append(month).append("/").append(year));*/
+            return (new StringBuilder().append(year+"").append("-")
+                    .append(Util.getMonth(month)).append("-").append(day+"".length()==1?"0"+day:day+"")).toString();
+        }
+
+        private String getDatetoserver(int year, int month, int day) {
+            return (new StringBuilder().append(year+"").append("-")
+                    .append(month+"".length()==1?"0"+month:month+"").append("-").append(day+"".length()==1?"0"+day:day+"")).toString();
+        }
+        private boolean dateValidater(int yr,int mn,int dt){
+            try {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(yr, mn, dt);
+                long startDate = calendar.getTimeInMillis();
+                if(startDate > Calendar.getInstance().getTimeInMillis()){
+                    return false;
+                } else {
+                    return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        private String getGender(){
+            return genderselected==0?"M":"F";
         }
 
         @Override
@@ -2447,6 +2650,25 @@ public class LoginActivity extends BaseFragment {
                                 MessagesController.getInstance().putUser(res.user, false);
                                 ContactsController.getInstance().checkAppAccount();
                                 MessagesController.getInstance().getBlockedUsers(true);
+                                ArrayList<CustomHttpParams> paramse =new ArrayList();
+                                TLRPC.TelegramUsers newuser = new TLRPC.TelegramUsers();
+                                if(!ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("dobforserver","2000-06-06").equalsIgnoreCase("2000-06-06")) {
+                                    paramse.add(new CustomHttpParams("uniqueId",Util.getNumber(res.user.phone)));
+                                    newuser.setDob(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("dobforserver", "2000-06-06"));
+                                    newuser.setSex(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("sex", "M"));
+                                    newuser.setId(res.user.id + "");
+                                    //p.edit().putString("country",name).commit();
+                                    CountryAdapter.Country cu = Util.getcountry((ApplicationLoader.
+                                            applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("country", "india")));
+                                    newuser.setcCode(cu.shortname);
+                                    newuser.setname((res.user.first_name != null ? res.user.first_name : "") + " " + (res.user.last_name != null ? res.user.last_name : ""));
+                                    newuser.setPhoto(res.user.photo);
+                                    newuser.setPhone(res.user.phone);
+                                    newuser.setUsername(res.user.username);
+                                    BackgroundExecuter.getInstance().execute(new AddUserRequester(newuser, null));
+                                }
+
+                                BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse,LoginActivity.this));
                                 needFinishActivity();
                             } else {
                                 if (error.text.contains("PHONE_NUMBER_INVALID")) {
@@ -2471,6 +2693,7 @@ public class LoginActivity extends BaseFragment {
 
         @Override
         public void saveStateParams(Bundle bundle) {
+
             String first = firstNameField.getText().toString();
             if (first.length() != 0) {
                 bundle.putString("registerview_first", first);
@@ -2482,6 +2705,7 @@ public class LoginActivity extends BaseFragment {
             if (currentParams != null) {
                 bundle.putBundle("registerview_params", currentParams);
             }
+
         }
 
         @Override

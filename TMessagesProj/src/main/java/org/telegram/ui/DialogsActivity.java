@@ -18,6 +18,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Outline;
@@ -39,6 +40,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.DialogObject;
@@ -53,6 +55,10 @@ import org.telegram.messenger.FileLog;
 import org.telegram.payment.CheckPremiumUserRequester;
 import org.telegram.payment.UserPaymentInfo;
 import org.telegram.socialuser.BackgroundExecuter;
+import org.telegram.socialuser.Util;
+import org.telegram.socialuser.model.CustomHttpParams;
+import org.telegram.socialuser.runable.AddUserRequester;
+import org.telegram.socialuser.runable.GetUserRequester;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.MessagesController;
@@ -61,6 +67,7 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.BottomSheet;
+import org.telegram.ui.Adapters.CountryAdapter;
 import org.telegram.ui.Adapters.DialogsAdapter;
 import org.telegram.ui.Adapters.DialogsSearchAdapter;
 import org.telegram.ui.Cells.HintDialogCell;
@@ -77,10 +84,11 @@ import org.telegram.ui.Components.EmptyTextProgressView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.listners.OnSocialLogin;
 
 import java.util.ArrayList;
 
-public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
+public class DialogsActivity extends BaseFragment implements OnSocialLogin,NotificationCenter.NotificationCenterDelegate {
     
     private RecyclerListView listView;
     private LinearLayoutManager layoutManager;
@@ -116,6 +124,34 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private long openedDialogId;
 
     private DialogsActivityDelegate delegate;
+
+
+    @Override
+    public void onSocialLoginSuccess() {
+        getParentActivity().runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        presentFragment(new MyProfileActivity());
+
+                    }
+                }
+        );
+
+    }
+
+    @Override
+    public void onSocialLoginError() {
+
+    }
+
+    @Override
+    public void onSocialFailer(String userid) {
+
+    }
+
+
+
 
     public interface DialogsActivityDelegate {
         void didSelectDialog(DialogsActivity fragment, long dialog_id, boolean param);
@@ -207,6 +243,34 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             passcodeItem = menu.addItem(1, R.drawable.lock_close);
             updatePasscodeButton();
         }
+
+        if(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getBoolean("Login_Status",true)) {
+            TLRPC.User user = UserConfig.getCurrentUser();
+            SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+            // p.edit().putString("pCode",text).commit();
+            if(p.getString("dobforserver","").equals("")) {
+                ArrayList<CustomHttpParams> paramse = new ArrayList();
+                paramse.add(new CustomHttpParams("uniqueId", Util.getNumber(user.phone)));
+                BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse, DialogsActivity.this));
+            } else {
+                TLRPC.TelegramUsers newuser = new TLRPC.TelegramUsers();
+                //String dob =Util.convertDate(p.getString("dob",showDate(year,month,day)));
+                newuser.setDob(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("dobforserver", "2000-01-01"));
+                newuser.setSex(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("sex", "M"));
+                newuser.setId(user.id + "");
+
+                // p.edit().putString("country",name).commit();
+                CountryAdapter.Country cu = Util.getcountry((ApplicationLoader.
+                        applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("country", "india")));
+                newuser.setcCode(cu.shortname);
+                newuser.setname((user.first_name != null ? user.first_name : "") + " " + (user.last_name != null ? user.last_name : ""));
+                newuser.setPhoto(user.photo);
+                newuser.setPhone(user.phone);
+                newuser.setUsername(user.username);
+                BackgroundExecuter.getInstance().execute(new AddUserRequester(newuser, null));
+            }
+        }
+
         final ActionBarMenuItem item = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
             @Override
             public void onSearchExpand() {

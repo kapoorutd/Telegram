@@ -34,9 +34,18 @@ import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.SerializedData;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.ForegroundDetector;
+import org.telegram.ui.listners.BaseUiListener;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 public class ApplicationLoader extends Application {
 
@@ -69,6 +78,99 @@ public class ApplicationLoader extends Application {
         ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE).edit().remove("serviceMessageColor").commit();
         loadWallpaper();
     }
+
+
+
+    /**
+     * Thread to execute tasks in background..
+     */
+    private final ExecutorService backgroundExecutor;
+    private Map<Class<? extends BaseUiListener>, Collection<? extends BaseUiListener>> uiListeners;
+    /**
+     * Handler to execute runnable in UI thread.
+     */
+    private final Handler handler;
+
+
+
+    /**
+     *
+     *     This is craterzone logic to add ui and remove ui listener
+     */
+
+//******************************************************************************************//
+
+
+    public ApplicationLoader(){
+
+        _instance = this;
+        uiListeners = new HashMap<>();
+        handler = new Handler();
+        backgroundExecutor = Executors
+                .newSingleThreadExecutor(new ThreadFactory() {
+                    @Override
+                    public Thread newThread(Runnable runnable) {
+                        Thread thread = new Thread(runnable,
+                                "Background executor service");
+                        thread.setPriority(Thread.MIN_PRIORITY);
+                        thread.setDaemon(true);
+                        return thread;
+                    }
+                });
+
+    }
+
+
+    @SuppressWarnings("unchecked")
+    private <T extends BaseUiListener> Collection<T> getOrCreateUIListeners(
+            Class<T> cls) {
+        Collection<T> collection = (Collection<T>) uiListeners.get(cls);
+        if (collection == null) {
+            collection = new ArrayList<T>();
+            uiListeners.put(cls, collection);
+        }
+        return collection;
+    }
+
+    public <T extends BaseUiListener> Collection<T> getUIListeners(Class<T> cls) {
+        return Collections.unmodifiableCollection(getOrCreateUIListeners(cls));
+    }
+
+    public <T extends BaseUiListener> void addUIListener(Class<T> cls, T listener) {
+        getOrCreateUIListeners(cls).add(listener);
+    }
+
+    public <T extends BaseUiListener> void removeUIListener(Class<T> cls, T listener) {
+        getOrCreateUIListeners(cls).remove(listener);
+    }
+
+    /**
+     * Submits request to be executed in background.
+     *
+     * @param runnable
+     */
+    public void runInBackground(final Runnable runnable) {
+        backgroundExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    runnable.run();
+                } catch (Exception e) {
+                    //Log.d(TAG, e.toString());
+                }
+            }
+        });
+    }
+
+
+
+
+
+
+    //*********************************************************************************//
+
+
+
 
     private static void calcBackgroundColor() {
         int result[] = AndroidUtilities.calcDrawableColor(cachedWallpaper);
