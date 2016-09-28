@@ -1583,6 +1583,23 @@ public class LoginActivity extends BaseFragment  implements OnSocialLogin {
                         public void run() {
                             nextPressed = false;
                             if (error == null) {
+                            /*    needHideProgress();
+                                TLRPC.TL_auth_authorization res = (TLRPC.TL_auth_authorization) response;
+                                ConnectionsManager.getInstance().setUserId(res.user.id);
+                                destroyTimer();
+                                destroyCodeTimer();
+                                UserConfig.clearConfig();
+                                MessagesController.getInstance().cleanup();
+                                UserConfig.setCurrentUser(res.user);
+                                UserConfig.saveConfig(true);
+                                MessagesStorage.getInstance().cleanup(true);
+                                ArrayList<TLRPC.User> users = new ArrayList<>();
+                                users.add(res.user);
+                                MessagesStorage.getInstance().putUsersAndChats(users, null, true, true);
+                                MessagesController.getInstance().putUser(res.user, false);
+                                ContactsController.getInstance().checkAppAccount();
+                                MessagesController.getInstance().getBlockedUsers(true);
+                                needFinishActivity();*/
                                 needHideProgress();
                                 TLRPC.TL_auth_authorization res = (TLRPC.TL_auth_authorization) response;
                                 ConnectionsManager.getInstance().setUserId(res.user.id);
@@ -1599,6 +1616,11 @@ public class LoginActivity extends BaseFragment  implements OnSocialLogin {
                                 MessagesController.getInstance().putUser(res.user, false);
                                 ContactsController.getInstance().checkAppAccount();
                                 MessagesController.getInstance().getBlockedUsers(true);
+                                SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                                // p.edit().putString("pCode",text).commit();
+                                ArrayList<CustomHttpParams> paramse =new ArrayList();
+                                paramse.add(new CustomHttpParams("uniqueId", Util.getNumber(res.user.phone)));
+                                BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse,LoginActivity.this));
                                 needFinishActivity();
                             } else {
                                 lastError = error.text;

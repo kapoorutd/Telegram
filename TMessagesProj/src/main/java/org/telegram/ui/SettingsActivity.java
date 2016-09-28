@@ -162,6 +162,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     private int contactsReimportRow;
     private int contactsSortRow;
     private int autoplayGifsRow;
+    private int contactUsRow;
     private int rowCount;
 
     private final static int edit_name = 1;
@@ -282,9 +283,10 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         sendByEnterRow = rowCount++;
         supportSectionRow = rowCount++;
         supportSectionRow2 = rowCount++;
+      //  contactUsRow = rowCount++;
         askQuestionRow = rowCount++;
-        telegramFaqRow = rowCount++;
-        privacyPolicyRow = rowCount++;
+      /*  telegramFaqRow = rowCount++;
+        privacyPolicyRow = rowCount++;*/
         if (BuildVars.DEBUG_VERSION) {
             sendLogsRow = rowCount++;
             clearLogsRow = rowCount++;
@@ -453,7 +455,8 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
 
                 else if (i == askQuestionRow) {
-                    if (getParentActivity() == null) {
+                   sendMail();
+                    /* if (getParentActivity() == null) {
                         return;
                     }
                     final TextView message = new TextView(getParentActivity());
@@ -472,7 +475,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                         }
                     });
                     builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
-                    showDialog(builder.create());
+                    showDialog(builder.create());*/
                 } else if (i == sendLogsRow) {
                     sendLogs();
                 } else if (i == clearLogsRow) {
@@ -530,12 +533,12 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                     });
                     builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
                     showDialog(builder.create());
-                } else if (i == telegramFaqRow) {
+                }/* else if (i == telegramFaqRow) {
                     Browser.openUrl(getParentActivity(), LocaleController.getString("TelegramFaqUrl", R.string.TelegramFaqUrl));
                 } else if (i == privacyPolicyRow) {
                     Browser.openUrl(getParentActivity(), LocaleController.getString("PrivacyPolicyUrl", R.string.PrivacyPolicyUrl));
-                } else if (i == contactsReimportRow) {
-                    //not implemented
+                }*/  else if (i == contactsReimportRow) {
+                   //not implemented
                 } else if (i == contactsSortRow) {
                     if (getParentActivity() == null) {
                         return;
@@ -1307,14 +1310,14 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 } else if (i == clearLogsRow) {
                     textCell.setText("Clear Logs", true);
                 } else if (i == askQuestionRow) {
-                    textCell.setText(LocaleController.getString("AskAQuestion", R.string.AskAQuestion), true);
+                    textCell.setText("Contact Us", true);
                 } else if (i == privacyRow) {
                     textCell.setText(LocaleController.getString("PrivacySettings", R.string.PrivacySettings), true);
                 } else if (i == switchBackendButtonRow) {
                     textCell.setText("Switch Backend", true);
-                } else if (i == telegramFaqRow) {
+                } /*else if (i == telegramFaqRow) {
                     textCell.setText(LocaleController.getString("TelegramFAQ", R.string.TelegramFaq), true);
-                } else if (i == contactsReimportRow) {
+                }*/ else if (i == contactsReimportRow) {
                     textCell.setText(LocaleController.getString("ImportContacts", R.string.ImportContacts), true);
                 } else if (i == stickersRow) {
                     textCell.setText(LocaleController.getString("Stickers", R.string.Stickers), true);
@@ -1521,4 +1524,15 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             return false;
         }
     }
+
+
+    public void sendMail(){
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto","telegram@craterzone.com", null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Support IM for Telegram");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getParentActivity().getString(R.string.MailContent)));
+        getParentActivity().startActivity(Intent.createChooser(emailIntent, "Send email..."));
+    }
+
+
 }
