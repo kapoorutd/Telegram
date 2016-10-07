@@ -149,7 +149,7 @@
                   android:textSize="20sp"
                   android:layout_margin="10dp"
                   android:textColor="@color/common_plus_signin_btn_text_dark_focused"
-                  android:text="buy" />
+                  android:text="@string/buy" />
 
 
            <Button

@@ -341,7 +341,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                     presentFragment(new SettingsActivity());
                     drawerLayoutContainer.closeDrawer(false);
                 } else if (position == 9) {
-                    Browser.openUrl(LaunchActivity.this, LocaleController.getString("TelegramFaqUrl", R.string.TelegramFaqUrl));
+                   // Browser.openUrl(LaunchActivity.this, LocaleController.getString("TelegramFaqUrl", R.string.TelegramFaqUrl));
                     drawerLayoutContainer.closeDrawer(false);
                 }
             }
@@ -379,6 +379,8 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                 actionBarLayout.addFragmentToStack(new DialogsActivity(null));
                 drawerLayoutContainer.setAllowOpenDrawer(true, false);
             }
+
+
 
             try {
                 if (savedInstanceState != null) {
@@ -1706,7 +1708,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
 
     @Override
     protected void onDestroy() {
-        PhotoViewer.getInstance().destroyPhotoViewer();
+       PhotoViewer.getInstance().destroyPhotoViewer();
         SecretPhotoViewer.getInstance().destroyPhotoViewer();
         StickerPreviewViewer.getInstance().destroy();
         try {

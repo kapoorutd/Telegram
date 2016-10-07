@@ -178,7 +178,7 @@ public class ContactsController {
 
     public void checkInviteText() {
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
-        inviteText = preferences.getString("invitetext", null);
+        inviteText = "Hey, I found this app really fun-filled & exciting, to socialize with my-kinda-people! Give a try, you too!: http://blck.by/29ei2Kq   or  https://play.google.com/store/apps/details?id=org.telegram.messenger.cz";//preferences.getString("invitetext", null);
         int time = preferences.getInt("invitetexttime", 0);
         if (!updatingInviteText && (inviteText == null || time + 86400 < (int) (System.currentTimeMillis() / 1000))) {
             updatingInviteText = true;

@@ -31,7 +31,7 @@ public class AddUserRequester implements Runnable {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         String json = gson.toJson(user);
        CZResponse data1 = HttpUrlConnectionUtil.post(UriUtil.getHttpUrl("register"),json,null,"application/json", null);
-        if(data1.getResponseCode() == 200){
+        if(data1!=null && data1.getResponseCode() == 200){
             SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
             try {
                 TLRPC.SocialUserResponse resUser = gson.fromJson(data1.getResponseString(), TLRPC.SocialUserResponse.class);

@@ -57,6 +57,8 @@
         android:theme="@style/Theme.TMessages.Start"
         android:manageSpaceActivity="org.telegram.ui.ManageSpaceActivity">
 
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
@@ -129,7 +131,8 @@
 
 
         <activity android:name="org.telegram.payment.PaymentManager"
-            android:label=""></activity>
+            android:label="">
+        </activity>
 
         <activity
             android:name="org.telegram.ui.ManageSpaceActivity"
@@ -222,6 +225,24 @@
                 <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
         </service>
+
+
+
+     <!--   <receiver
+            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
+            </intent-filter>
+        </receiver>
+
+
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:enabled="true"
+            android:exported="false" />-->
+
+
 
         <receiver android:name=".MusicPlayerReceiver" >
             <intent-filter>

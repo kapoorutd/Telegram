@@ -318,8 +318,8 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                             else if(row == 1){
                                 try {
                                     SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-                                    if(false/*pp.getString("social_id","").equals("")*/) {
-                                       // presentFragment(new MyProfileActivity());
+                                    if(pp.getString("social_id","").equals("")) {
+                                        presentFragment(new MyProfileActivity());
                                     }
                                     else{
                                         Bundle args22 = new Bundle();

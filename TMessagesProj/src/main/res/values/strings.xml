@@ -414,7 +414,7 @@
     <!--contacts view-->
     <string name="SelectContact">Select Contact</string>
     <string name="NoContacts">No contacts yet</string>
-    <string name="InviteText">Hey, let\'s switch to Social IM for Telegram: https://telegram.org/dl</string>
+    <string name="InviteText">Hey, I found this app really fun-filled &amp; exciting, to socialize with my-kinda-people! Give a try, you too!: http://blck.by/29ei2Kq   or  https://play.google.com/store/apps/details?id=org.telegram.messenger.cz</string>
     <string name="TodayAt">at</string>
     <string name="YesterdayAt">yesterday at</string>
     <string name="Online">online</string>
@@ -989,20 +989,24 @@
     <string name="PermissionNoLocationPosition">Social IM for Telegram needs access to your location.</string>
     <string name="PermissionOpenSettings">SETTINGS</string>
     <!--Intro view-->
-    <string name="Page1Title">Social IM for Telegram</string>
+    <string name="Page1Title">Social Telegram</string>
     <string name="Page2Title">Fast</string>
     <string name="Page3Title">Free</string>
+    <string name="Page0Title">Social</string>
     <string name="Page4Title">Secure</string>
     <string name="Page5Title">Powerful</string>
     <string name="Page6Title">Cloud-Based</string>
     <string name="Page7Title">Private</string>
     <string name="Page1Message">The world\'s <![CDATA[<b>fastest</b>]]> messaging app.<![CDATA[<br/>]]>It is <![CDATA[<b>free</b>]]> and <![CDATA[<b>secure</b>]]>.</string>
-    <string name="Page2Message"><![CDATA[<b>Social IM for Telegram</b>]]> delivers messages faster than<![CDATA[<br/>]]>any other application.</string>
-    <string name="Page3Message"><![CDATA[<b>Social IM for Telegram</b>]]> is free forever. No ads.<![CDATA[<br/>]]>No subscription fees.</string>
-    <string name="Page4Message"><![CDATA[<b>Social IM for Telegram</b>]]> keeps your messages safe<![CDATA[<br/>]]>from hacker attacks.</string>
-    <string name="Page5Message"><![CDATA[<b>Social IM for Telegram</b>]]> has no limits on the size of<![CDATA[<br/>]]>your media and chats.</string>
-    <string name="Page6Message"><![CDATA[<b>Social IM for Telegram</b>]]> lets you access your messages<![CDATA[<br/>]]>from multiple devices.</string>
-    <string name="Page7Message"><![CDATA[<b>Social IM for Telegram</b>]]> messages are heavily encrypted<![CDATA[<br/>]]>and can self-destruct.</string>
+    <string name="Page2Message"><![CDATA[<b>Social Telegram</b>]]> delivers messages faster than<![CDATA[<br/>]]>any other application.</string>
+    <string name="Page0Message"><![CDATA[<b>Social Telegram</b>]]><![CDATA[<br/>]]>Befriend with your kinda-people and let your chats do all the magic :)
+</string>
+
+    <string name="Page3Message"><![CDATA[<b>Social Telegram</b>]]> is Free and now with new features. No ads.<![CDATA[<br/>]]>for premium user.</string>
+    <string name="Page4Message"><![CDATA[<b>Social Telegram</b>]]> keeps your messages safe<![CDATA[<br/>]]>from hacker attacks.</string>
+    <string name="Page5Message"><![CDATA[<b>Social Telegram</b>]]> has no limits on the size of<![CDATA[<br/>]]>your media and chats.</string>
+    <string name="Page6Message"><![CDATA[<b>Social Telegram</b>]]> lets you access your messages<![CDATA[<br/>]]>from multiple devices.</string>
+    <string name="Page7Message"><![CDATA[<b>Social Telegram</b>]]> messages are heavily encrypted<![CDATA[<br/>]]>and can self-destruct.</string>
     <string name="StartMessaging">Start Messaging</string>
     <!--plural-->
     <string name="Online_zero">%1$d online</string>
@@ -1217,7 +1221,7 @@
     <string name="About" translatable ="false">About</string>
     <string name="AddParticipant" translatable ="false">Add Participant</string>
     <string name="CreateChannel" translatable ="false">Create Channel</string>
-    <string name="MailContent" translatable="false"><![CDATA[Please provide below information so we can help you to resolve your problem.<br></br>   1. Whats your Blackberry OS version?<br></br>   2. Whats your Android runtime OS version?<br></br>   3. Any Feedback/Concerns or issues?]]></string>
+    <string name="MailContent" translatable="false"><![CDATA[Please provide below information so we can help you to resolve your problem.<br></br>   1. Whats your Android OS version?<br></br>    2. Any Feedback/Concerns or issues?]]></string>
 
 
     <string name="myprofile">My Profile</string>
@@ -1234,7 +1238,7 @@
     <string name="pleaseselectagegroup">Please select age group</string>
     <string name="dob">Date of birth</string>
     <string name="preferences_contant">Lets connect you to the people you always wanted to befriended with! Simply enter your choice below.</string>
-    <string name="InviteTextsocial">Hey, I found this app really fun-filled &amp; exciting, to socialize with my-kinda-people! Give a try, you too!: http://blck.by/29ei2Kq </string>
+    <string name="InviteTextsocial">Hey, I found this app really fun-filled &amp; exciting, to socialize with my-kinda-people! Give a try, you too!: https://play.google.com/store/apps/details?id=org.telegram.messenger.cz  or  http://blck.by/29ei2Kq</string>
     <string name="InviteFriends1">Invite Friends</string>
     <string name="wink">Play</string>
     <string name="pleaseselectvaliddate">Please select valid date</string>
@@ -1249,5 +1253,5 @@
     <string name="buy_premium_content">Want to befriend with more interesting people?
     \nTime to Switch to the paid version !
     </string>
-
+    <string name="buy">Buy Now</string>
 </resources>

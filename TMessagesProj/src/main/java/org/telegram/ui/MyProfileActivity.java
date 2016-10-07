@@ -284,7 +284,7 @@ public class MyProfileActivity extends BaseFragment implements OnAddUserListner,
         super.onResume();
        // hideTabsAnsMenu();
         currentUser = UserConfig.getCurrentUser();
-     //   ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_PHONE_HELP);
+   //    ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_PHONE_HELP);
         statusTextView.setText(LocaleController.formatUserStatus(currentUser));
         phone_txt.setText("+"+currentUser.phone);
         phone_txt.setText("+"+currentUser.phone);

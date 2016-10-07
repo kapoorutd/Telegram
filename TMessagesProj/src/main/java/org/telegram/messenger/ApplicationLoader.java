@@ -26,13 +26,17 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Base64;
-
+/*
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;*/
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.SerializedData;
 import org.telegram.tgnet.TLRPC;
+//import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Components.ForegroundDetector;
 import org.telegram.ui.listners.BaseUiListener;
 
@@ -250,7 +254,10 @@ public class ApplicationLoader extends Application {
     }
 
     public String getHttpServer(){
-        return "107.170.73.149:8080/socialshareupapi/";
+        //return "107.170.73.149:8080/socialshareupapi/";
+
+        return "telegram.craterzone.com:8080/socialshareupapi/";
+
     }
 
 
@@ -404,6 +411,9 @@ public class ApplicationLoader extends Application {
 
     //    ACRA.init(this);
 
+     /*   AnalyticsTrackers.initialize(this);
+        AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
+*/
         applicationContext = getApplicationContext();
         NativeLoader.initNativeLibs(ApplicationLoader.applicationContext);
         ConnectionsManager.native_setJava(Build.VERSION.SDK_INT == 14 || Build.VERSION.SDK_INT == 15);
@@ -432,6 +442,30 @@ public class ApplicationLoader extends Application {
             }
         });
     }*/
+
+
+  /*  public synchronized Tracker getGoogleAnalyticsTracker() {
+        AnalyticsTrackers analyticsTrackers = AnalyticsTrackers.getInstance();
+        return analyticsTrackers.get(AnalyticsTrackers.Target.APP);
+    }
+    public void trackScreenView(String screenName) {
+        Tracker t = getGoogleAnalyticsTracker();
+
+        // Set screen name.
+        t.setScreenName(screenName);
+
+        // Send a screen view.
+        t.send(new HitBuilders.ScreenViewBuilder().build());
+
+        GoogleAnalytics.getInstance(this).dispatchLocalHits();
+    }
+    public void trackEvent(String category, String action, String label) {
+        Tracker t = getGoogleAnalyticsTracker();
+        // Build and send an Event.
+        t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());
+    }*/
+
+
 
     public static void startPushService() {
         SharedPreferences preferences = applicationContext.getSharedPreferences("Notifications", MODE_PRIVATE);
@@ -487,7 +521,7 @@ public class ApplicationLoader extends Application {
         }, 1000);
     }
 
-    /*private void initPlayServices() {
+ /*   private void initPlayServices() {
         AndroidUtilities.runOnUIThread(new Runnable() {
             @Override
             public void run() {

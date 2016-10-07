@@ -29,7 +29,7 @@ public class AdvertiesmentCell extends FrameLayout implements CheckPremiumListen
         addView(mView);
         mAdView = (AdView) findViewById(R.id.adView);
 
-        if( UserPaymentInfo.getInstatance().getPaymentStatus()==UserPaymentInfo.unPaidUser) {
+        if( UserPaymentInfo.getInstatance().getPaymentStatus()==UserPaymentInfo.unPaidUser || UserPaymentInfo.getInstatance().getPaymentStatus() == 0) {
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
         }

@@ -369,6 +369,8 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin,Notif
             }
         }
         actionBar.setAllowOverlayTitle(true);
+        StringBuffer buffer = new StringBuffer("Game Plan");
+        buffer.reverse();
 
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
@@ -413,6 +415,11 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin,Notif
                 if (listView == null || listView.getAdapter() == null) {
                     return;
                 }
+
+                if(position != 0 && (position+1)%6 == 0){
+                    return;
+                }
+
                 long dialog_id = 0;
                 int message_id = 0;
                 RecyclerView.Adapter adapter = listView.getAdapter();
