@@ -20,6 +20,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -39,6 +40,9 @@ import org.telegram.ui.Components.LayoutHelper;
 import java.util.ArrayList;
 
 public class ActionBarLayout extends FrameLayout {
+
+
+    private DrawerLayout drawerlayout;
 
     public interface ActionBarLayoutDelegate {
         boolean onPreIme();
@@ -569,7 +573,21 @@ public class ActionBarLayout extends FrameLayout {
         }
         containerViewBack.setVisibility(View.GONE);
     }
+    public void setDrawerlayout(DrawerLayout drawerlayout){
+        this.drawerlayout=drawerlayout;
+    }
 
+    public void openDrawer(){
+        if(drawerlayout!=null){
+            drawerlayout.openDrawer(Gravity.RIGHT);
+        }
+    }
+
+    public void closeDrawer(){
+        if(drawerlayout!=null && drawerlayout.isDrawerOpen(Gravity.RIGHT)){
+            drawerlayout.closeDrawer(Gravity.RIGHT);
+        }
+    }
     public boolean presentFragment(BaseFragment fragment) {
         return presentFragment(fragment, false, false, true);
     }

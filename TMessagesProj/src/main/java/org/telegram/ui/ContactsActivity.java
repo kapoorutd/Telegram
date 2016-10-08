@@ -24,11 +24,13 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,6 +53,7 @@ import org.telegram.messenger.Utilities;
 import org.telegram.ui.Adapters.BaseSectionsAdapter;
 import org.telegram.ui.Adapters.ContactsAdapter;
 import org.telegram.ui.Adapters.SearchAdapter;
+import org.telegram.ui.Adapters.SlidingMenuAdapter;
 import org.telegram.ui.Cells.UserCell;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
@@ -318,8 +321,8 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                             else if(row == 1){
                                 try {
                                     SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-                                    if(false/*pp.getString("social_id","").equals("")*/) {
-                                       // presentFragment(new MyProfileActivity());
+                                    if(pp.getString("social_id","").equals("")) {
+                                        presentFragment(new MyProfileActivity());
                                     }
                                     else{
                                         Bundle args22 = new Bundle();
@@ -536,6 +539,9 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
         if (listViewAdapter != null) {
             listViewAdapter.notifyDataSetChanged();
         }
+
+        setContactMenuList();
+
     }
 
     @Override
@@ -591,4 +597,94 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
     public void setIgnoreUsers(HashMap<Integer, TLRPC.User> users) {
         ignoreUsers = users;
     }
+
+
+
+
+    private void setContactMenuList(){
+        ArrayList<MenuItems> draweritems=new ArrayList<MenuItems>();
+       /* draweritems.add(new MenuItems(LocaleController.getString("AddNewContact", R.string.add_new_contact),R.drawable.menu_plus,true, "",0));*/
+        draweritems.add(new MenuItems(LocaleController.getString("InviteFriends", R.string.InviteFriends), R.drawable.menu_broadcast, true, "",0));
+        draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat),R.drawable.menu_broadcast,true, "",0));
+        draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel),R.drawable.menu_broadcast,true, "",0));
+        draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink),R.drawable.menu_broadcast,true, "",0));
+
+        SlidingMenuAdapter adapter = new SlidingMenuAdapter(getParentActivity(),
+                draweritems);
+
+        ViewParent view=  parentLayout.getParent();
+        ListView drawerList=((ListView)((View) view.getParent()).findViewById(R.id.contact_slidermenu));
+        drawerList.setAdapter(adapter);drawerList.setOnItemClickListener(new ContactMenuClickListener());
+        ((View) view.getParent()).findViewById(R.id.divider).setVisibility(View.GONE);
+        ((View) view.getParent()).findViewById(R.id.bottom_panel).setVisibility(View.GONE);
+        ((ImageView) ((View) view.getParent()).findViewById(R.id.menu_image)).setImageResource(R.drawable.transparent);
+        ((TextView)((View) view.getParent()).findViewById(R.id.row_title)).setText("");
+    }
+
+
+    private class ContactMenuClickListener implements
+            ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                long id) {
+            switch(position){
+                case 0:
+                    parentLayout.closeDrawer();
+                    //   closeDrawer();
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("text/plain");
+                        intent.putExtra(Intent.EXTRA_TEXT,  LocaleController.getString("InviteText", R.string.InviteTextsocial));
+                        getParentActivity().startActivity(intent);
+                    } catch (Exception e) {
+                        FileLog.e("tmessages", e);
+                    }
+                    break;
+                case 1:
+                    parentLayout.closeDrawer();
+                    //    closeDrawer();
+                    Bundle args = new Bundle();
+                    args.putBoolean("onlyUsers", true);
+                    args.putBoolean("destroyAfterSelect", true);
+                    args.putBoolean("usersAsSections", true);
+                    args.putBoolean("createSecretChat", true);
+                    args.putString("title", LocaleController.getString("NewSecretChat", R.string.NewSecretChat));
+                    presentFragment(new ContactsActivity(args));
+                    break;
+                case 2:
+                    parentLayout.closeDrawer();
+
+                    if (!MessagesController.isFeatureEnabled("broadcast_create", parentLayout.fragmentsStack.get(parentLayout.fragmentsStack.size() - 1))) {
+                        return;
+                    }
+                    SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
+                    if (preferences.getBoolean("channel_intro", false)) {
+                        Bundle ars = new Bundle();
+                        ars.putInt("step", 0);
+
+                        presentFragment(new ChannelCreateActivity(ars));
+                    } else {
+                        presentFragment(new ChannelIntroActivity());
+                        preferences.edit().putBoolean("channel_intro", true).commit();
+                    }
+                    break;
+                case 3:
+                    SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("preferences", Activity.MODE_PRIVATE);
+                    if(p.getString("minage","0").equals("0")){
+                        presentFragment(new PreferencesActivity());
+                    }
+                    else {
+                        Bundle args2 = new Bundle();
+                        args2.putString("s_friend", "wink");
+                        presentFragment(new SocialFriendActivity(args2));
+                    }
+                    break;
+
+            }
+
+        }
+    }
+
+
+
 }
