@@ -35,11 +35,12 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                  ></View>
+                    android:background="@drawable/tab_top_trip_selector"></View>
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@drawable/tab_selector"
                     android:gravity="center"
                     android:src="@drawable/attach_contact"
                     />
@@ -60,12 +61,14 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                ></View>
+                    android:background="@drawable/tab_top_trip_selector"></View>
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@drawable/tab_selector"
                     android:gravity="center"
+                    android:src="@drawable/bar_chats"
                     />
 
             </LinearLayout>
@@ -85,7 +88,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                >
+                    android:background="@drawable/tab_top_trip_selector">
 
                 </View>
 
@@ -93,7 +96,9 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@drawable/tab_selector"
                     android:gravity="center"
+                    android:src="@drawable/bar_menu_settings"
                     />
             </LinearLayout>
             <View
@@ -114,7 +119,9 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@drawable/tab_selector"
                     android:gravity="center"
+                    android:src="@drawable/bar_menu"
                     />
             </LinearLayout>
         </LinearLayout>

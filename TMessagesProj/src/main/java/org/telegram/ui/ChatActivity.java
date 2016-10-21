@@ -132,6 +132,7 @@ import org.telegram.ui.Components.URLSpanNoUnderline;
 import org.telegram.ui.Components.URLSpanReplacement;
 import org.telegram.ui.Components.URLSpanUserMention;
 import org.telegram.ui.Components.WebFrameLayout;
+import org.telegram.ui.listners.OnclicklistnerOnChatActivity;
 
 import java.io.File;
 import java.net.URLDecoder;
@@ -143,7 +144,7 @@ import java.util.regex.Matcher;
 
 @SuppressWarnings("unchecked")
 public class ChatActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate,
-        PhotoViewer.PhotoViewerProvider {
+        PhotoViewer.PhotoViewerProvider,OnclicklistnerOnChatActivity {
 
     protected TLRPC.Chat currentChat;
     protected TLRPC.User currentUser;
@@ -378,6 +379,28 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     public ChatActivity(Bundle args) {
         super(args);
     }
+
+
+
+    @Override
+    public void onClickListnerOnUi(int i) {
+        try {
+            AndroidUtilities.hideKeyboard(getParentActivity().getCurrentFocus());
+            if (i == 1) {
+              //  showTabsAndmenu();
+                finishFragment();
+            } else if (i == 2) {
+                if(parentLayout!=null)
+                    parentLayout.openDrawer();
+            }
+        } catch (Exception e) {
+            // Log("logs",e);
+        }
+
+    }
+
+
+
 
     @Override
     public boolean onFragmentCreate() {
@@ -708,7 +731,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         Theme.loadRecources(context);
         Theme.loadChatResources(context);
 
-        actionBar.setBackButtonDrawable(new BackDrawable(false));
+      //  actionBar.setBackButtonDrawable(new BackDrawable(false));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(final int id) {
@@ -874,7 +897,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         });
 
         avatarContainer = new ChatAvatarContainer(context, this, currentEncryptedChat != null);
-        actionBar.addView(avatarContainer, 0, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT, 56, 0, 40, 0));
+        avatarContainer.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);
+        actionBar.addView(avatarContainer, 0, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT, 0, 0, 48, 0));
 
         if (currentChat != null) {
             if (!ChatObject.isChannel(currentChat)) {

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_alignParentBottom="true"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+    <LinearLayout
+        android:id="@+id/below_layout"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+
+        >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="#ff323232"
+            android:layout_height="match_parent"
+            android:id="@+id/contact"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/tab_top_trip_selector"></View>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/tab_selector"
+                android:gravity="center"
+                android:src="@drawable/attach_contact"
+                />
+        </LinearLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#ff151515"></View>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="#ff323232"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/message">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/tab_top_trip_selector"></View>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/tab_selector"
+                android:gravity="center"
+                android:src="@drawable/bar_chats"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#ff151515"></View>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="#ff323232"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/setting">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/tab_top_trip_selector">
+
+            </View>
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/tab_selector"
+                android:gravity="center"
+                android:id="@+id/iv_setting"
+                android:src="@drawable/bar_menu_settings"
+                />
+        </LinearLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#ff151515"></View>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="#ff323232"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/menu">
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/tab_selector"
+                android:gravity="center"
+                android:src="@drawable/bar_menu"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

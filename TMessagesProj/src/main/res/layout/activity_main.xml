@@ -149,7 +149,7 @@
                   android:textSize="20sp"
                   android:layout_margin="10dp"
                   android:textColor="@color/common_plus_signin_btn_text_dark_focused"
-                  android:text="buy" />
+                  android:text="Buy Now" />
 
 
            <Button
@@ -158,6 +158,7 @@
                android:layout_height="wrap_content"
                android:onClick="onHomePressed"
                android:background="@color/header"
+
                android:visibility="gone"
                android:layout_margin="10dp"
                android:textColor="@color/common_plus_signin_btn_text_dark_focused"
@@ -189,7 +190,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:id="@+id/backview"
-
+                android:background="@drawable/ic_bar_back"
                 />
             <View
                 android:id="@+id/black_view"

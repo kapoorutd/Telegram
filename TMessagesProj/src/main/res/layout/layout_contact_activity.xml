@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <org.telegram.ui.Components.LetterSectionsListView
+        android:id="@+id/contact_list"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/ll_beck"
+        android:layout_alignParentTop="true"
+        android:layout_height="match_parent"
+
+        />
+
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="bottom"
+        android:layout_marginTop="0dp"
+        android:layout_gravity="bottom"
+        android:id="@+id/ll_beck"
+        android:orientation="horizontal"
+        >
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:id="@+id/backview"
+            android:background="@drawable/ic_bar_back"
+            />
+        <View
+            android:id="@+id/black_vw"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:background="#ff252525"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="3"></View>
+
+    </LinearLayout>
+
+</RelativeLayout>

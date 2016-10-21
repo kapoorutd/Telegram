@@ -80,7 +80,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:id="@+id/backview"
-
+                android:background="@drawable/ic_bar_back"
                 />
             <View
                 android:id="@+id/black_view"

@@ -210,6 +210,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         final ActionBarMenuItem item = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
             @Override
             public void onSearchExpand() {
+                actionBar.setBackButtonImage(R.drawable.ic_ab_back);
                 searching = true;
                 if (listView != null) {
                     if (searchString != null) {
@@ -237,6 +238,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             public void onSearchCollapse() {
                 searching = false;
                 searchWas = false;
+                actionBar.setBackButtonImage(0);
+
                 if (listView != null) {
                     searchEmptyView.setVisibility(View.GONE);
                     if (MessagesController.getInstance().loadingDialogs && MessagesController.getInstance().dialogs.isEmpty()) {
@@ -296,7 +299,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             if (searchString != null) {
                 actionBar.setBackButtonImage(R.drawable.ic_ab_back);
             } else {
-                actionBar.setBackButtonDrawable(new MenuDrawable());
+                actionBar.setBackButtonDrawable(null);
             }
             if (BuildVars.DEBUG_VERSION) {
                 actionBar.setTitle(LocaleController.getString("AppNameBeta", R.string.AppNameBeta));

@@ -1,0 +1,86 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="top"
+    android:background="#fafafa"
+    android:orientation="vertical">
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:id="@+id/listView"
+        android:clipToPadding="false"
+        android:fadingEdge="none"
+        android:fadingEdgeLength="0dp"
+        android:dividerHeight="0dp"
+        android:divider="@null"
+        android:scrollbars="none"
+        android:paddingBottom="16dp"
+        android:layout_gravity="top"
+        android:layout_weight="1"/>
+
+    <FrameLayout
+        android:layout_height="48dp"
+        android:layout_width="fill_parent"
+
+        android:visibility="gone"
+        android:id="@+id/start_secret_button">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:textColor="#444444"
+            android:layout_gravity="center"
+
+            android:gravity="center"
+            android:id="@+id/start_secret_button_text"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff252525"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/bottom_panel"
+        >
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:id="@+id/user_back"
+
+            />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:id="@+id/user_edit"
+            android:src="@drawable/menu_bar_edit"
+            />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:id="@+id/start_chat"
+            android:src="@drawable/menu_bar_chat"
+            />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:id="@+id/user_menu"
+            android:src="@drawable/bar_menu"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

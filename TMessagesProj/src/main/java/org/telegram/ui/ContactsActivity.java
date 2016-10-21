@@ -139,7 +139,7 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
         searching = false;
         searchWas = false;
 
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setBackButtonImage(0);
         actionBar.setAllowOverlayTitle(true);
         if (destroyAfterSelect) {
             if (returnAsResult) {
@@ -169,10 +169,12 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
             @Override
             public void onSearchExpand() {
                 searching = true;
+                actionBar.setBackButtonImage(R.drawable.ic_ab_back);
             }
 
             @Override
             public void onSearchCollapse() {
+                actionBar.setBackButtonImage(0);
                 searchListViewAdapter.searchDialogs(null);
                 searching = false;
                 searchWas = false;
