@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.support.multidex.MultiDex;
 import android.util.Base64;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -33,10 +34,20 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.SerializedData;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Components.ForegroundDetector;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+
+
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 
 public class ApplicationLoader extends Application {
 
@@ -76,6 +87,12 @@ public class ApplicationLoader extends Application {
         serviceSelectedMessageColor = result[1];
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
         preferences.edit().putInt("serviceMessageColor", serviceMessageColor).putInt("serviceSelectedMessageColor", serviceSelectedMessageColor).commit();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     public static int getServiceMessageColor() {
@@ -304,6 +321,12 @@ public class ApplicationLoader extends Application {
 
         applicationContext = getApplicationContext();
         NativeLoader.initNativeLibs(ApplicationLoader.applicationContext);
+
+
+        AnalyticsTrackers.initialize(this);
+        AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
+
+
         ConnectionsManager.native_setJava(Build.VERSION.SDK_INT == 14 || Build.VERSION.SDK_INT == 15);
         new ForegroundDetector(this);
 
@@ -311,6 +334,30 @@ public class ApplicationLoader extends Application {
 
         startPushService();
     }
+
+
+    public synchronized Tracker getGoogleAnalyticsTracker() {
+        AnalyticsTrackers analyticsTrackers = AnalyticsTrackers.getInstance();
+        return analyticsTrackers.get(AnalyticsTrackers.Target.APP);
+    }
+    public void trackScreenView(String screenName) {
+        Tracker t = getGoogleAnalyticsTracker();
+
+        // Set screen name.
+        t.setScreenName(screenName);
+
+        // Send a screen view.
+        t.send(new HitBuilders.ScreenViewBuilder().build());
+
+        GoogleAnalytics.getInstance(this).dispatchLocalHits();
+    }
+    public void trackEvent(String category, String action, String label) {
+        Tracker t = getGoogleAnalyticsTracker();
+        // Build and send an Event.
+        t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());
+    }
+
+
 
     /*public static void sendRegIdToBackend(final String token) {
         Utilities.stageQueue.postRunnable(new Runnable() {

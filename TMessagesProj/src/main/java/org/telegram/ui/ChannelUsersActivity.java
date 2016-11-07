@@ -20,6 +20,7 @@ import android.widget.ListView;
 
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
@@ -31,6 +32,7 @@ import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -483,7 +485,9 @@ public class ChannelUsersActivity extends BaseFragment implements NotificationCe
         if (listViewAdapter != null) {
             listViewAdapter.notifyDataSetChanged();
         }
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANNEL_USER);
     }
+
 
     private class ListAdapter extends BaseFragmentAdapter {
         private Context mContext;

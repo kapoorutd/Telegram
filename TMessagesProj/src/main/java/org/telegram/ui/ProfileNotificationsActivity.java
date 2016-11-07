@@ -41,6 +41,7 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Adapters.BaseFragmentAdapter;
 import org.telegram.ui.Cells.TextColorCell;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
@@ -95,10 +96,19 @@ public class ProfileNotificationsActivity extends BaseFragment implements Notifi
         super.onFragmentDestroy();
         NotificationCenter.getInstance().removeObserver(this, NotificationCenter.notificationsSettingsUpdated);
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.PROFILE_NOTIFICATION);
+       /* if (listViewAdapter != null) {
+            listViewAdapter.notifyDataSetChanged();
+        }*/
+        // hideActionBar();
+    }
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        //actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setBackButtonImage(0x00000000);//todo
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(LocaleController.getString("NotificationsAndSounds", R.string.NotificationsAndSounds));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -423,7 +433,13 @@ public class ProfileNotificationsActivity extends BaseFragment implements Notifi
                 }
             }
         });
-
+        ((FrameLayout) fragmentView).addView(View.inflate(context, R.layout.notification_settings, null));
+        frameLayout.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
         return fragmentView;
     }
 

@@ -3,9 +3,11 @@ package org.telegram.ui.Cells;
 import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
+/*
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+*/
 
 import org.telegram.messenger.R;
 import org.telegram.payment.CheckPremiumListener;
@@ -13,8 +15,12 @@ import org.telegram.payment.CheckPremiumUserRequester;
 import org.telegram.payment.UserPaymentInfo;
 import org.telegram.socialuser.BackgroundExecuter;
 
-//import com.smaato.soma.AdDimension;
-//import com.smaato.soma.BannerView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+/*
+import com.smaato.soma.AdDimension;
+import com.smaato.soma.BannerView;
+*/
 
 /**
  * Created by craterzone3 on 20/5/16.
@@ -57,5 +63,6 @@ public class AdvertiesmentCell extends FrameLayout implements CheckPremiumListen
     public void onGeneralUser() {
         UserPaymentInfo.getInstatance().setPaymentStatus(UserPaymentInfo.unPaidUser);
     }
+
 
 }

@@ -47,6 +47,7 @@ import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Adapters.ContactsAdapter;
 import org.telegram.ui.Adapters.SearchAdapter;
 import org.telegram.ui.ActionBar.ActionBar;
@@ -61,6 +62,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GroupCreateActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
+
+    private LinearLayout listContainer;
 
     public interface GroupCreateActivityDelegate {
         void didSelectUsers(ArrayList<Integer> ids);
@@ -118,12 +121,20 @@ public class GroupCreateActivity extends BaseFragment implements NotificationCen
         NotificationCenter.getInstance().removeObserver(this, NotificationCenter.chatDidCreated);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CREATE_GROUP);
+
+    }
+
     @Override
     public View createView(Context context) {
         searching = false;
         searchWas = false;
-
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        hideTabsAnsMenu();
+        actionBar.setBackButtonImage(0x00000000);
         actionBar.setAllowOverlayTitle(true);
         if (isAlwaysShare) {
             if (isGroup) {
@@ -176,13 +187,13 @@ public class GroupCreateActivity extends BaseFragment implements NotificationCen
         listViewAdapter = new ContactsAdapter(context, 1, false, null, false);
         listViewAdapter.setCheckedMap(selectedContacts);
 
-        fragmentView = new LinearLayout(context);
+        fragmentView = View.inflate(context,R.layout.layout_group_create_activity,null);/*new LinearLayout(context);
         LinearLayout linearLayout = (LinearLayout) fragmentView;
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
         FrameLayout frameLayout = new FrameLayout(context);
         linearLayout.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-
+*/
         userSelectEditText = new EditText(context);
         userSelectEditText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         userSelectEditText.setHintTextColor(0xff979797);
@@ -198,7 +209,7 @@ public class GroupCreateActivity extends BaseFragment implements NotificationCen
         userSelectEditText.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         userSelectEditText.setGravity((LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.CENTER_VERTICAL);
         AndroidUtilities.clearCursorDrawable(userSelectEditText);
-        frameLayout.addView(userSelectEditText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.LEFT, 10, 0, 10, 0));
+      //  frameLayout.addView(userSelectEditText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.LEFT, 10, 0, 10, 0));
 
         if (isAlwaysShare) {
             if (isGroup) {
@@ -296,10 +307,10 @@ public class GroupCreateActivity extends BaseFragment implements NotificationCen
             }
         });
 
-        LinearLayout emptyTextLayout = new LinearLayout(context);
+        LinearLayout emptyTextLayout =  (LinearLayout)fragmentView.findViewById(R.id.ll_group2); //new LinearLayout(context);
         emptyTextLayout.setVisibility(View.INVISIBLE);
         emptyTextLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(emptyTextLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+    //    linearLayout.addView(emptyTextLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         emptyTextLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -315,7 +326,9 @@ public class GroupCreateActivity extends BaseFragment implements NotificationCen
         emptyTextLayout.addView(emptyTextView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, 0.5f));
 
         FrameLayout frameLayout2 = new FrameLayout(context);
-        emptyTextLayout.addView(frameLayout2, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, 0.5f));
+      //  emptyTextLayout.addView(frameLayout2, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, 0.5f));
+
+        listContainer=(LinearLayout)fragmentView.findViewById(R.id.lv_container);
 
         listView = new LetterSectionsListView(context);
         listView.setEmptyView(emptyTextLayout);
@@ -327,7 +340,10 @@ public class GroupCreateActivity extends BaseFragment implements NotificationCen
         listView.setAdapter(listViewAdapter);
         listView.setFastScrollAlwaysVisible(true);
         listView.setVerticalScrollbarPosition(LocaleController.isRTL ? ListView.SCROLLBAR_POSITION_LEFT : ListView.SCROLLBAR_POSITION_RIGHT);
-        linearLayout.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+      //  linearLayout.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        listContainer.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -428,6 +444,21 @@ public class GroupCreateActivity extends BaseFragment implements NotificationCen
             }
         });
 
+
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
+
+
+        fragmentView.findViewById(R.id.black_vw).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         return fragmentView;
     }
 

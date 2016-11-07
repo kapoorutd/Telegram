@@ -18,6 +18,7 @@ import android.text.Spanned;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.telegram.messenger.LocaleController;
@@ -34,6 +35,7 @@ import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Cells.StickerSetCell;
@@ -127,7 +129,8 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        hideTabsAnsMenu();
+        actionBar.setBackButtonImage(0);
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(LocaleController.getString("Stickers", R.string.Stickers));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -141,9 +144,12 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
         listAdapter = new ListAdapter(context);
 
-        fragmentView = new FrameLayout(context);
-        FrameLayout frameLayout = (FrameLayout) fragmentView;
-        frameLayout.setBackgroundColor(0xfff0f0f0);
+//        fragmentView = new FrameLayout(context);
+
+        fragmentView = View.inflate(context,R.layout.layout_stickers_activity,null);//new FrameLayout(context);
+
+      /*  FrameLayout frameLayout = (FrameLayout) fragmentView;
+        frameLayout.setBackgroundColor(0xfff0f0f0);*/
 
         listView = new RecyclerListView(context);
         listView.setFocusable(true);
@@ -154,7 +160,10 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TouchHelperCallback());
         itemTouchHelper.attachToRecyclerView(listView);
 
-        frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        LinearLayout layout = (LinearLayout) fragmentView.findViewById(R.id.list_container);
+        layout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT/*, Gravity.TOP,0,0,0,50*/));
+
+//        frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
@@ -171,6 +180,21 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
             }
         });
 
+
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
+
+
+        fragmentView.findViewById(R.id.black_vw).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         return fragmentView;
     }
 
@@ -224,6 +248,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.STICKERS_ACTIVITY);
     }
 
     private class ListAdapter extends RecyclerListView.Adapter {

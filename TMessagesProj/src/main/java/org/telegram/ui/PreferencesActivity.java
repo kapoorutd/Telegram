@@ -32,6 +32,7 @@ import org.telegram.socialuser.model.CustomHttpParams;
 import org.telegram.socialuser.runable.GetPreferenceRq;
 import org.telegram.socialuser.runable.PreferencesRequester;
 //import org.telegram.tracker.AnalyticsTrackers;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Adapters.CountryAdapter;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PreferencesActivity extends BaseFragment implements OnPreferencesListner,OnGetpreferences {
+
 
 
     @Override
@@ -141,7 +143,7 @@ public class PreferencesActivity extends BaseFragment implements OnPreferencesLi
     @Override
     public View createView(Context context) {
 
-     //   hideTabsAnsMenu();
+        hideTabsAnsMenu();
         mContext = context;
         //actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setBackButtonImage(0x00000000);//todo
@@ -236,7 +238,7 @@ public class PreferencesActivity extends BaseFragment implements OnPreferencesLi
         fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // showTabsAndmenu();
+                showTabsAndmenu();
                 finishFragment();
             }
         });
@@ -246,7 +248,7 @@ public class PreferencesActivity extends BaseFragment implements OnPreferencesLi
     @Override
     public void onResume() {
         super.onResume();
-      //  ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_PHONE_HELP);
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_PHONE_HELP);
     }
 
 
@@ -277,7 +279,7 @@ public class PreferencesActivity extends BaseFragment implements OnPreferencesLi
     public CountryAdapter.Country getcountrybyName(String name){
         CountryAdapter k = new CountryAdapter(mContext);
         HashMap<String, ArrayList<CountryAdapter.Country>> countries = k.getCountries();
-       // ArrayList<String> sortedCountries = k.getSortedCountries();
+    //    ArrayList<String> sortedCountries = k.getSortedCountries();
         String s = name.substring(0,1).toUpperCase();
         ArrayList<CountryAdapter.Country> dd = countries.get(s);
         for(CountryAdapter.Country selectcountry:dd){

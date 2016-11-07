@@ -7,32 +7,32 @@
     android:layout_height="match_parent">
 
 
-<!--
-    <com.smaato.soma.BannerView
-        android:id="@+id/bannerView"
-        android:layout_width="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingBottom="5dp"
-        android:layout_centerHorizontal="true" >
-    </com.smaato.soma.BannerView>
--->
+    <!--
+        <com.smaato.soma.BannerView
+            android:id="@+id/bannerView"
+            android:layout_width="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="5dp"
+            android:layout_centerHorizontal="true" >
+        </com.smaato.soma.BannerView>
+    -->
 
 
-<!--
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        ads:adSize="BANNER"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:gravity="center"
-        android:paddingBottom="5dp"
-        ads:adUnitId="@string/banner_home_footer">
-    </com.google.android.gms.ads.AdView>-->
+    <!--
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center"
+            android:paddingBottom="5dp"
+            ads:adUnitId="@string/banner_home_footer">
+        </com.google.android.gms.ads.AdView>-->
 
 
     <com.google.android.gms.ads.AdView

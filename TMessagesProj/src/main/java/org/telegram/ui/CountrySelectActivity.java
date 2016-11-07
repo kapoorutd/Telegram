@@ -21,8 +21,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Adapters.CountryAdapter;
 import org.telegram.ui.Adapters.CountryAdapter.Country;
 import org.telegram.ui.Adapters.CountrySearchAdapter;
@@ -220,6 +222,7 @@ public class CountrySelectActivity extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.SELECT_CUNTRY);
         if (listViewAdapter != null) {
             listViewAdapter.notifyDataSetChanged();
         }

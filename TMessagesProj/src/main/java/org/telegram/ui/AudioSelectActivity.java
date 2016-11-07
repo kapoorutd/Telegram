@@ -30,6 +30,7 @@ import org.telegram.messenger.R;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Adapters.BaseFragmentAdapter;
@@ -170,6 +171,14 @@ public class AudioSelectActivity extends BaseFragment implements NotificationCen
                 listViewAdapter.notifyDataSetChanged();
             }
         }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.AUDIO_SELECT);
+
     }
 
     private void updateBottomLayoutCount() {

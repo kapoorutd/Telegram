@@ -41,6 +41,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -78,8 +79,10 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.MessageObject;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.Adapters.BaseFragmentAdapter;
+import org.telegram.ui.Adapters.SlidingMenuAdapter;
 import org.telegram.ui.Cells.CheckBoxCell;
 import org.telegram.ui.Cells.TextInfoCell;
 import org.telegram.ui.Cells.EmptyCell;
@@ -163,6 +166,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     private int contactsSortRow;
     private int autoplayGifsRow;
     private int rowCount;
+    private int contactUsRow;
 
     private final static int edit_name = 1;
     private final static int logout = 2;
@@ -246,8 +250,15 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         usernameRow = rowCount++;*/
           myprofileRow = rowCount++;
           preferencerow = rowCount++;
+          premiumFeature=rowCount++;
 
-        premiumFeature=rowCount++;
+        if(UserPaymentInfo.getInstatance().getPaymentStatus() ==UserPaymentInfo.paidUser
+                && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase("")) ){
+            premiumFeature=rowCount--;
+        }
+
+
+
         settingsSectionRow = rowCount++;
         settingsSectionRow2 = rowCount++;
         notificationRow = rowCount++;
@@ -275,9 +286,10 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         sendByEnterRow = rowCount++;
         supportSectionRow = rowCount++;
         supportSectionRow2 = rowCount++;
-        askQuestionRow = rowCount++;
+        contactUsRow = rowCount++;
+        /*askQuestionRow = rowCount++;
         telegramFaqRow = rowCount++;
-        privacyPolicyRow = rowCount++;
+        privacyPolicyRow = rowCount++;*/
         if (BuildVars.DEBUG_VERSION) {
             sendLogsRow = rowCount++;
             clearLogsRow = rowCount++;
@@ -308,13 +320,13 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     public View createView(Context context) {
         actionBar.setBackgroundColor(AvatarDrawable.getProfileBackColorForId(5));
         actionBar.setItemsBackgroundColor(AvatarDrawable.getButtonColorForId(5));
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setBackButtonImage(0/*R.drawable.ic_ab_back*/);
         actionBar.setAddToContainer(false);
         extraHeight = 88;
         if (AndroidUtilities.isTablet()) {
             actionBar.setOccupyStatusBar(false);
         }
-        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+       /* actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
@@ -343,7 +355,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         ActionBarMenuItem item = menu.addItem(0, R.drawable.ic_ab_other);
         item.addSubItem(edit_name, LocaleController.getString("EditName", R.string.EditName), 0);
         item.addSubItem(logout, LocaleController.getString("LogOut", R.string.LogOut), 0);
-
+*/
         listAdapter = new ListAdapter(context);
 
         fragmentView = new FrameLayout(context) {
@@ -366,7 +378,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                                 break;
                             }
                         }
-                        parentLayout.drawHeaderShadow(canvas, actionBarHeight);
+                //        parentLayout.drawHeaderShadow(canvas, actionBarHeight);
                     }
                     return result;
                 } else {
@@ -381,7 +393,18 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
         AndroidUtilities.setListViewEdgeEffectColor(listView, AvatarDrawable.getProfileBackColorForId(5));
-        frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
+       // frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
+
+/////////////////////////////////////////////
+
+        LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        layout.setMargins(0, 0, 0, 0);
+        frameLayout.setLayoutParams(layout);
+        frameLayout.addView(listView);
+
+
+
+
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -446,7 +469,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
 
                 else if (i == askQuestionRow) {
-                    if (getParentActivity() == null) {
+                  /*  if (getParentActivity() == null) {
                         return;
                     }
                     final TextView message = new TextView(getParentActivity());
@@ -465,7 +488,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                         }
                     });
                     builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
-                    showDialog(builder.create());
+                    showDialog(builder.create());*/
                 } else if (i == sendLogsRow) {
                     sendLogs();
                 } else if (i == clearLogsRow) {
@@ -524,10 +547,15 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                     builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
                     showDialog(builder.create());
                 } else if (i == telegramFaqRow) {
-                    Browser.openUrl(getParentActivity(), LocaleController.getString("TelegramFaqUrl", R.string.TelegramFaqUrl));
+                    //Browser.openUrl(getParentActivity(), LocaleController.getString("TelegramFaqUrl", R.string.TelegramFaqUrl));
                 } else if (i == privacyPolicyRow) {
-                    Browser.openUrl(getParentActivity(), LocaleController.getString("PrivacyPolicyUrl", R.string.PrivacyPolicyUrl));
-                } else if (i == contactsReimportRow) {
+                  //  Browser.openUrl(getParentActivity(), LocaleController.getString("PrivacyPolicyUrl", R.string.PrivacyPolicyUrl));
+                }
+
+                else if(i == contactUsRow){
+                    sendMail();
+                }
+                else if (i == contactsReimportRow) {
                     //not implemented
                 } else if (i == contactsSortRow) {
                     if (getParentActivity() == null) {
@@ -743,7 +771,8 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         avatarImage.setRoundRadius(AndroidUtilities.dp(21));
         avatarImage.setPivotX(0);
         avatarImage.setPivotY(0);
-        frameLayout.addView(avatarImage, LayoutHelper.createFrame(42, 42, Gravity.TOP | Gravity.LEFT, 64, 0, 0, 0));
+        avatarImage.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);
+        frameLayout.addView(avatarImage, LayoutHelper.createFrame(42, 42, Gravity.TOP | Gravity.LEFT, 8, 0, 0, 0));
         avatarImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -766,7 +795,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         nameTextView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
         nameTextView.setPivotX(0);
         nameTextView.setPivotY(0);
-        frameLayout.addView(nameTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 118, 0, 48, 0));
+        frameLayout.addView(nameTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 60, 0, 48, 0));
 
         onlineTextView = new TextView(context);
         onlineTextView.setTextColor(AvatarDrawable.getProfileTextColorForId(5));
@@ -776,7 +805,9 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         onlineTextView.setSingleLine(true);
         onlineTextView.setEllipsize(TextUtils.TruncateAt.END);
         onlineTextView.setGravity(Gravity.LEFT);
-        frameLayout.addView(onlineTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 118, 0, 48, 0));
+        frameLayout.addView(onlineTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 60, 0, 48, 0));
+
+
 
         writeButton = new ImageView(context);
         writeButton.setBackgroundResource(R.drawable.floating_user_states);
@@ -795,7 +826,10 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 }
             });
         }
-        frameLayout.addView(writeButton, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.TOP, 0, 0, 16, 0));
+
+        frameLayout.addView(writeButton, LayoutHelper.createFrame(40,40, Gravity.RIGHT | Gravity.TOP, 0, 10, 16, 0));
+
+//        frameLayout.addView(writeButton, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.TOP, 0, 0, 16, 0));
         writeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -855,7 +889,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 View child = view.getChildAt(0);
                 if (child != null) {
                     if (firstVisibleItem == 0) {
-                        height = AndroidUtilities.dp(88) + (child.getTop() < 0 ? child.getTop() : 0);
+                //        height = AndroidUtilities.dp(88) + (child.getTop() < 0 ? child.getTop() : 0);
                     }
                     if (extraHeight != height) {
                         extraHeight = height;
@@ -1059,6 +1093,9 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     @Override
     public void onResume() {
         super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.SETTING_SCREEN);
+        setSettingMenuList();
+        showTabsAndmenu();
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
@@ -1074,7 +1111,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
     private void needLayout() {
         FrameLayout.LayoutParams layoutParams;
-        int newTop = (actionBar.getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0) + ActionBar.getCurrentActionBarHeight();
+        int newTop = 0;//(actionBar.getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0) + ActionBar.getCurrentActionBarHeight();
         if (listView != null) {
             layoutParams = (FrameLayout.LayoutParams) listView.getLayoutParams();
             if (layoutParams.topMargin != newTop) {
@@ -1092,8 +1129,8 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
             writeButton.setTranslationY((actionBar.getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0) + ActionBar.getCurrentActionBarHeight() + extraHeight - AndroidUtilities.dp(29.5f));
 
-            final boolean setVisible = diff > 0.2f;
-            boolean currentVisible = writeButton.getTag() == null;
+            final boolean setVisible = true;//diff > 0.2f;
+            boolean currentVisible = false;//writeButton.getTag() == null;
             if (setVisible != currentVisible) {
                 if (setVisible) {
                     writeButton.setTag(null);
@@ -1229,7 +1266,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                     i == askQuestionRow || i == sendLogsRow || i == sendByEnterRow || i == autoplayGifsRow || i == privacyRow || i == wifiDownloadRow ||
                     i == mobileDownloadRow || i == clearLogsRow || i == roamingDownloadRow || i == languageRow || i == preferencerow/*|| i == usernameRow*/ ||
                     i == switchBackendButtonRow || i == telegramFaqRow || i == contactsSortRow || i == contactsReimportRow || i == saveToGalleryRow ||
-                    i == stickersRow || i == cacheRow || i == raiseToSpeakRow || i == privacyPolicyRow || i == customTabsRow || i == directShareRow || i == versionRow;
+                    i == stickersRow || i == cacheRow || i == raiseToSpeakRow || i == privacyPolicyRow || i == customTabsRow || i == directShareRow || i == versionRow|| i == contactUsRow;
         }
 
         @Override
@@ -1260,7 +1297,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                     view = new EmptyCell(mContext);
                 }
                 if (i == overscrollRow) {
-                    ((EmptyCell) view).setHeight(AndroidUtilities.dp(88));
+                    ((EmptyCell) view).setHeight(AndroidUtilities.dp(40));
                 } else {
                     ((EmptyCell) view).setHeight(AndroidUtilities.dp(16));
                 }
@@ -1299,22 +1336,25 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                     textCell.setText("Send Logs", true);
                 } else if (i == clearLogsRow) {
                     textCell.setText("Clear Logs", true);
-                } else if (i == askQuestionRow) {
+                }/* else if (i == askQuestionRow) {
                     textCell.setText(LocaleController.getString("AskAQuestion", R.string.AskAQuestion), true);
-                } else if (i == privacyRow) {
+                }*/ else if (i == privacyRow) {
                     textCell.setText(LocaleController.getString("PrivacySettings", R.string.PrivacySettings), true);
                 } else if (i == switchBackendButtonRow) {
                     textCell.setText("Switch Backend", true);
-                } else if (i == telegramFaqRow) {
+                }/* else if (i == telegramFaqRow) {
                     textCell.setText(LocaleController.getString("TelegramFAQ", R.string.TelegramFaq), true);
-                } else if (i == contactsReimportRow) {
+                }*/ else if (i == contactsReimportRow) {
                     textCell.setText(LocaleController.getString("ImportContacts", R.string.ImportContacts), true);
                 } else if (i == stickersRow) {
                     textCell.setText(LocaleController.getString("Stickers", R.string.Stickers), true);
                 } else if (i == cacheRow) {
                     textCell.setText(LocaleController.getString("CacheSettings", R.string.CacheSettings), true);
-                } else if (i == privacyPolicyRow) {
+                }/* else if (i == privacyPolicyRow) {
                     textCell.setText(LocaleController.getString("PrivacyPolicy", R.string.PrivacyPolicy), true);
+                }*/
+                else if(i == contactUsRow) {
+                    textCell.setText(LocaleController.getString("ContactUs", R.string.ContactUs), true);
                 }
             } else if (type == 3) {
                 if (view == null) {
@@ -1487,7 +1527,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 return 1;
             } else if (i == enableAnimationsRow || i == sendByEnterRow || i == saveToGalleryRow || i == autoplayGifsRow || i == raiseToSpeakRow || i == customTabsRow || i == directShareRow) {
                 return 3;
-            } else if (i == notificationRow || i == backgroundRow || i == askQuestionRow || i == sendLogsRow || i == privacyRow || i == clearLogsRow || i == switchBackendButtonRow || i == telegramFaqRow || i == contactsReimportRow || i == textSizeRow || i == languageRow || i == contactsSortRow || i == stickersRow || i == cacheRow || i == privacyPolicyRow) {
+            } else if (i == notificationRow || i == backgroundRow || i == askQuestionRow || i == sendLogsRow || i == privacyRow || i == clearLogsRow || i == switchBackendButtonRow || i == telegramFaqRow || i == contactsReimportRow || i == textSizeRow || i == languageRow || i == contactsSortRow || i == stickersRow || i == cacheRow || i == privacyPolicyRow|| i == contactUsRow) {
                 return 2;
             } else if (i == versionRow) {
                 return 5;
@@ -1514,4 +1554,171 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             return false;
         }
     }
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void setSettingMenuList(){
+        ArrayList<MenuItems> draweritems=new ArrayList<MenuItems>();
+        draweritems.add(new MenuItems(LocaleController.getString("Edit", R.string.Edit),R.drawable.menu_bar_edit,true, "",0));
+        //   draweritems.add(new MenuItems(LocaleController.getString("AskAQuestion", R.string.AskAQuestion), R.drawable.menu_faq, true, "",1));
+        //    draweritems.add(new MenuItems(LocaleController.getString("TelegramFaq", R.string.TelegramFaq),R.drawable.menu_faq,true, "",2));
+        draweritems.add(new MenuItems(LocaleController.getString("preferences", R.string.preferences),R.drawable.menu_pref,true, "",3));
+
+        if(!(UserPaymentInfo.getInstatance().getPaymentStatus() == UserPaymentInfo.paidUser) ){
+            draweritems.add(new MenuItems("Upgrade to Premium",R.drawable.ic_premium,true, "",4));
+        }
+
+
+        SlidingMenuAdapter adapter = new SlidingMenuAdapter(getParentActivity(),
+                draweritems);
+
+        ViewParent view=  parentLayout.getParent();
+        ListView drawerList=((ListView)((View) view.getParent()).findViewById(R.id.contact_slidermenu));
+        drawerList.setAdapter(adapter);
+        drawerList.setOnItemClickListener(new SettingMenuClickListener());
+        ((View) view.getParent()).findViewById(R.id.divider).setVisibility(View.VISIBLE);
+
+        ((View) view.getParent()).findViewById(R.id.bottom_panel).setVisibility(View.VISIBLE);
+        ((ImageView)((View) view.getParent()).findViewById(R.id.menu_image)).setImageResource(R.drawable.menu_logout);
+        ((TextView)((View) view.getParent()).findViewById(R.id.row_title)).setText(LocaleController.getString("LogOut", R.string.LogOut));
+        ((View) view.getParent()).findViewById(R.id.menu_container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        ((View) view.getParent()).findViewById(R.id.bottom_panel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logoutUser();
+                parentLayout.closeDrawer();
+                //    logOutUser();
+            }
+        });
+    }
+    private class SettingMenuClickListener implements
+            ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                long id) {
+            switch(position){
+
+                case 0:
+                    parentLayout.closeDrawer();
+                    presentFragment(new ChangeNameActivity());
+                    // closeDrawer();
+                    //  presentFragment(new SettingsChangeNameActivity());
+                    break;
+            /*    case 1:
+                    parentLayout.closeDrawer();
+                    askQuestion();
+                    // closeDrawer();
+                  //  askAQuestion();
+
+                    break;*/
+             /*   case 2:
+                    parentLayout.closeDrawer();
+
+                    //    closeDrawer();
+                    try {
+                        Intent pickIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LocaleController.getString("TelegramFaqUrl", R.string.TelegramFaqUrl)));
+                        getParentActivity().startActivityForResult(pickIntent, 500);
+                    } catch (Exception e) {
+                        FileLog.e("tmessages", e);
+                    }
+                    break;*/
+                /*case 3:
+                    parentLayout.closeDrawer();
+                    //    closeDrawer();
+                    logoutUser();
+                    break;*/
+                case 1:
+                    parentLayout.closeDrawer();
+                    SharedPreferences p  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    if(p.getString("social_id","").equals("")) {
+                        presentFragment(new MyProfileActivity());
+                    }
+                    else {
+                        presentFragment(new PreferencesActivity());
+                    }
+                    break;
+
+
+                case 2 :
+                    parentLayout.closeDrawer();
+                    SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    if(pp.getString("social_id","").equals("")) {
+                        presentFragment(new MyProfileActivity());
+                    }
+                    else{
+                        if(UserPaymentInfo.getInstatance().getPaymentStatus() == UserPaymentInfo.paidUser ){
+                            Toast.makeText(getParentActivity(),"YOU HAVE ALREADY SUBSCRIBED",Toast.LENGTH_SHORT).show();
+                        }else {
+                            PaymentManager.createIntent(getParentActivity());
+                        }
+                    }
+
+                    break;
+            }
+
+
+        }
+    }
+
+
+    public void logoutUser(){
+        if (getParentActivity() == null) {
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setMessage(LocaleController.getString("AreYouSureLogout", R.string.AreYouSureLogout));
+        builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
+        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                MessagesController.getInstance().performLogout(true);
+            }
+        });
+        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        showDialog(builder.create());
+
+    }
+
+
+
+
+    public void askQuestion(){
+        if (getParentActivity() == null) {
+            return;
+        }
+        final TextView message = new TextView(getParentActivity());
+        message.setText(Html.fromHtml(LocaleController.getString("AskAQuestionInfo", R.string.AskAQuestionInfo)));
+        message.setTextSize(18);
+        message.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(5), AndroidUtilities.dp(8), AndroidUtilities.dp(6));
+        message.setMovementMethod(new LinkMovementMethodMy());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setView(message);
+        builder.setPositiveButton(LocaleController.getString("AskButton", R.string.AskButton), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                performAskAQuestion();
+            }
+        });
+        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        showDialog(builder.create());
+    }
+
+    public void sendMail(){
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto","telegram@craterzone.com", null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Support IM for Telegram");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getParentActivity().getString(R.string.MailContent)));
+        getParentActivity().startActivity(Intent.createChooser(emailIntent, "Send email..."));
+    }
+
+
 }

@@ -19,8 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
@@ -34,6 +36,7 @@ public class ChannelIntroActivity extends BaseFragment {
 
     @Override
     public View createView(Context context) {
+        hideTabsAnsMenu();
         actionBar.setBackgroundColor(Theme.ACTION_BAR_CHANNEL_INTRO_COLOR);
         actionBar.setBackButtonImage(R.drawable.pl_back);
         actionBar.setItemsBackgroundColor(Theme.ACTION_BAR_CHANNEL_INTRO_SELECTOR_COLOR);
@@ -146,5 +149,11 @@ public class ChannelIntroActivity extends BaseFragment {
         });
 
         return fragmentView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANNEL_INTRO);
     }
 }

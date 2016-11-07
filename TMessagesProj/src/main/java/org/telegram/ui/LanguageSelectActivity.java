@@ -24,10 +24,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.Utilities;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Adapters.BaseFragmentAdapter;
 import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.ActionBar.ActionBar;
@@ -53,10 +55,12 @@ public class LanguageSelectActivity extends BaseFragment {
 
     @Override
     public View createView(Context context) {
+
+        hideTabsAnsMenu();
         searching = false;
         searchWas = false;
-
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setBackButtonImage(0x00000000);//todo
+        // actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(LocaleController.getString("Language", R.string.Language));
 
@@ -64,16 +68,18 @@ public class LanguageSelectActivity extends BaseFragment {
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
+                    // actionBar.setBackButtonImage(0x0000000);//todo
                     finishFragment();
+                    // actionBar.setBackButtonImage(0x0000000);//todo
                 }
             }
         });
-
         ActionBarMenu menu = actionBar.createMenu();
         ActionBarMenuItem item = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
             @Override
             public void onSearchExpand() {
                 searching = true;
+                // actionBar.setBackButtonImage(R.drawable.ic_ab_back);//todo
             }
 
             @Override
@@ -104,17 +110,17 @@ public class LanguageSelectActivity extends BaseFragment {
         listAdapter = new ListAdapter(context);
         searchListViewAdapter = new SearchAdapter(context);
 
-        fragmentView = new FrameLayout(context);
+        fragmentView =  View.inflate(context,R.layout.layout_language,null);       //new FrameLayout(context);
 
-        LinearLayout emptyTextLayout = new LinearLayout(context);
+        LinearLayout emptyTextLayout =(LinearLayout)fragmentView.findViewById(R.id.ll_language);   //new LinearLayout(context);
         emptyTextLayout.setVisibility(View.INVISIBLE);
         emptyTextLayout.setOrientation(LinearLayout.VERTICAL);
-        ((FrameLayout) fragmentView).addView(emptyTextLayout);
+       /* ((FrameLayout) fragmentView).addView(emptyTextLayout);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) emptyTextLayout.getLayoutParams();
         layoutParams.width = LayoutHelper.MATCH_PARENT;
         layoutParams.height = LayoutHelper.MATCH_PARENT;
         layoutParams.gravity = Gravity.TOP;
-        emptyTextLayout.setLayoutParams(layoutParams);
+        emptyTextLayout.setLayoutParams(layoutParams);*/
         emptyTextLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -122,37 +128,57 @@ public class LanguageSelectActivity extends BaseFragment {
             }
         });
 
-        emptyTextView = new TextView(context);
+        emptyTextView = (TextView)fragmentView.findViewById(R.id.tv_lan);  //new TextView(context);
         emptyTextView.setTextColor(0xff808080);
         emptyTextView.setTextSize(20);
         emptyTextView.setGravity(Gravity.CENTER);
         emptyTextView.setText(LocaleController.getString("NoResult", R.string.NoResult));
-        emptyTextLayout.addView(emptyTextView);
+       /* emptyTextLayout.addView(emptyTextView);
         LinearLayout.LayoutParams layoutParams1 = (LinearLayout.LayoutParams) emptyTextView.getLayoutParams();
         layoutParams1.width = LayoutHelper.MATCH_PARENT;
         layoutParams1.height = LayoutHelper.MATCH_PARENT;
         layoutParams1.weight = 0.5f;
-        emptyTextView.setLayoutParams(layoutParams1);
+        emptyTextView.setLayoutParams(layoutParams1);*/
 
-        FrameLayout frameLayout = new FrameLayout(context);
-        emptyTextLayout.addView(frameLayout);
+        FrameLayout frameLayout = (FrameLayout)fragmentView.findViewById(R.id.fl_lan); //new FrameLayout(context);
+      /*  emptyTextLayout.addView(frameLayout);
         layoutParams1 = (LinearLayout.LayoutParams) frameLayout.getLayoutParams();
         layoutParams1.width = LayoutHelper.MATCH_PARENT;
         layoutParams1.height = LayoutHelper.MATCH_PARENT;
         layoutParams1.weight = 0.5f;
-        frameLayout.setLayoutParams(layoutParams1);
+        frameLayout.setLayoutParams(layoutParams1);*/
 
-        listView = new ListView(context);
+        listView = (ListView)fragmentView.findViewById(R.id.lv_lan);   //new ListView(context);
         listView.setEmptyView(emptyTextLayout);
         listView.setVerticalScrollBarEnabled(false);
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setAdapter(listAdapter);
+        /*
         ((FrameLayout) fragmentView).addView(listView);
         layoutParams = (FrameLayout.LayoutParams) listView.getLayoutParams();
         layoutParams.width = LayoutHelper.MATCH_PARENT;
         layoutParams.height = LayoutHelper.MATCH_PARENT;
         listView.setLayoutParams(layoutParams);
+*/
+  /*      View mView = View.inflate(context, R.layout.settings_layout, null);
+        ((FrameLayout) fragmentView).addView(mView);
+
+
+        mView.findViewById(R.id.black_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        mView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTabsAndmenu();
+                finishFragment();
+            }
+        });*/
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -230,12 +256,30 @@ public class LanguageSelectActivity extends BaseFragment {
             }
         });
 
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
+
+
+        fragmentView.findViewById(R.id.black_vw).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
         return fragmentView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.SELECT_LANGUAGE_ACTIVITY);
+
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }

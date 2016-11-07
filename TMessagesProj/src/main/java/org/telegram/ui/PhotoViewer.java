@@ -77,6 +77,7 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.Utilities;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Adapters.MentionsAdapter;
 import org.telegram.messenger.AnimatorListenerAdapterProxy;
@@ -3670,6 +3671,8 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
 
     public void onResume() {
         redraw(0); //workaround for camera bug
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.PHOTOVIEWER);
+
     }
 
     public void onPause() {

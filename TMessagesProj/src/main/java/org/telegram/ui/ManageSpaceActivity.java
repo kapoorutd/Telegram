@@ -29,6 +29,7 @@ import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.tgnet.ConnectionsManager;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.DrawerLayoutContainer;
@@ -291,6 +292,8 @@ public class ManageSpaceActivity extends Activity implements ActionBarLayout.Act
         if (AndroidUtilities.isTablet()) {
             layersActionBarLayout.onResume();
         }
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.MANAGESPACE);
+
     }
 
     @Override

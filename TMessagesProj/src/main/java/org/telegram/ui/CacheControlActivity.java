@@ -40,6 +40,7 @@ import org.telegram.messenger.Utilities;
 import org.telegram.messenger.query.BotQuery;
 import org.telegram.tgnet.NativeByteBuffer;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.BottomSheet;
@@ -305,10 +306,16 @@ public class CacheControlActivity extends BaseFragment {
 
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+
+
+        hideTabsAnsMenu();
+        actionBar.setBackButtonImage(0);
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(LocaleController.getString("CacheSettings", R.string.CacheSettings));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+
+//            hideTabsAnsMenu();
+
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
@@ -319,16 +326,31 @@ public class CacheControlActivity extends BaseFragment {
 
         listAdapter = new ListAdapter(context);
 
-        fragmentView = new FrameLayout(context);
-        FrameLayout frameLayout = (FrameLayout) fragmentView;
-        frameLayout.setBackgroundColor(0xfff0f0f0);
+        fragmentView =  View.inflate(context,R.layout.layout_cache_control_activity,null);//new FrameLayout(context);
+     //   FrameLayout frameLayout = (FrameLayout) fragmentView;
+        fragmentView.setBackgroundColor(0xfff0f0f0);
 
-        ListView listView = new ListView(context);
+        ListView listView =  (ListView)fragmentView.findViewById(R.id.lv_cache);//new ListView(context);
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
         listView.setDrawSelectorOnTop(true);
-        frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
+
+
+        fragmentView.findViewById(R.id.black_vw).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        //  frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -547,6 +569,8 @@ public class CacheControlActivity extends BaseFragment {
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CACHECONTROL);
+
     }
 
     private class ListAdapter extends BaseFragmentAdapter {

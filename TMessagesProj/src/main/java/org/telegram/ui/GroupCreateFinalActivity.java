@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesStorage;
@@ -38,6 +39,7 @@ import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Adapters.BaseFragmentAdapter;
 import org.telegram.ui.Cells.GreySectionCell;
 import org.telegram.ui.Cells.UserCell;
@@ -136,6 +138,7 @@ public class GroupCreateFinalActivity extends BaseFragment implements Notificati
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.GROUP_CREATE_FINAL_ACTIVITY);
     }
 
     @Override

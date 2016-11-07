@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -50,6 +51,7 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.Utilities;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Adapters.BaseSectionsAdapter;
 import org.telegram.ui.Adapters.ContactsAdapter;
 import org.telegram.ui.Adapters.SearchAdapter;
@@ -87,6 +89,7 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
     private HashMap<Integer, TLRPC.User> ignoreUsers;
     private boolean allowUsernameSearch = true;
     private ContactsActivityDelegate delegate;
+    private View mView;
 
     public interface ContactsActivityDelegate {
         void didSelectContact(TLRPC.User user, String param);
@@ -214,10 +217,10 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
         listViewAdapter = new ContactsAdapter(context, onlyUsers ? 1 : 0, needPhonebook, ignoreUsers, chat_id != 0);
 
         fragmentView = new FrameLayout(context);
-
         LinearLayout emptyTextLayout = new LinearLayout(context);
         emptyTextLayout.setVisibility(View.INVISIBLE);
         emptyTextLayout.setOrientation(LinearLayout.VERTICAL);
+
         ((FrameLayout) fragmentView).addView(emptyTextLayout);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) emptyTextLayout.getLayoutParams();
         layoutParams.width = LayoutHelper.MATCH_PARENT;
@@ -248,10 +251,15 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
         layoutParams1 = (LinearLayout.LayoutParams) frameLayout.getLayoutParams();
         layoutParams1.width = LayoutHelper.MATCH_PARENT;
         layoutParams1.height = LayoutHelper.MATCH_PARENT;
+
         layoutParams1.weight = 0.5f;
         frameLayout.setLayoutParams(layoutParams1);
 
-        listView = new LetterSectionsListView(context);
+        mView=View.inflate(context,R.layout.layout_contact_activity,null);
+        ((FrameLayout)fragmentView).addView(mView);
+        mView.findViewById(R.id.ll_beck).setVisibility(View.GONE);
+
+        listView =  (LetterSectionsListView) fragmentView.findViewById(R.id.contact_list);
         listView.setEmptyView(emptyTextLayout);
         listView.setVerticalScrollBarEnabled(false);
         listView.setDivider(null);
@@ -259,14 +267,27 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
         listView.setFastScrollEnabled(true);
         listView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
         listView.setAdapter(listViewAdapter);
-        listView.setFastScrollAlwaysVisible(true);
-        listView.setVerticalScrollbarPosition(LocaleController.isRTL ? ListView.SCROLLBAR_POSITION_LEFT : ListView.SCROLLBAR_POSITION_RIGHT);
-        ((FrameLayout) fragmentView).addView(listView);
-        layoutParams = (FrameLayout.LayoutParams) listView.getLayoutParams();
-        layoutParams.width = LayoutHelper.MATCH_PARENT;
-        layoutParams.height = LayoutHelper.MATCH_PARENT;
-        listView.setLayoutParams(layoutParams);
+        if (Build.VERSION.SDK_INT >= 11) {
+            listView.setFastScrollAlwaysVisible(true);
+            listView.setVerticalScrollbarPosition(LocaleController.isRTL ? ListView.SCROLLBAR_POSITION_LEFT : ListView.SCROLLBAR_POSITION_RIGHT);
+        }
 
+
+
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
+
+
+        fragmentView.findViewById(R.id.black_vw).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -538,9 +559,17 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
     @Override
     public void onResume() {
         super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CONTACT);
+        showTabsAndmenu();
         if (listViewAdapter != null) {
             listViewAdapter.notifyDataSetChanged();
         }
+        if(destroyAfterSelect){
+            hideTabsAnsMenu();
+            mView.findViewById(R.id.ll_beck).setVisibility(View.VISIBLE);
+        }
+        else{showTabsAndmenu();}
+
 
         setContactMenuList();
 
@@ -606,10 +635,10 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
     private void setContactMenuList(){
         ArrayList<MenuItems> draweritems=new ArrayList<MenuItems>();
        /* draweritems.add(new MenuItems(LocaleController.getString("AddNewContact", R.string.add_new_contact),R.drawable.menu_plus,true, "",0));*/
-        draweritems.add(new MenuItems(LocaleController.getString("InviteFriends", R.string.InviteFriends), R.drawable.menu_broadcast, true, "",0));
-        draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat),R.drawable.menu_broadcast,true, "",0));
+        draweritems.add(new MenuItems(LocaleController.getString("InviteFriends", R.string.InviteFriends), R.drawable.menu_bar_contact_plus, true, "",0));
+        draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat),R.drawable.menu_sectretchat,true, "",0));
         draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel),R.drawable.menu_broadcast,true, "",0));
-        draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink),R.drawable.menu_broadcast,true, "",0));
+        draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink),R.drawable.menu_wink,true, "",0));
 
         SlidingMenuAdapter adapter = new SlidingMenuAdapter(getParentActivity(),
                 draweritems);
@@ -630,6 +659,12 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             switch(position){
+
+               /* case 0:
+               parentLayout.closeDrawer();
+
+                    //     closeDrawer();
+                    break;*/
                 case 0:
                     parentLayout.closeDrawer();
                     //   closeDrawer();
@@ -686,7 +721,6 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
 
         }
     }
-
 
 
 }

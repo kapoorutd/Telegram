@@ -34,7 +34,7 @@ import java.math.BigDecimal;
  * Created by craterzone3 on 13/6/16.
  */
 
-public class PaymentManager extends Activity implements PaymentConfirmationListener {
+public class PaymentManager extends Activity implements PaymentConfirmationListener{
 
     public static final String TAG = PaymentManager.class.getName().toString();
 
@@ -241,7 +241,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
                 Log.i(TAG, "The user canceled.");
             } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
                 Log.i(TAG,
-                        "An invalid Payment or PayPalConfiguration was submitted.");
+                        "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
             }
         } else if (requestCode == REQUEST_CODE_FUTURE_PAYMENT) {
             if (resultCode == Activity.RESULT_OK) {
@@ -266,7 +266,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
             } else if (resultCode == PayPalFuturePaymentActivity.RESULT_EXTRAS_INVALID) {
                 Log.i(
                         "FuturePaymentExample",
-                        "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration.");
+                        "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration. Please see the docs.");
             }
         } else if (requestCode == REQUEST_CODE_PROFILE_SHARING) {
             if (resultCode == Activity.RESULT_OK) {

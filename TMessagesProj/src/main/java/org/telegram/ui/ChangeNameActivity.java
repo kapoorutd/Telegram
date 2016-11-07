@@ -34,6 +34,7 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -153,6 +154,7 @@ public class ChangeNameActivity extends BaseFragment {
             firstNameField.requestFocus();
             AndroidUtilities.showKeyboard(firstNameField);
         }
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_USER_NAME);
     }
 
     private void saveName() {

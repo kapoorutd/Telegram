@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
@@ -39,6 +40,7 @@ import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.UserConfig;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Adapters.BaseFragmentAdapter;
@@ -86,7 +88,7 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
 
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setBackButtonImage(0x00000000);
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(LocaleController.getString("SessionsTitle", R.string.SessionsTitle));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -269,6 +271,26 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
             }
         });
 
+
+
+
+        frameLayout.addView(View.inflate(context,R.layout.layout_back_frame,null));
+
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
+
+
+        fragmentView.findViewById(R.id.black_vw).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         return fragmentView;
     }
 
@@ -278,6 +300,8 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.SESSION_ACTIVITY);
+
     }
 
     @Override

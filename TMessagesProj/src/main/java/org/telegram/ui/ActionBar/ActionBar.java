@@ -91,27 +91,7 @@ public class ActionBar extends FrameLayout {
             }
         });
 
-     /*   if (backButtonImageView != null) {
-            return;
-        }
-        backButtonImageView = new ImageView(getContext());
-        backButtonImageView.setScaleType(ImageView.ScaleType.CENTER);
-        backButtonImageView.setBackgroundDrawable(Theme.createBarSelectorDrawable(itemsBackgroundColor));
-        backButtonImageView.setPadding(AndroidUtilities.dp(1), 0, 0, 0);
-        //addView(backButtonImageView, LayoutHelper.createFrame(54, 54, Gravity.LEFT | Gravity.TOP));
 
-        backButtonImageView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isSearchFieldVisible) {
-                    closeSearchField();
-                    return;
-                }
-                if (actionBarMenuOnItemClick != null) {
-                    actionBarMenuOnItemClick.onItemClick(-1);
-                }
-            }
-        });*/
     }
 
     public void setBackButtonDrawable(Drawable drawable) {

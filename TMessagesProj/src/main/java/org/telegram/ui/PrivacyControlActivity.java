@@ -162,22 +162,35 @@ public class PrivacyControlActivity extends BaseFragment implements Notification
 
         listAdapter = new ListAdapter(context);
 
-        fragmentView = new FrameLayout(context);
-        FrameLayout frameLayout = (FrameLayout) fragmentView;
-        frameLayout.setBackgroundColor(0xfff0f0f0);
 
-        ListView listView = new ListView(context);
+        fragmentView = View.inflate(context,R.layout.layout_last_seen,null);
+        //FrameLayout frameLayout = (FrameLayout) fragmentView;
+        fragmentView.setBackgroundColor(0xfff0f0f0);
+
+        ListView listView = (ListView)fragmentView.findViewById(R.id.lv);
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
         listView.setDrawSelectorOnTop(true);
-        frameLayout.addView(listView);
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) listView.getLayoutParams();
-        layoutParams.width = LayoutHelper.MATCH_PARENT;
-        layoutParams.height = LayoutHelper.MATCH_PARENT;
-        layoutParams.gravity = Gravity.TOP;
-        listView.setLayoutParams(layoutParams);
+
         listView.setAdapter(listAdapter);
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
+
+
+        fragmentView.findViewById(R.id.black_vw).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {

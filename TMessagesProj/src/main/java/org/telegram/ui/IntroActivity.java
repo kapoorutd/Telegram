@@ -28,13 +28,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.tgnet.ConnectionsManager;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.Theme;
 
 public class IntroActivity extends Activity {
+
 
     private ViewPager viewPager;
     private ImageView topImage1;
@@ -51,7 +55,6 @@ public class IntroActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_TMessages);
         super.onCreate(savedInstanceState);
-        Theme.loadRecources(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         if (AndroidUtilities.isTablet()) {
@@ -68,6 +71,7 @@ public class IntroActivity extends Activity {
                     R.drawable.intro5,
                     R.drawable.intro4,
                     R.drawable.intro3,
+                    R.drawable.social,
                     R.drawable.intro2,
                     R.drawable.intro1
             };
@@ -77,6 +81,7 @@ public class IntroActivity extends Activity {
                     R.string.Page5Title,
                     R.string.Page4Title,
                     R.string.Page3Title,
+                    R.string.Page0Title,
                     R.string.Page2Title,
                     R.string.Page1Title
             };
@@ -86,6 +91,7 @@ public class IntroActivity extends Activity {
                     R.string.Page5Message,
                     R.string.Page4Message,
                     R.string.Page3Message,
+                    R.string.Page0Message,
                     R.string.Page2Message,
                     R.string.Page1Message
             };
@@ -93,6 +99,7 @@ public class IntroActivity extends Activity {
             icons = new int[]{
                     R.drawable.intro1,
                     R.drawable.intro2,
+                    R.drawable.social,
                     R.drawable.intro3,
                     R.drawable.intro4,
                     R.drawable.intro5,
@@ -102,6 +109,7 @@ public class IntroActivity extends Activity {
             titles = new int[]{
                     R.string.Page1Title,
                     R.string.Page2Title,
+                    R.string.Page0Title,
                     R.string.Page3Title,
                     R.string.Page4Title,
                     R.string.Page5Title,
@@ -111,6 +119,7 @@ public class IntroActivity extends Activity {
             messages = new int[]{
                     R.string.Page1Message,
                     R.string.Page2Message,
+                    R.string.Page0Message,
                     R.string.Page3Message,
                     R.string.Page4Message,
                     R.string.Page5Message,
@@ -167,6 +176,7 @@ public class IntroActivity extends Activity {
                         fadeinImage.clearAnimation();
                         fadeoutImage.clearAnimation();
 
+
                         Animation outAnimation = AnimationUtils.loadAnimation(IntroActivity.this, R.anim.icon_anim_fade_out);
                         outAnimation.setAnimationListener(new Animation.AnimationListener() {
                             @Override
@@ -222,7 +232,7 @@ public class IntroActivity extends Activity {
                 finish();
             }
         });
-        if (BuildVars.DEBUG_VERSION) {
+        if (BuildConfig.DEBUG) {
             startMessagingButton.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -238,10 +248,11 @@ public class IntroActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.INTRO_ACTIVITY);
         if (justCreated) {
             if (LocaleController.isRTL) {
-                viewPager.setCurrentItem(6);
-                lastPage = 6;
+                viewPager.setCurrentItem(7);
+                lastPage = 7;
             } else {
                 viewPager.setCurrentItem(0);
                 lastPage = 0;
@@ -261,7 +272,7 @@ public class IntroActivity extends Activity {
     private class IntroAdapter extends PagerAdapter {
         @Override
         public int getCount() {
-            return 7;
+            return 8;
         }
 
         @Override

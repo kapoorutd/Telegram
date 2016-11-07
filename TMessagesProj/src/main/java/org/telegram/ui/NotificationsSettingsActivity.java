@@ -40,6 +40,7 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Adapters.BaseFragmentAdapter;
 import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
@@ -162,7 +163,8 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
 
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        hideTabsAnsMenu();
+        actionBar.setBackButtonImage(0x00000000);
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(LocaleController.getString("NotificationsAndSounds", R.string.NotificationsAndSounds));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -174,7 +176,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
             }
         });
 
-        fragmentView = new FrameLayout(context);
+        /*fragmentView = new FrameLayout(context);
         FrameLayout frameLayout = (FrameLayout) fragmentView;
 
         listView = new ListView(context);
@@ -187,6 +189,30 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
         layoutParams.height = LayoutHelper.MATCH_PARENT;
         listView.setLayoutParams(layoutParams);
         listView.setAdapter(new ListAdapter(context));
+        */
+
+
+        fragmentView =View.inflate(context, R.layout.settings_layout, null);
+
+        fragmentView.findViewById(R.id.black_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTabsAndmenu();
+                finishFragment();
+            }
+        });
+
+        fragmentView.findViewById(R.id.bottom_panel).setVisibility(View.VISIBLE);
+        final ListAdapter listAdapter = new ListAdapter(getParentActivity());
+        listView = (ListView)fragmentView.findViewById(R.id.listView);
+        listView.setAdapter(listAdapter);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, final View view, final int i, long l) {
@@ -576,6 +602,14 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
         return fragmentView;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.NOTIFICATION_SETTING);
+
+    }
+
     public void updateServerNotificationsSettings(boolean group) {
         //disable global settings sync
         /*SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("Notifications", Activity.MODE_PRIVATE);
@@ -889,4 +923,10 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
             return false;
         }
     }
+
+
+    ////////////////////////////////////////////////////////////////
+
+
+
 }

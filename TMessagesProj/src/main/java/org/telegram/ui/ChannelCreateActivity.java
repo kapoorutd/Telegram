@@ -204,8 +204,8 @@ public class ChannelCreateActivity extends BaseFragment implements NotificationC
     public View createView(Context context) {
         searching = false;
         searchWas = false;
-
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        hideTabsAnsMenu();
+        actionBar.setBackButtonImage(0);
         actionBar.setAllowOverlayTitle(true);
 
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -836,6 +836,20 @@ public class ChannelCreateActivity extends BaseFragment implements NotificationC
                 }
             });
         }
+
+
+
+        linearLayout.addView(View.inflate(context,R.layout.settings_layout,null));
+
+        linearLayout.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
+
+
+
 
         return fragmentView;
     }

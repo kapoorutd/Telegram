@@ -53,6 +53,7 @@ import org.telegram.messenger.R;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.MessageObject;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.Components.AvatarDrawable;
@@ -1134,6 +1135,8 @@ public class PopupNotificationActivity extends Activity implements NotificationC
         fixLayout();
         checkAndUpdateAvatar();
         wakeLock.acquire(7000);
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.POPUP_NOTIFICATION);
+
     }
 
     @Override

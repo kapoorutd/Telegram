@@ -30,6 +30,7 @@ import org.telegram.messenger.ApplicationLoader;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -134,7 +135,9 @@ public class ChangeChatNameActivity extends BaseFragment {
             firstNameField.requestFocus();
             AndroidUtilities.showKeyboard(firstNameField);
         }
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_CHAT_NAME);
     }
+
 
     @Override
     public void onTransitionAnimationEnd(boolean isOpen, boolean backward) {

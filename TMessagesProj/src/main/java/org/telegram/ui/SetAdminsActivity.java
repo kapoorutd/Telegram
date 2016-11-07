@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
@@ -27,6 +28,7 @@ import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
@@ -264,6 +266,8 @@ public class SetAdminsActivity extends BaseFragment implements NotificationCente
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.ADMIN_ACTIVITY);
+
     }
 
     public void setChatInfo(TLRPC.ChatFull chatParticipants) {

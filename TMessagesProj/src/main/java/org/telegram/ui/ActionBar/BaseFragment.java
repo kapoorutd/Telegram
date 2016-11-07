@@ -15,11 +15,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 
+import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.R;
 import org.telegram.tgnet.ConnectionsManager;
+import org.telegram.tracker.AnalyticsTrackers;
 
 public class BaseFragment {
 
@@ -31,7 +37,7 @@ public class BaseFragment {
     protected ActionBar actionBar;
     protected int classGuid = 0;
     protected Bundle arguments;
-    protected boolean swipeBackEnabled = true;
+    protected boolean swipeBackEnabled = false;
     protected boolean hasOwnBackground = false;
 
     public BaseFragment() {
@@ -121,6 +127,23 @@ public class BaseFragment {
         }
     }
 
+
+
+    public void showTabsAndmenu(){
+        parentLayout.setPadding(0,0,0, AndroidUtilities.dp(50));
+        ViewParent view1=  parentLayout.getParent();
+        DrawerLayout drawerLayout=((DrawerLayout)((View) view1.getParent()).findViewById(R.id.chat_viewer_drawer_layout));
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+    public void hideTabsAnsMenu(){
+        ViewParent view1=  parentLayout.getParent();
+        DrawerLayout drawerLayout=((DrawerLayout)((View) view1.getParent()).findViewById(R.id.chat_viewer_drawer_layout));
+        if(drawerLayout!=null){
+            parentLayout.setPadding(0,0,0,0);
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
+    }
+
     protected ActionBar createActionBar(Context context) {
         ActionBar actionBar = new ActionBar(context);
         actionBar.setBackgroundColor(Theme.ACTION_BAR_COLOR);
@@ -148,6 +171,8 @@ public class BaseFragment {
 
     public boolean onFragmentCreate() {
         return true;
+
+
     }
 
     public void onFragmentDestroy() {
@@ -163,6 +188,8 @@ public class BaseFragment {
     }
 
     public void onResume() {
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.AUDIO_PLAYER);
+
 
     }
 

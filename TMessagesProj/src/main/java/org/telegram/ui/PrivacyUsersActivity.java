@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +79,7 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
 
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setBackButtonImage(0);
         actionBar.setAllowOverlayTitle(true);
         if (isGroup) {
             if (isAlwaysShare) {
@@ -196,6 +197,25 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                 });
                 showDialog(builder.create());
                 return true;
+            }
+        });
+
+
+        frameLayout.addView(View.inflate(context,R.layout.layout_back_frame,null));
+
+
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
+
+
+        fragmentView.findViewById(R.id.black_vw).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 

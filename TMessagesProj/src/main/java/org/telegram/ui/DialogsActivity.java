@@ -18,6 +18,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Outline;
@@ -28,8 +29,10 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -39,6 +42,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.DialogObject;
@@ -53,6 +57,10 @@ import org.telegram.messenger.FileLog;
 import org.telegram.payment.CheckPremiumUserRequester;
 import org.telegram.payment.UserPaymentInfo;
 import org.telegram.socialuser.BackgroundExecuter;
+import org.telegram.socialuser.Util;
+import org.telegram.socialuser.model.CustomHttpParams;
+import org.telegram.socialuser.runable.AddUserRequester;
+import org.telegram.socialuser.runable.GetUserRequester;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.MessagesController;
@@ -61,8 +69,10 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.BottomSheet;
+import org.telegram.ui.Adapters.CountryAdapter;
 import org.telegram.ui.Adapters.DialogsAdapter;
 import org.telegram.ui.Adapters.DialogsSearchAdapter;
+import org.telegram.ui.Adapters.SlidingMenuAdapter;
 import org.telegram.ui.Cells.HintDialogCell;
 import org.telegram.ui.Cells.ProfileSearchCell;
 import org.telegram.ui.Cells.UserCell;
@@ -77,10 +87,11 @@ import org.telegram.ui.Components.EmptyTextProgressView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.listners.OnSocialLogin;
 
 import java.util.ArrayList;
 
-public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
+public class DialogsActivity extends BaseFragment implements OnSocialLogin, NotificationCenter.NotificationCenterDelegate {
     
     private RecyclerListView listView;
     private LinearLayoutManager layoutManager;
@@ -116,6 +127,32 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private long openedDialogId;
 
     private DialogsActivityDelegate delegate;
+
+
+
+    @Override
+    public void onSocialLoginSuccess() {
+        getParentActivity().runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        presentFragment(new MyProfileActivity());
+
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void onSocialLoginError() {
+
+    }
+
+    @Override
+    public void onSocialFailer(String userid) {
+
+    }
+
 
     public interface DialogsActivityDelegate {
         void didSelectDialog(DialogsActivity fragment, long dialog_id, boolean param);
@@ -207,6 +244,32 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             passcodeItem = menu.addItem(1, R.drawable.lock_close);
             updatePasscodeButton();
         }
+
+        if(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getBoolean("Login_Status",true)) {
+            TLRPC.User user = UserConfig.getCurrentUser();
+            SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+            if(p.getString("dobforserver","").equals("")) {
+                ArrayList<CustomHttpParams> paramse = new ArrayList();
+                paramse.add(new CustomHttpParams("uniqueId", Util.getNumber(user.phone)));
+                BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse, DialogsActivity.this));
+            } else {
+                TLRPC.TelegramUsers newuser = new TLRPC.TelegramUsers();
+                newuser.setDob(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("dobforserver", "2000-01-01"));
+                newuser.setSex(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("sex", "M"));
+                newuser.setId(user.id + "");
+
+                CountryAdapter.Country cu = Util.getcountry((ApplicationLoader.
+                        applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("country", "india")));
+                newuser.setcCode(cu.shortname);
+                newuser.setname((user.first_name != null ? user.first_name : "") + " " + (user.last_name != null ? user.last_name : ""));
+                newuser.setPhoto(user.photo);
+                newuser.setPhone(user.phone);
+                newuser.setUsername(user.username);
+                BackgroundExecuter.getInstance().execute(new AddUserRequester(newuser, null));
+            } }
+
+        BackgroundExecuter.getInstance().execute(new CheckPremiumUserRequester(UserPaymentInfo.getInstatance().getUserId()));
+
         final ActionBarMenuItem item = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
             @Override
             public void onSearchExpand() {
@@ -219,7 +282,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                         emptyView.setVisibility(View.GONE);
                     }
                     if (!onlySelect) {
-                        floatingButton.setVisibility(View.GONE);
+                     //   floatingButton.setVisibility(View.GONE);
                     }
                 }
                 updatePasscodeButton();
@@ -250,10 +313,10 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                         listView.setEmptyView(emptyView);
                     }
                     if (!onlySelect) {
-                        floatingButton.setVisibility(View.VISIBLE);
+                      /*  floatingButton.setVisibility(View.VISIBLE);
                         floatingHidden = true;
                         floatingButton.setTranslationY(AndroidUtilities.dp(100));
-                        hideFloatingButton(false);
+                        hideFloatingButton(false);*/
                     }
                     if (listView.getAdapter() != dialogsAdapter) {
                         listView.setAdapter(dialogsAdapter);
@@ -658,6 +721,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         progressView = new ProgressBar(context);
         progressView.setVisibility(View.GONE);
         frameLayout.addView(progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+/*
 
         floatingButton = new ImageView(context);
         floatingButton.setVisibility(onlySelect ? View.GONE : View.VISIBLE);
@@ -686,6 +750,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 presentFragment(new ContactsActivity(args));
             }
         });
+*/
 
         listView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -713,7 +778,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     }
                 }
 
-                if (floatingButton.getVisibility() != View.GONE) {
+             /*   if (floatingButton.getVisibility() != View.GONE) {
                     final View topChild = recyclerView.getChildAt(0);
                     int firstViewTop = 0;
                     if (topChild != null) {
@@ -734,7 +799,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     prevPosition = firstVisibleItem;
                     prevTop = firstViewTop;
                     scrollUpdated = true;
-                }
+                }*/
             }
         });
 
@@ -843,6 +908,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     @Override
     public void onResume() {
         super.onResume();
+        showTabsAndmenu();
+        setChatMenuList();
         if (dialogsAdapter != null) {
             dialogsAdapter.notifyDataSetChanged();
         }
@@ -905,7 +972,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (!onlySelect && floatingButton != null) {
+   /*     if (!onlySelect && floatingButton != null) {
             floatingButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
@@ -920,7 +987,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     }
                 }
             });
-        }
+        }*/
     }
 
     @Override
@@ -1049,14 +1116,14 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     }
 
     private void hideFloatingButton(boolean hide) {
-        if (floatingHidden == hide) {
+      /*  if (floatingHidden == hide) {
             return;
         }
         floatingHidden = hide;
         ObjectAnimator animator = ObjectAnimator.ofFloat(floatingButton, "translationY", floatingHidden ? AndroidUtilities.dp(100) : 0).setDuration(300);
         animator.setInterpolator(floatingInterpolator);
         floatingButton.setClickable(!hide);
-        animator.start();
+        animator.start();*/
     }
 
     private void updateVisibleRows(int mask) {
@@ -1182,4 +1249,116 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             }
         }
     }
+
+    ////////////////////////////////////////Drawer menu list updated and redesigned below/////////////////////////////////
+
+
+    private void setChatMenuList() {
+        ArrayList<MenuItems> draweritems = new ArrayList<MenuItems>();
+        draweritems.add(new MenuItems(LocaleController.getString("NewChat", R.string.new_chat), R.drawable.menu_bar_chat, true, "",0));
+        draweritems.add(new MenuItems(LocaleController.getString("NewGroup", R.string.NewGroup), R.drawable.menu_group, true, "",0));
+        draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat), R.drawable.menu_sectretchat, true, "",0));
+        draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel), R.drawable.menu_broadcast, true, "",0));
+        draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink),R.drawable.menu_wink,true, "",0));
+
+        SlidingMenuAdapter adapter = new SlidingMenuAdapter(getParentActivity(),
+                draweritems);
+        ViewParent view = parentLayout.getParent();
+        ListView drawerList = ((ListView) ((View) view.getParent()).findViewById(R.id.contact_slidermenu));
+        drawerList.setAdapter(adapter);
+        drawerList.setOnItemClickListener(new ChatMenuClickListener());
+        ((View) view.getParent()).findViewById(R.id.divider).setVisibility(View.INVISIBLE);
+        ((View) view.getParent()).findViewById(R.id.bottom_panel).setVisibility(View.INVISIBLE);
+        // ((View) view.getParent()).findViewById(R.id.divider).setBackgroundColor(getParentActivity().getResources().getColor(R.color.divider));
+        ((ImageView) ((View) view.getParent()).findViewById(R.id.menu_image)).setImageResource(R.drawable.transparent);
+        ((TextView) ((View) view.getParent()).findViewById(R.id.row_title)).setText("");
+        ((View) view.getParent()).findViewById(R.id.menu_container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        ((View) view.getParent()).findViewById(R.id.bottom_panel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
+
+    private class ChatMenuClickListener implements
+            ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                long id) {
+            switch (position) {
+
+                case 0:
+                    parentLayout.closeDrawer();
+                    Bundle args2 = new Bundle();
+                    args2.putBoolean("onlyUsers", true);
+                    args2.putBoolean("destroyAfterSelect", true);
+                    args2.putBoolean("usersAsSections", true);
+                    args2.putString("title", LocaleController.getString("SelectContact", R.string.SelectContact));
+                    presentFragment(new ContactsActivity(args2));
+                    break;
+                case 1:
+                    parentLayout.closeDrawer();
+                    //closeDrawer();
+                    presentFragment(new GroupCreateActivity());
+                    break;
+                case 2:
+                    parentLayout.closeDrawer();
+
+                    // closeDrawer();
+                    Bundle args = new Bundle();
+                    args.putBoolean("onlyUsers", true);
+                    args.putBoolean("destroyAfterSelect", true);
+                    args.putBoolean("usersAsSections", true);
+                    args.putBoolean("createSecretChat", true);
+                    args.putString("title", LocaleController.getString("NewSecretChat", R.string.NewSecretChat));
+                    presentFragment(new ContactsActivity(args));
+                    break;
+                case 3:
+
+                    parentLayout.closeDrawer();
+
+                    if (!MessagesController.isFeatureEnabled("broadcast_create", parentLayout.fragmentsStack.get(parentLayout.fragmentsStack.size() - 1))) {
+                        return;
+                    }
+                    SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
+                    if (preferences.getBoolean("channel_intro", false)) {
+                        Bundle ars = new Bundle();
+                        ars.putInt("step", 0);
+
+                        presentFragment(new ChannelCreateActivity(ars));
+                    } else {
+                        presentFragment(new ChannelIntroActivity());
+                        preferences.edit().putBoolean("channel_intro", true).commit();
+
+
+                    }
+
+                    break;
+                case 4:
+                    SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("preferences", Activity.MODE_PRIVATE);
+                    if(p.getString("minage","0").equals("0")){
+                        presentFragment(new PreferencesActivity());
+                    }
+                    else {
+                        Bundle arg = new Bundle();
+                        arg.putString("s_friend", "wink");
+                        presentFragment(new SocialFriendActivity(arg));
+                    }
+                    break;
+            }
+
+        }
+    }
+
+
+
+
+
 }

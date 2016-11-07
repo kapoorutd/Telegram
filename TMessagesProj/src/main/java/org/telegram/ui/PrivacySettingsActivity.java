@@ -108,7 +108,8 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
 
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        hideTabsAnsMenu();
+        actionBar.setBackButtonImage(0);
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(LocaleController.getString("PrivacySettings", R.string.PrivacySettings));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -120,7 +121,29 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
             }
         });
 
+
         listAdapter = new ListAdapter(context);
+        fragmentView = View.inflate(context, R.layout.settings_layout, null);
+        fragmentView.findViewById(R.id.bottom_panel).setVisibility(View.VISIBLE);
+        ListView   listView = (ListView)fragmentView.findViewById(R.id.listView);
+        listView.setAdapter(listAdapter);
+
+
+        fragmentView.findViewById(R.id.black_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTabsAndmenu();
+                finishFragment();
+            }
+        });
+
+        /*  listAdapter = new ListAdapter(context);
 
         fragmentView = new FrameLayout(context);
         FrameLayout frameLayout = (FrameLayout) fragmentView;
@@ -132,7 +155,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
         listView.setVerticalScrollBarEnabled(false);
         listView.setDrawSelectorOnTop(true);
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        listView.setAdapter(listAdapter);
+        listView.setAdapter(listAdapter);*/
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {

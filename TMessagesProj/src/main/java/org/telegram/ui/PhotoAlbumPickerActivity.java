@@ -33,6 +33,7 @@ import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.R;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
@@ -301,6 +302,8 @@ public class PhotoAlbumPickerActivity extends BaseFragment implements Notificati
             listAdapter.notifyDataSetChanged();
         }
         fixLayout();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.PHOTO_ALBUM_PICKER);
+
     }
 
     @Override

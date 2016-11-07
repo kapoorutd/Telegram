@@ -32,6 +32,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
@@ -40,6 +41,7 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -128,6 +130,8 @@ public class ChannelEditActivity extends BaseFragment implements AvatarUpdater.A
         return super.onFragmentCreate();
     }
 
+
+
     @Override
     public void onFragmentDestroy() {
         super.onFragmentDestroy();
@@ -143,6 +147,8 @@ public class ChannelEditActivity extends BaseFragment implements AvatarUpdater.A
     public void onResume() {
         super.onResume();
         AndroidUtilities.requestAdjustResize(getParentActivity(), classGuid);
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANNEL_EDIT);
+
     }
 
     @Override

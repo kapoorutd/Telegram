@@ -56,6 +56,7 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
 import org.telegram.ui.ActionBar.Theme;
@@ -444,6 +445,8 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
             getParentActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         }
         fixLayout();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.PHOTO_PICK_SCREEN);
+
     }
 
     @Override

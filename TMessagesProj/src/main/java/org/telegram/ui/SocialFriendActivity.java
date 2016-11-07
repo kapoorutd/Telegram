@@ -33,6 +33,7 @@ import org.telegram.socialuser.runable.AddContactRequester;
 import org.telegram.socialuser.runable.GetSuggestFriendsRq;
 import org.telegram.tgnet.TLRPC;
 
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.listners.OnServerResponse;
@@ -103,7 +104,7 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
             BackgroundExecuter.getInstance().execute(new AddContactRequester(telegramUsersesList, params));
         }
 
-      //  hideTabsAnsMenu();
+        hideTabsAnsMenu();
         //ArrayList<CustomHttpParams> parem = new ArrayList<>();
         ArrayList<CustomHttpParams> params = new ArrayList<>();
         params.add(new CustomHttpParams("userId", pp.getString("social_id", "")));
@@ -113,9 +114,9 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
             reqester = new GetSuggestFriendsRq(params,SocialFriendActivity.this,"searchdgree");
         }
 
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);//todo
+        actionBar.setBackButtonImage(0x00000000);//todo
         actionBar.setAllowOverlayTitle(true);
-    //    actionBar.setTextLast("");
+        actionBar.setTextLast("");
         final TLRPC.User user = UserConfig.getCurrentUser();
         if(bundle.get("s_friend").equals("wink")){
             actionBar.setTitle(LocaleController.getString("yourpreferences", R.string.yourpreferences));
@@ -130,7 +131,7 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
                 }
             }
         });
-         listnew = new ArrayList<>();
+        listnew = new ArrayList<>();
 
         fragmentView = View.inflate(getParentActivity(), R.layout.gridview, null);
 
@@ -140,7 +141,7 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
         progressBar = (ProgressBar)fragmentView.findViewById(R.id.pb_load);
         progressBar.setVisibility(View.VISIBLE);
 
-        if(UserPaymentInfo.getInstatance().getPaymentStatus()!= UserPaymentInfo.paidUser){
+        if(UserPaymentInfo.getInstatance().getPaymentStatus()!=UserPaymentInfo.paidUser){
             gr_View.setPadding(0,0,0,0);
             paybutton.setVisibility(View.VISIBLE);
             paybutton.setOnClickListener(new View.OnClickListener() {
@@ -215,41 +216,41 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
                         params.add(new CustomHttpParams("userId", ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("social_id", "")));
                         ArrayList<TLRPC.TelegramUsers> telegramList = new ArrayList<>();
                         telegramList.add(listnew.get(pos));
-                       BackgroundExecuter.getInstance().execute(new AddContactRequester(telegramList, params));
-                        listnew.remove(listnew.get(pos));
+                        //  BackgroundExecuter.getInstance().execute(new AddContactRequester(telegramList, params));
+                        //  listnew.remove(listnew.get(pos));
 
-                } else {
+                    } else {
 
                         Toast.makeText(mContext,"Invalid user",Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.d("User_Key", e.getStackTrace().toString());
                 }
-            } catch (Exception e) {
-                Log.d("User_Key", e.getStackTrace().toString());
+
             }
+        });
+        img_Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
 
-        }
-    });
-    img_Back.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            finishFragment();
-        }
-    });
-
-    return fragmentView;
-}
+        return fragmentView;
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-   //     ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_PHONE_HELP);
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_PHONE_HELP);
 
-   if(isSend && remPosition!= -1)
-   {
-       listnew.remove(listnew.get(remPosition));
-       isSend=false;
-       remPosition= -1;
-   }
-     if(listnew.size()<21 && UserPaymentInfo.getInstatance().getPaymentStatus()!=1){
+        if(isSend && remPosition!= -1)
+        {
+            listnew.remove(listnew.get(remPosition));
+            isSend=false;
+            remPosition= -1;
+        }
+        if(listnew.size()<21 && UserPaymentInfo.getInstatance().getPaymentStatus()!=1){
             actionBar.setTextLast(listnew.size()+"/20");
         }else{ actionBar.setTextLast("");
         }
@@ -271,7 +272,7 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
 
                         listnew.addAll(users);
                         if(listnew.size()<21 && UserPaymentInfo.getInstatance().getPaymentStatus()!=1){
-                        actionBar.setTextLast(listnew.size()+"/20");
+                            actionBar.setTextLast(listnew.size()+"/20");
                         }
                         else{ actionBar.setTextLast("");
                         }
@@ -316,7 +317,7 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
     }
 
     public static  void setMessageSend(boolean isMessageSend){
-    isSend = isMessageSend;
+        isSend = isMessageSend;
     }
 
 

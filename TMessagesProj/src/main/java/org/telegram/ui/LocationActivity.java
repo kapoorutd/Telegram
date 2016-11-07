@@ -4,7 +4,8 @@
  * You should have received a copy of the license in this archive (see LICENSE).
  *
  * Copyright Nikolai Kudashov, 2013-2016.
- */
+ *//*
+
 
 package org.telegram.ui;
 
@@ -956,3 +957,4 @@ public class LocationActivity extends BaseFragment implements NotificationCenter
         }
     }
 }
+*/

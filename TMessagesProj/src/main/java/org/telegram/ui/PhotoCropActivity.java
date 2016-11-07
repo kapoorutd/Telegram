@@ -20,11 +20,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.Bitmaps;
 import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -319,6 +321,7 @@ public class PhotoCropActivity extends BaseFragment {
             return null;
         }
 
+
         @Override
         protected void onDraw(Canvas canvas) {
             if (drawable != null) {
@@ -454,5 +457,12 @@ public class PhotoCropActivity extends BaseFragment {
 
     public void setDelegate(PhotoEditActivityDelegate delegate) {
         this.delegate = delegate;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.PHOTOCROP_SCREEN);
     }
 }

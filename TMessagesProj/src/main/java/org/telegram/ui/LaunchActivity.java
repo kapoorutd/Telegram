@@ -73,6 +73,7 @@ import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.UserConfig;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Adapters.DrawerLayoutAdapter;
 import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -133,6 +134,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
     protected void onCreate(Bundle savedInstanceState) {
         ApplicationLoader.postInitApplication();
         NativeCrashManager.handleDumpFiles(this);
+        BackgroundExecuter.getInstance().execute(new CheckPremiumUserRequester(UserPaymentInfo.getInstatance().getUserId()));
 
         if (!UserConfig.isClientActivated()) {
             Intent intent = getIntent();
@@ -293,7 +295,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
             actionBarLayout.setLayoutParams(params);
             drawerLayout=((DrawerLayout)parentView.findViewById(R.id.chat_viewer_drawer_layout));
             actionBarLayout.setDrawerlayout(drawerLayout);
-     //       setTabEnableDisable(true,false,true);
+            setTabEnableDisable(true,false,true);
 
 
      //       drawerLayoutContainer.addView(actionBarLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -309,7 +311,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                     BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse, LaunchActivity.this));
                 }*/
                 presentFragment(new ContactsActivity(null), true, true);
-//                setTabEnableDisable(false, true, true);
+                setTabEnableDisable(false, true, true);
 
                 //      drawerLayoutContainer.closeDrawer(false);
 
@@ -324,8 +326,8 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                     BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse, LaunchActivity.this));
                 }*/
                 presentFragment(new SettingsActivity(),true,true);
-            //    setTabEnableDisable(true, true, false);
-                //      drawerLayoutContainer.closeDrawer(false);
+                setTabEnableDisable(true, true, false);
+                //     drawerLayoutContainer.closeDrawer(false);
 
             }
         });
@@ -343,7 +345,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
             @Override
             public void onClick(View v) {
                 presentFragment(new DialogsActivity(null),true,true);
-              //  setTabEnableDisable(true,false,true);
+               setTabEnableDisable(true,false,true);
 
 //                drawerLayoutContainer.closeDrawer(false);
 
@@ -1836,6 +1838,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
         super.onResume();
         ApplicationLoader.mainInterfacePaused = false;
         onPasscodeResume();
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.LAUNCH_ACTIVITY);
         if (passcodeView.getVisibility() != View.VISIBLE) {
             actionBarLayout.onResume();
             if (AndroidUtilities.isTablet()) {
@@ -1927,7 +1930,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                 mainFragmentsStack.get(mainFragmentsStack.size() - 1).showDialog(builder.create());
             }
         } else if (id == NotificationCenter.wasUnableToFindCurrentLocation) {
-            final HashMap<String, MessageObject> waitingForLocation = (HashMap<String, MessageObject>) args[0];
+            /*final HashMap<String, MessageObject> waitingForLocation = (HashMap<String, MessageObject>) args[0];
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
             builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), null);
@@ -1957,7 +1960,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
             builder.setMessage(LocaleController.getString("ShareYouLocationUnable", R.string.ShareYouLocationUnable));
             if (!mainFragmentsStack.isEmpty()) {
                 mainFragmentsStack.get(mainFragmentsStack.size() - 1).showDialog(builder.create());
-            }
+            }*/
         }
     }
 
@@ -2359,6 +2362,27 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                 actionBarLayout.showLastFragment();
             }
         }
-        drawerLayoutAdapter.notifyDataSetChanged();
+//        drawerLayoutAdapter.notifyDataSetChanged();
     }
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     *
+     *  enable and disable tabs
+     *  onClick event
+     *
+     */
+
+    private void setTabEnableDisable(boolean firstTab,boolean secondTab,boolean thirdTab){
+        parentView.findViewById(R.id.contact).setEnabled(firstTab);
+        parentView.findViewById(R.id.message).setEnabled(secondTab);
+        parentView.findViewById(R.id.setting).setEnabled(thirdTab);
+        parentView.findViewById(R.id.contact).setSelected(!firstTab);
+        parentView.findViewById(R.id.message).setSelected(!secondTab);
+        parentView.findViewById(R.id.setting).setSelected(!thirdTab);
+    }
+
 }

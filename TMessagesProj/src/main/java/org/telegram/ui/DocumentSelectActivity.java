@@ -34,6 +34,7 @@ import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.BackDrawable;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Adapters.BaseFragmentAdapter;
@@ -347,6 +348,9 @@ public class DocumentSelectActivity extends BaseFragment {
             listAdapter.notifyDataSetChanged();
         }
         fixLayoutInternal();
+
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.SELECT_DOCUMENT);
+
     }
 
     @Override

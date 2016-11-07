@@ -130,7 +130,9 @@
 
         <activity android:name="org.telegram.payment.PaymentManager"
             android:label=""></activity>
-
+        <activity android:name="org.telegram.ui.OsmLocation"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            ></activity>
         <activity
             android:name="org.telegram.ui.ManageSpaceActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

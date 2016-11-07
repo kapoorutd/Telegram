@@ -78,6 +78,7 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.DialogsActivity;
 import org.telegram.ui.StickersActivity;
+import org.telegram.ui.listners.OnAttachListner;
 import org.telegram.ui.listners.OnclicklistnerOnChatActivity;
 
 import java.io.File;
@@ -87,8 +88,9 @@ import java.util.Locale;
 
 public class ChatActivityEnterView extends FrameLayout implements NotificationCenter.NotificationCenterDelegate, SizeNotifierFrameLayout.SizeNotifierFrameLayoutDelegate, StickersAlert.StickersAlertDelegate {
 
+    private static OnAttachListner mOnAttachListner;
     private final LinearLayout textFieldContainerparant;
-    private OnclicklistnerOnChatActivity mOnclicklistnerOnChatActivity;
+    public static OnclicklistnerOnChatActivity mOnclicklistnerOnChatActivity;
 
     public interface ChatActivityEnterViewDelegate {
         void onMessageSend(CharSequence message);
@@ -100,6 +102,13 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
         void onStickersTab(boolean opened);
         void onMessageEditEnd(boolean loading);
     }
+
+
+    public static void onListnerAttachment(OnAttachListner oo){
+        mOnAttachListner =oo;
+    }
+
+
 
     private class SeekBarWaveformView extends View {
 
@@ -542,6 +551,21 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
         textFieldContainerparant = new LinearLayout(context);
         textFieldContainerparant.setBackgroundColor(0x00000000);
         textFieldContainerparant.setOrientation(LinearLayout.VERTICAL);
+
+/*
+        textFieldContainerparant.findViewById(R.id.id_back_img).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // hidePopup(true);
+                //View view = this.getCurrentFocus();
+                if( mOnclicklistnerOnChatActivity!=null) {
+                    mOnclicklistnerOnChatActivity.onClickListnerOnUi(1);
+                }
+            }
+
+        });
+*/
+
         addView(textFieldContainerparant, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         textFieldContainer = new LinearLayout(context);
@@ -576,6 +600,7 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
 
         textFieldContainerparant.addView(textFieldContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         textFieldContainerparant.addView(View.inflate(context, R.layout.chat_layout, null));
+
         textFieldContainerparant.findViewById(R.id.id_back_img).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -587,8 +612,8 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
             }
 
         });
-        
-        
+
+
 
         messageEditText = new EditTextCaption(context);
         updateFieldHint();
@@ -744,6 +769,10 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
             botButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (mOnAttachListner != null&&v.getTag().equals("attach")) {
+                        mOnAttachListner.onAttachlistner();
+                    }
+
                     if (botReplyMarkup != null) {
                         if (!isPopupShowing() || currentPopupContentType != 1) {
                             showPopup(1, 1);
@@ -2683,6 +2712,8 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
         return src;
     }
 
-
+    public static void onbacklistner(OnclicklistnerOnChatActivity mOnclicklistnerOnChatActivity){
+        ChatActivityEnterView.mOnclicklistnerOnChatActivity = mOnclicklistnerOnChatActivity;
+    }
 
 }

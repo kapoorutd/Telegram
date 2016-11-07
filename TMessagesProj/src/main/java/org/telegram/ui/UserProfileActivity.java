@@ -107,9 +107,9 @@ public class UserProfileActivity extends BaseFragment implements PhotoViewer.Pho
     @Override
     public View createView(final Context context) {
 
-        //hideTabsAnsMenu();
+        hideTabsAnsMenu();
         mcContext = context;
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);//todo
+        actionBar.setBackButtonImage(0);//todo
 
         actionBar.setAllowOverlayTitle(true);
         ActionBarMenu menu = actionBar.createMenu();
@@ -269,7 +269,7 @@ public class UserProfileActivity extends BaseFragment implements PhotoViewer.Pho
         super.onResume();
         ContactsController.getInstance().checkContacts();
         statusTextView.setText(LocaleController.formatUserStatus(currentUser));
-      //  hideTabsAnsMenu();
+        hideTabsAnsMenu();
 
     }
 

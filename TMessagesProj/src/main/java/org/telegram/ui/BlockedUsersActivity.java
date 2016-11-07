@@ -24,11 +24,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.telegram.PhoneFormat.PhoneFormat;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.Adapters.BaseFragmentAdapter;
 import org.telegram.ui.Cells.TextInfoCell;
 import org.telegram.ui.Cells.UserCell;
@@ -66,7 +68,7 @@ public class BlockedUsersActivity extends BaseFragment implements NotificationCe
 
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setBackButtonImage(0);
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(LocaleController.getString("BlockedUsers", R.string.BlockedUsers));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -88,17 +90,32 @@ public class BlockedUsersActivity extends BaseFragment implements NotificationCe
 
         ActionBarMenu menu = actionBar.createMenu();
         menu.addItem(block_user, R.drawable.plus);
+        fragmentView = View.inflate(context,R.layout.layout_blocked_user,null);
+        //   FrameLayout frameLayout = (FrameLayout) fragmentView;
 
-        fragmentView = new FrameLayout(context);
-        FrameLayout frameLayout = (FrameLayout) fragmentView;
+        fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishFragment();
+            }
+        });
 
-        emptyTextView = new TextView(context);
+
+        fragmentView.findViewById(R.id.black_vw).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
+        emptyTextView  =(TextView) fragmentView.findViewById(R.id.tv_empty); //	new TextView(context);
         emptyTextView.setTextColor(0xff808080);
         emptyTextView.setTextSize(20);
         emptyTextView.setGravity(Gravity.CENTER);
         emptyTextView.setVisibility(View.INVISIBLE);
         emptyTextView.setText(LocaleController.getString("NoBlocked", R.string.NoBlocked));
-        frameLayout.addView(emptyTextView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
+   //     frameLayout.addView(emptyTextView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
         emptyTextView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -106,20 +123,24 @@ public class BlockedUsersActivity extends BaseFragment implements NotificationCe
             }
         });
 
-        progressView = new FrameLayout(context);
-        frameLayout.addView(progressView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        hideTabsAnsMenu();
+        progressView = (FrameLayout)fragmentView.findViewById(R.id.frame_layout);
 
-        ProgressBar progressBar = new ProgressBar(context);
-        progressView.addView(progressBar, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+        //     frameLayout.addView(progressView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        listView = new ListView(context);
+        ProgressBar progressBar =  (ProgressBar) fragmentView.findViewById(R.id.pb);
+        // progressView.addView(progressBar, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+
+
+        progressBar.setVisibility(View.GONE);
+        listView = (ListView) fragmentView.findViewById(R.id.lv);// new ListView(context);
         listView.setEmptyView(emptyTextView);
         listView.setVerticalScrollBarEnabled(false);
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setAdapter(listViewAdapter = new ListAdapter(context));
         listView.setVerticalScrollbarPosition(LocaleController.isRTL ? ListView.SCROLLBAR_POSITION_LEFT : ListView.SCROLLBAR_POSITION_RIGHT);
-        frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+     //   frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -183,6 +204,13 @@ public class BlockedUsersActivity extends BaseFragment implements NotificationCe
             }
             if (listViewAdapter != null) {
                 listViewAdapter.notifyDataSetChanged();
+                ((FrameLayout) progressView).addView(View.inflate(getParentActivity(), R.layout.notification_settings, null));
+                progressView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finishFragment();
+                    }
+                });
             }
         }
     }
@@ -206,6 +234,8 @@ public class BlockedUsersActivity extends BaseFragment implements NotificationCe
         if (listViewAdapter != null) {
             listViewAdapter.notifyDataSetChanged();
         }
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.BLOCKED_USER);
+
     }
 
     @Override

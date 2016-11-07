@@ -59,18 +59,27 @@ import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
+import org.telegram.payment.CheckPremiumUserRequester;
+import org.telegram.socialuser.BackgroundExecuter;
+import org.telegram.socialuser.Util;
+import org.telegram.socialuser.model.CustomHttpParams;
+import org.telegram.socialuser.runable.AddUserRequester;
+import org.telegram.socialuser.runable.GetUserRequester;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.BaseFragment;
+import org.telegram.ui.Adapters.CountryAdapter;
 import org.telegram.ui.Components.HintEditText;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.SlideView;
+import org.telegram.ui.listners.OnSocialLogin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -84,7 +93,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class LoginActivity extends BaseFragment {
+public class LoginActivity extends BaseFragment implements OnSocialLogin {
 
     private int currentViewNum = 0;
     private SlideView[] views = new SlideView[8];
@@ -201,6 +210,8 @@ public class LoginActivity extends BaseFragment {
     public void onResume() {
         super.onResume();
         AndroidUtilities.requestAdjustResize(getParentActivity(), classGuid);
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.LOGIN);
+
         try {
             if (currentViewNum >= 1 && currentViewNum <= 4 && views[currentViewNum] instanceof LoginActivitySmsView) {
                 int time = ((LoginActivitySmsView) views[currentViewNum]).openTime;
@@ -505,6 +516,34 @@ public class LoginActivity extends BaseFragment {
                 setPage(2, true, params, false);
             }
         }
+    }
+
+    @Override
+    public void onSocialLoginSuccess() {
+        getParentActivity().runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        presentFragment(new MyProfileActivity());
+
+                    }
+                }
+        );
+    }
+
+
+    @Override
+    public void onSocialLoginError() {
+
+
+        // needFinishActivity();
+    }
+
+    @Override
+    public void onSocialFailer(String userId) {
+        BackgroundExecuter.getInstance().execute(new CheckPremiumUserRequester(userId));
+
+        // needFinishActivity();
     }
 
     public class PhoneView extends SlideView implements AdapterView.OnItemSelectedListener {
@@ -1548,6 +1587,10 @@ public class LoginActivity extends BaseFragment {
                                 MessagesController.getInstance().putUser(res.user, false);
                                 ContactsController.getInstance().checkAppAccount();
                                 MessagesController.getInstance().getBlockedUsers(true);
+                                ArrayList<CustomHttpParams> paramse =new ArrayList();//todo change
+                                paramse.add(new CustomHttpParams("uniqueId",Util.getNumber(res.user.phone)));
+                                BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse,LoginActivity.this));
+
                                 needFinishActivity();
                             } else {
                                 lastError = error.text;
@@ -2010,6 +2053,10 @@ public class LoginActivity extends BaseFragment {
                                 MessagesController.getInstance().putUser(res.user, false);
                                 ContactsController.getInstance().checkAppAccount();
                                 MessagesController.getInstance().getBlockedUsers(true);
+                                ArrayList<CustomHttpParams> paramse =new ArrayList();//todo change
+                                paramse.add(new CustomHttpParams("uniqueId",Util.getNumber(res.user.phone)));
+                                BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse,LoginActivity.this));
+
                                 needFinishActivity();
                             } else {
                                 if (error.text.equals("PASSWORD_HASH_INVALID")) {
@@ -2233,6 +2280,10 @@ public class LoginActivity extends BaseFragment {
                                 MessagesController.getInstance().putUser(res.user, false);
                                 ContactsController.getInstance().checkAppAccount();
                                 MessagesController.getInstance().getBlockedUsers(true);
+                                ArrayList<CustomHttpParams> paramse =new ArrayList();//todo
+                                paramse.add(new CustomHttpParams("uniqueId", Util.getNumber(res.user.phone)));
+                                BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse,LoginActivity.this));
+
                                 needFinishActivity();
                             } else {
                                 if (error.text.startsWith("CODE_INVALID")) {
@@ -2447,6 +2498,24 @@ public class LoginActivity extends BaseFragment {
                                 MessagesController.getInstance().putUser(res.user, false);
                                 ContactsController.getInstance().checkAppAccount();
                                 MessagesController.getInstance().getBlockedUsers(true);
+                                ////////////
+                                TLRPC.TelegramUsers newuser = new TLRPC.TelegramUsers();
+                                if(!ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("dobforserver","2000-06-06").equalsIgnoreCase("2000-06-06")) {
+                                    //paramse.add(new CustomHttpParams("uniqueId",Util.getNumber(res.user.phone)));
+                                    newuser.setDob(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("dobforserver", "2000-06-06"));
+                                    newuser.setSex(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("sex", "M"));
+                                    newuser.setId(res.user.id + "");
+                                    // p.edit().putString("country",name).commit();
+                                    CountryAdapter.Country cu = Util.getcountry((ApplicationLoader.
+                                            applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("country", "india")));
+                                    newuser.setcCode(cu.shortname);
+                                    newuser.setname((res.user.first_name != null ? res.user.first_name : "") + " " + (res.user.last_name != null ? res.user.last_name : ""));
+                                    newuser.setPhoto(res.user.photo);
+                                    newuser.setPhone(res.user.phone);
+                                    newuser.setUsername(res.user.username);
+                                    BackgroundExecuter.getInstance().execute(new AddUserRequester(newuser, null));
+                                }
+                                ////////////
                                 needFinishActivity();
                             } else {
                                 if (error.text.contains("PHONE_NUMBER_INVALID")) {

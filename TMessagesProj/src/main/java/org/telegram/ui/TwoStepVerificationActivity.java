@@ -38,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.FileLog;
@@ -47,6 +48,7 @@ import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.Utilities;
+import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
@@ -452,6 +454,8 @@ public class TwoStepVerificationActivity extends BaseFragment implements Notific
             }, 200);
         }
         AndroidUtilities.requestAdjustResize(getParentActivity(), classGuid);
+        ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.TWOSTEP_VARIFICATION);
+
     }
 
     @Override
