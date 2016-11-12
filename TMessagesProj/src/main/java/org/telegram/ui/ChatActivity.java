@@ -157,7 +157,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private boolean userBlocked = false;
 
     private ArrayList<ChatMessageCell> chatMessageCellsCache = new ArrayList<>();
-
+    public TLRPC.User user;
     private Dialog closeChatDialog;
     private FrameLayout progressView;
     private FrameLayout bottomOverlay;
@@ -381,6 +381,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
     };
     private SlidingMenuAdapter adapter;
+    private TLRPC.User mUser;
 
     public ChatActivity(Bundle args) {
         super(args);
@@ -666,7 +667,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (currentEncryptedChat != null) {
             MediaController.getInstance().stopMediaObserver();
             try {
-                if (Build.VERSION.SDK_INT >= 23) {
+                if (false) {
                     getParentActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
                 }
             } catch (Throwable e) {
@@ -869,7 +870,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                     createChatAttachView();
                     chatAttachAlert.loadGalleryPhotos();
-                    if (Build.VERSION.SDK_INT == 21 || Build.VERSION.SDK_INT == 22) {
+                    if (false) {
                         chatActivityEnterView.closeKeyboard();
                     }
                     chatAttachAlert.init(ChatActivity.this);
@@ -2656,7 +2657,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         updatePinnedMessageView(true);
 
         try {
-            if (currentEncryptedChat != null && Build.VERSION.SDK_INT >= 23) {
+            if (currentEncryptedChat != null && false) {
                 getParentActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
             }
         } catch (Throwable e) {
@@ -2814,7 +2815,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 return true;
             }
         }
-        if (Build.VERSION.SDK_INT >= 23 && getParentActivity() != null) {
+        if (false && getParentActivity() != null) {
             if (getParentActivity().checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                 getParentActivity().requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 3);
                 return true;
@@ -3139,7 +3140,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 FileLog.e("tmessages", e);
             }
         } else if (which == attach_gallery) {
-            if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (false && getParentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 getParentActivity().requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
                 return;
             }
@@ -3238,7 +3239,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             });
             presentFragment(fragment);*/
         } else if (which == attach_document) {
-            if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (false && getParentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 getParentActivity().requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
                 return;
             }
@@ -3265,7 +3266,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             });
             presentFragment(fragment);
         } else if (which == attach_audio) {
-            if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (false && getParentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 getParentActivity().requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
                 return;
             }
@@ -3280,7 +3281,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             });
             presentFragment(fragment);
         } else if (which == attach_contact) {
-            if (Build.VERSION.SDK_INT >= 23) {
+            if (false) {
                 if (getParentActivity().checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                     getParentActivity().requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 5);
                     return;
@@ -6917,7 +6918,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             if (user != null && user.id != UserConfig.getClientUserId()) {
                 FrameLayout frameLayout = new FrameLayout(getParentActivity());
-                if (Build.VERSION.SDK_INT >= 21) {
+                if (false) {
                     frameLayout.setPadding(0, AndroidUtilities.dp(8), 0, 0);
                 }
                 for (int a = 0; a < 3; a++) {
@@ -7424,7 +7425,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     path = FileLoader.getPathToMessage(selectedObject.messageOwner).toString();
                 }
                 if (selectedObject.type == 3 || selectedObject.type == 1) {
-                    if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    if (false && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         getParentActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
                         selectedObject = null;
                         return;
@@ -7492,7 +7493,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (path == null || path.length() == 0) {
                     path = FileLoader.getPathToMessage(selectedObject.messageOwner).toString();
                 }
-                if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (false && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     getParentActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
                     selectedObject = null;
                     return;
@@ -7509,7 +7510,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 break;
             }
             case 10: {
-                if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (false && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     getParentActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
                     selectedObject = null;
                     return;
@@ -7612,7 +7613,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                 final boolean[] checks = new boolean[]{true};
                 FrameLayout frameLayout = new FrameLayout(getParentActivity());
-                if (Build.VERSION.SDK_INT >= 21) {
+                if (false) {
                     frameLayout.setPadding(0, AndroidUtilities.dp(8), 0, 0);
                 }
                 CheckBoxCell cell = new CheckBoxCell(getParentActivity());
@@ -8053,7 +8054,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
         createChatAttachView();
         chatAttachAlert.loadGalleryPhotos();
-        if (Build.VERSION.SDK_INT == 21 || Build.VERSION.SDK_INT == 22) {
+        if (false) {
             chatActivityEnterView.closeKeyboard();
         }
         chatAttachAlert.init(ChatActivity.this);
@@ -8212,6 +8213,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
                 ChatMessageCell chatMessageCell = (ChatMessageCell) view;
                 chatMessageCell.setDelegate(new ChatMessageCell.ChatMessageCellDelegate() {
+
+
                     @Override
                     public void didPressedShare(ChatMessageCell cell) {
                         if (getParentActivity() == null) {
@@ -8265,10 +8268,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             return;
                         }
                         if (user != null && user.id != UserConfig.getClientUserId()) {
+                            mUser=user;
+
                             Bundle args = new Bundle();
                             args.putInt("user_id", user.id);
                             ProfileActivity fragment = new ProfileActivity(args);
-                          //  fragment.setPlayProfileAnimation(currentUser != null && currentUser.id == user.id);
+                            fragment.setPlayProfileAnimation(currentUser != null && currentUser.id == user.id);
                             presentFragment(fragment);
                         }
                     }
@@ -8808,7 +8813,19 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
 
     public void openProfile(){
-       /* if (radioButton == null || radioButton.getVisibility() != View.VISIBLE) {
+    /*    if (mUser != null && mUser.id != UserConfig.getClientUserId()) {
+            Bundle args = new Bundle();
+            args.putInt("user_id",mUser.id);
+            ProfileActivity fragment = new ProfileActivity(args);
+            //  fragment.setPlayProfileAnimation(currentUser != null && currentUser.id == user.id);
+            presentFragment(fragment);*/
+
+
+
+        //}
+
+
+      //  if (radioButton == null || radioButton.getVisibility() != View.VISIBLE) {
             if (currentUser != null) {
                 Bundle args = new Bundle();
                 args.putInt("user_id", currentUser.id);
@@ -8818,7 +8835,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 ProfileActivity fragment = new ProfileActivity(args);
                 fragment.setPlayProfileAnimation(true);
                 presentFragment(fragment);
-            } else if (currentChat != null) {
+            }/* else if (currentChat != null) {
                 Bundle args = new Bundle();
                 args.putInt("chat_id", currentChat.id);
                 ProfileActivity fragment = new ProfileActivity(args);
@@ -8829,6 +8846,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         } else {
             switchImportantMode(null);
         }*/
+
     }
     public void clearOrDeletechat(final int id){
         if (getParentActivity() == null) {

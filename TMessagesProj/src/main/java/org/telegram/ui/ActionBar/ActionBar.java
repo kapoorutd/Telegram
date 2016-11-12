@@ -47,7 +47,7 @@ public class ActionBar extends FrameLayout {
     private View actionModeTop;
     private ActionBarMenu menu;
     private ActionBarMenu actionMode;
-    private boolean occupyStatusBar = Build.VERSION.SDK_INT >= 21;
+    private boolean occupyStatusBar = false;//Build.VERSION.SDK_INT >= 21;
     private boolean actionModeVisible;
     private boolean addToContainer = true;
     private boolean interceptTouches = true;

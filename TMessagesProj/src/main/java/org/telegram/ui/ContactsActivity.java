@@ -318,7 +318,7 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                             Bundle args = new Bundle();
                             args.putInt("user_id", user.id);
                             if (MessagesController.checkCanOpenChat(args, ContactsActivity.this)) {
-                                presentFragment(new ChatActivity(args), true);
+                                presentFragment(new ChatActivity(args));
                             }
                         }
                     }
@@ -408,7 +408,7 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                                     Bundle args = new Bundle();
                                     args.putInt("user_id", user.id);
                                     if (MessagesController.checkCanOpenChat(args, ContactsActivity.this)) {
-                                        presentFragment(new ChatActivity(args), true);
+                                        presentFragment(new ChatActivity(args));
                                     }
                                 }
                             }
@@ -600,7 +600,7 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                 Bundle args2 = new Bundle();
                 args2.putInt("enc_id", encryptedChat.id);
                 NotificationCenter.getInstance().postNotificationName(NotificationCenter.closeChats);
-                presentFragment(new ChatActivity(args2), true);
+                presentFragment(new ChatActivity(args2));
             }
         } else if (id == NotificationCenter.closeChats) {
             if (!creatingChat) {

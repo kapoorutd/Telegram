@@ -96,7 +96,7 @@ public class ChatAvatarContainer extends FrameLayout {
                         args.putLong("dialog_id", parentFragment.getDialogId());
                     }
                     ProfileActivity fragment = new ProfileActivity(args);
-                    fragment.setPlayProfileAnimation(true);
+                 //   fragment.setPlayProfileAnimation(true);
                     parentFragment.presentFragment(fragment);
                 } else if (chat != null) {
                     Bundle args = new Bundle();

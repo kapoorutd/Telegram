@@ -276,7 +276,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         messagesSectionRow = rowCount++;
         messagesSectionRow2 = rowCount++;
         customTabsRow = rowCount++;
-        if (Build.VERSION.SDK_INT >= 23) {
+        if (false) {
             directShareRow = rowCount++;
         }
         textSizeRow = rowCount++;
@@ -813,7 +813,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         writeButton.setBackgroundResource(R.drawable.floating_user_states);
         writeButton.setImageResource(R.drawable.floating_camera);
         writeButton.setScaleType(ImageView.ScaleType.CENTER);
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (false) {
             StateListAnimator animator = new StateListAnimator();
             animator.addState(new int[]{android.R.attr.state_pressed}, ObjectAnimator.ofFloat(writeButton, "translationZ", AndroidUtilities.dp(2), AndroidUtilities.dp(4)).setDuration(200));
             animator.addState(new int[]{}, ObjectAnimator.ofFloat(writeButton, "translationZ", AndroidUtilities.dp(4), AndroidUtilities.dp(2)).setDuration(200));
