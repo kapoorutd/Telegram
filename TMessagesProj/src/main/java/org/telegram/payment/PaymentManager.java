@@ -122,7 +122,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
          * Also, to include additional payment details and an item list, see getStuffToBuy() below.
          */
 
-        PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE);
+        PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE,"2");
 
         /*
          * See getStuffToBuy(..) for examples of some available payment options.
@@ -137,16 +137,24 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
         startActivityForResult(intent, REQUEST_CODE_PAYMENT);
     }
 
+
+
+
     /**
      * @param paymentIntent
      * @return
      */
 
 
-    private PayPalPayment getThingToBuy(String paymentIntent) {
-        return new PayPalPayment(new BigDecimal("2.00"), "USD", "PREMIUM FEATURES",
+    private PayPalPayment getThingToBuy(String paymentIntent,String paymentValue) {
+        return new PayPalPayment(new BigDecimal(paymentValue), "USD", "PREMIUM FEATURES",
                 paymentIntent);
+
     }
+
+
+
+
 
 
 
@@ -313,15 +321,16 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
          * https://github.com/paypal/rest-api-sdk-python/tree/master/samples/mobile_backend
          */
 
-
-
         String id=UserPaymentInfo.getInstatance().getUserId();
+
+        // TODO change the amount selected by user.
+
+        String amount="";
         if(! id.equalsIgnoreCase("")) {
             BackgroundExecuter.getInstance().execute(new
-                    ConfirmationRequester(UserPaymentInfo.getInstatance().getPaymentId(), id));
-        }
-
-    }
+                    ConfirmationRequester(UserPaymentInfo.getInstatance().getPaymentId(), id,amount));
+           }
+          }
 
     /*
     public void onFuturePaymentPurchasePressed(View pressed) {

@@ -14,12 +14,13 @@ public class ConfirmationRequester implements Runnable {
     private ArrayList<CustomHttpParams> params =new ArrayList<>();
 
 
-    public ConfirmationRequester(String paymentId, String userId )
+    public ConfirmationRequester(String paymentId, String userId ,String amount)
     {
 
 
         params.add(new CustomHttpParams("paymentId",paymentId));
         params.add(new CustomHttpParams("userId",userId));
+        params.add(new CustomHttpParams("amount",amount));
 
     }
     @Override
