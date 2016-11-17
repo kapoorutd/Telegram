@@ -8726,9 +8726,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 draweritems.add(new MenuItems(LocaleController.getString("DeleteChatUser", R.string.DeleteChatUser), R.drawable.menu_bin,true ,"",4));
             }
         }
+        if (currentEncryptedChat == null && !isBroadcast) {
 
-
-        draweritems.add(new MenuItems("        Search", R.drawable.ic_ab_search,true ,"",5));
+            draweritems.add(new MenuItems("        Search", R.drawable.ic_ab_search, true, "", 5));
+        }
 
         adapter = new SlidingMenuAdapter(getParentActivity(),
                 draweritems);

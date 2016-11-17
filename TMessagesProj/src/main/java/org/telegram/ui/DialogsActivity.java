@@ -358,6 +358,9 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
         if (onlySelect) {
             actionBar.setBackButtonImage(R.drawable.ic_ab_back);
             actionBar.setTitle(LocaleController.getString("SelectChat", R.string.SelectChat));
+            parentLayout.addFragmentToStack(new DialogsActivity(null));
+
+
         } else {
             if (searchString != null) {
                 actionBar.setBackButtonImage(R.drawable.ic_ab_back);
@@ -1236,6 +1239,7 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     didSelectResult(dialog_id, false, false);
+
                 }
             });
             builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);

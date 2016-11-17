@@ -416,7 +416,7 @@
     <!--contacts view-->
     <string name="SelectContact">Select Contact</string>
     <string name="NoContacts">No contacts yet</string>
-    <string name="InviteText">Hey, let\'s switch to Social IM for Telegram: https://telegram.org/dl</string>
+    <string name="InviteText">Hey, let\'s switch to Social IM for Telegram: https://appworld.blackberry.com/webstore/content/59951054/</string>
     <string name="TodayAt">at</string>
     <string name="YesterdayAt">yesterday at</string>
     <string name="Online">online</string>
@@ -487,7 +487,7 @@
     <string name="EncryptionKey">Encryption Key</string>
     <string name="MessageLifetime">Self-Destruct Timer</string>
     <string name="ShortMessageLifetimeForever">Off</string>
-    <string name="EncryptionKeyDescription">This image and text were derived from the encryption key for this secret chat with <![CDATA[<b>]]>%1$s<![CDATA[</b>]]>.<![CDATA[<br><br>]]>If they look the same on <![CDATA[<b>]]>%2$s\'s<![CDATA[</b>]]> device, end-to-end encryption is guaranteed.<![CDATA[<br><br>]]>Learn more at Social IM for Telegram.org</string>
+    <string name="EncryptionKeyDescription">This image and text were derived from the encryption key for this secret chat with <![CDATA[<b>]]>%1$s<![CDATA[</b>]]>.<![CDATA[<br><br>]]>If they look the same on <![CDATA[<b>]]>%2$s\'s<![CDATA[</b>]]> device, end-to-end encryption is guaranteed.<![CDATA[<br><br>]]>Learn more at Social IM for Telegram</string>
     <string name="EncryptionKeyLink">https://telegram.org/faq#secret-chats</string>
     <string name="NumberUnknown">Unknown</string>
     <string name="Info">Info</string>

@@ -1108,6 +1108,8 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                         removeLast = layersActionBarLayout.fragmentsStack.size() > 0 && layersActionBarLayout.fragmentsStack.get(layersActionBarLayout.fragmentsStack.size() - 1) instanceof DialogsActivity;
                     } else {
                         removeLast = actionBarLayout.fragmentsStack.size() > 1 && actionBarLayout.fragmentsStack.get(actionBarLayout.fragmentsStack.size() - 1) instanceof DialogsActivity;
+
+                        setTabEnableDisable(true,false,true);
                     }
                     actionBarLayout.presentFragment(fragment, removeLast, true, true);
                     pushOpened = true;
@@ -1516,7 +1518,10 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                         actionBarLayout.presentFragment(fragment, false, true, true);
                     } else {
                         actionBarLayout.addFragmentToStack(fragment, actionBarLayout.fragmentsStack.size() - 1);
+
+                        //<editor-fold desc="Description">
                     }
+                    //</editor-fold>
 
                     if (!fragment.openVideoEditor(videoPath, dialogsFragment != null, false) && dialogsFragment != null) {
                         if (!AndroidUtilities.isTablet()) {
