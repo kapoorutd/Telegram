@@ -45,6 +45,7 @@ import java.util.ArrayList;
  * Created by ram on 11/6/16.
  */
 public class UserProfileActivity extends BaseFragment implements PhotoViewer.PhotoViewerProvider,View.OnClickListener,OnServerResponse,OnTelegramSync {
+    private final String cCode;
     private BackupImageView avatarImageView;
     private TextView statusTextView,nameTextView;
     private FrameLayout avatarContainer;
@@ -100,6 +101,7 @@ public class UserProfileActivity extends BaseFragment implements PhotoViewer.Pho
     public UserProfileActivity(Bundle args,TLRPC.TelegramUsers telegramUser ) {
         user=telegramUser ;
         friendId  = args.getString("friendId");
+        cCode = args.getString("cCode");
     }
 
 
@@ -154,7 +156,7 @@ public class UserProfileActivity extends BaseFragment implements PhotoViewer.Pho
         //   emptyView=(TextView)fragmentView.findViewById(R.id.empty_view);
         checkAndUpdateAvatar();
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-        country_txt.setText(preferences.getString("country","Nepal"));
+        country_txt.setText(cCode);
         adapter = new CustomGridAdapter(mcContext,listnew);
         grid=(GridView)fragmentView.findViewById(R.id.grid);
         emptyView=(TextView)fragmentView.findViewById(R.id.empty_view);

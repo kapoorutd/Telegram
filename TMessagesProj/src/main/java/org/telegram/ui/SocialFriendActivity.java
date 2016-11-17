@@ -211,6 +211,7 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
                     if (u !=null) {
                         args.putInt("user_id", Integer.parseInt(listnew.get(pos).id));
                         args.putString("friendId", listnew.get(pos).getUserId());
+                        args.putString("cCode",listnew.get(pos).getcCode());
                         presentFragment(new UserProfileActivity(args,listnew.get(pos)));
                         ArrayList<CustomHttpParams> params = new ArrayList<>();
                         params.add(new CustomHttpParams("userId", ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("social_id", "")));

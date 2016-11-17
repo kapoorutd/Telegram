@@ -6219,7 +6219,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 MessagesController.getInstance().loadFullUser(currentUser, classGuid, false);
             }
             if (Build.VERSION.SDK_INT >= 21) {
-                createChatAttachView();
+           //     createChatAttachView();
             }
         }
     }
@@ -8126,8 +8126,27 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         try {
             AndroidUtilities.hideKeyboard(getParentActivity().getCurrentFocus());
             if (i == 1) {
-                showTabsAndmenu();
-                finishFragment();
+
+
+                if (actionBar.isActionModeShowed()) {
+                    for (int a = 1; a >= 0; a--) {
+                        selectedMessagesIds[a].clear();
+                        selectedMessagesCanCopyIds[a].clear();
+                    }
+                    cantDeleteMessagesCount = 0;
+                    if (chatActivityEnterView.isEditingMessage()) {
+                        chatActivityEnterView.setEditingMessageObject(null, false);
+                    } else {
+                        actionBar.hideActionMode();
+                        updatePinnedMessageView(true);
+                    }
+                    updateVisibleRows();
+                } else {
+                    finishFragment();
+                }
+
+                //showTabsAndmenu();
+               // finishFragment();
             } else if (i == 2) {
                 if(parentLayout!=null)
                     parentLayout.openDrawer();

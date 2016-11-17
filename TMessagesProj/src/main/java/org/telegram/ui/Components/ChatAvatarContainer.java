@@ -96,7 +96,7 @@ public class ChatAvatarContainer extends FrameLayout {
                         args.putLong("dialog_id", parentFragment.getDialogId());
                     }
                     ProfileActivity fragment = new ProfileActivity(args);
-                 //   fragment.setPlayProfileAnimation(true);
+                    //   fragment.setPlayProfileAnimation(true);
                     parentFragment.presentFragment(fragment);
                 } else if (chat != null) {
                     Bundle args = new Bundle();
@@ -134,7 +134,7 @@ public class ChatAvatarContainer extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int actionBarHeight = ActionBar.getCurrentActionBarHeight();
-        int viewTop = (actionBarHeight - AndroidUtilities.dp(42)) / 2 + (Build.VERSION.SDK_INT >= 21 ? AndroidUtilities.statusBarHeight : 0);
+        int viewTop = (actionBarHeight - AndroidUtilities.dp(42)) / 2 + 0;///* (Build.VERSION.SDK_INT >= 21 ? AndroidUtilities.statusBarHeight : 0*/);
         avatarImageView.layout(AndroidUtilities.dp(8), viewTop, AndroidUtilities.dp(42 + 8), viewTop + AndroidUtilities.dp(42));
         titleTextView.layout(AndroidUtilities.dp(8 + 54), viewTop + AndroidUtilities.dp(1.3f), AndroidUtilities.dp(8 + 54) + titleTextView.getMeasuredWidth(), viewTop + titleTextView.getTextHeight() + AndroidUtilities.dp(1.3f));
         if (timeItem != null) {

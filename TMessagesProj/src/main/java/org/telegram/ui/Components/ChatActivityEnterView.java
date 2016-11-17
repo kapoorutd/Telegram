@@ -799,7 +799,7 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
             notifyButton.setScaleType(ImageView.ScaleType.CENTER);
             notifyButton.setVisibility(canWriteToChannel ? VISIBLE : GONE);
             if (Build.VERSION.SDK_INT >= 21) {
-                notifyButton.setBackgroundDrawable(Theme.createBarSelectorDrawable(Theme.INPUT_FIELD_SELECTOR_COLOR));
+              //  notifyButton.setBackgroundDrawable(Theme.createBarSelectorDrawable(Theme.INPUT_FIELD_SELECTOR_COLOR));
             }
             attachButton.addView(notifyButton, LayoutHelper.createLinear(48, 48));
             notifyButton.setOnClickListener(new OnClickListener() {
@@ -1286,9 +1286,9 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
     }
 
     private void resizeForTopView(boolean show) {
-        LayoutParams layoutParams = (LayoutParams) textFieldContainer.getLayoutParams();
+        LayoutParams layoutParams = (LayoutParams) textFieldContainerparant.getLayoutParams();
         layoutParams.topMargin = AndroidUtilities.dp(2) + (show ? topView.getLayoutParams().height : 0);
-        textFieldContainer.setLayoutParams(layoutParams);
+        textFieldContainerparant.setLayoutParams(layoutParams);
     }
 
     public void onDestroy() {
@@ -2046,7 +2046,7 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
             viewGroup.removeView(view);
         }
         if (Build.VERSION.SDK_INT >= 21) {
-            view.setBackgroundDrawable(Theme.createBarSelectorDrawable(Theme.INPUT_FIELD_SELECTOR_COLOR));
+        //    view.setBackgroundDrawable(Theme.createBarSelectorDrawable(Theme.INPUT_FIELD_SELECTOR_COLOR));
         }
         attachButton.addView(view, LayoutHelper.createLinear(48, 48));
     }
