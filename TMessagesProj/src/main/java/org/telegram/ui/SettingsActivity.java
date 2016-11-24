@@ -67,6 +67,12 @@ import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.payment.PaymentManager;
 import org.telegram.payment.UserPaymentInfo;
+import org.telegram.socialuser.BackgroundExecuter;
+import org.telegram.socialuser.model.CreditModel;
+import org.telegram.socialuser.model.CustomHttpParams;
+import org.telegram.socialuser.runable.AddKarmaRequester;
+import org.telegram.socialuser.runable.DeductKarmaRequester;
+import org.telegram.socialuser.runable.GetKarmaBalanceRequester;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.SerializedData;
@@ -101,12 +107,14 @@ import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.NumberPicker;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.listners.KarmaBalanceListener;
+import org.telegram.ui.listners.KarmaDeductionListener;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class SettingsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, PhotoViewer.PhotoViewerProvider {
+public class SettingsActivity extends BaseFragment implements KarmaBalanceListener ,NotificationCenter.NotificationCenterDelegate, PhotoViewer.PhotoViewerProvider, KarmaDeductionListener {
 
     private ListView listView;
     private ListAdapter listAdapter;
@@ -170,6 +178,32 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
     private final static int edit_name = 1;
     private final static int logout = 2;
+    private double bal;
+
+    @Override
+    public void onGetKarmaSuccess(int karmaPoints) {
+
+        if (listView != null) {
+           if(karmaPoints != bal )
+
+            listView.invalidateViews();
+        }
+    }
+
+    @Override
+    public void onGetKarmaFailure() {
+
+    }
+
+    @Override
+    public void onKarmaDeductSuccess() {
+
+    }
+
+    @Override
+    public void onKarmaDeductFailed() {
+
+    }
 
     private static class LinkMovementMethodMy extends LinkMovementMethod {
         @Override
@@ -252,10 +286,10 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
           preferencerow = rowCount++;
           premiumFeature=rowCount++;
 
-        if(UserPaymentInfo.getInstatance().getPaymentStatus() ==UserPaymentInfo.paidUser
+   /*     if(UserPaymentInfo.getInstatance().getPaymentStatus() ==UserPaymentInfo.paidUser
                 && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase("")) ){
             premiumFeature=rowCount--;
-        }
+        }*/
 
 
 
@@ -297,10 +331,22 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         }
         versionRow = rowCount++;
         //contactsSectionRow = rowCount++;
-        //contactsReimportRow = rowCount++;
+        //contactsReimportRow = rowCount++;9990243020
         //contactsSortRow = rowCount++;
-
         MessagesController.getInstance().loadFullUser(UserConfig.getCurrentUser(), classGuid, true);
+
+      ////just testing /////////////////////
+
+        SharedPreferences sp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+
+        String mob  =  sp.getString("mob","9888888");
+        String cc   =   sp.getString("cCode","US");
+
+
+    //   BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester("8978690567",cc,this));
+
+        BackgroundExecuter.getInstance().execute(new DeductKarmaRequester(new CreditModel("VIDEO_ADS","8978690567",cc),SettingsActivity.this));
+
 
         return true;
     }
@@ -451,8 +497,12 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
                 else if(i==premiumFeature){
 
-                    SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-                    if(false/*pp.getString("social_id","").equals("")*/) {
+                    PaymentManager.createIntent(getParentActivity());
+
+
+
+                    /*SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    if(false*//*pp.getString("social_id","").equals("")*//*) {
                         presentFragment(new MyProfileActivity());
                     }
                     else
@@ -464,7 +514,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                         }
 
                         // PaymentManager.createIntent(getParentActivity());
-                    }
+                    }*/
                 }
 
 
@@ -1506,7 +1556,10 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                     TextSettingsCell textCell = (TextSettingsCell) view;
 
                     if(i==premiumFeature){
-                        textCell.setTextAndIcon("Upgrade to Premium",R.drawable.icpre,true);
+                        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                         bal= Double.parseDouble(  p.getString("karmaBal","0"));
+                          textCell.setTextAndValue("Get Karma",  "Balance ("+p.getString("karmaBal","0")+")",true);/*R.drawable.icpre*/
+
                     }else if (i == myprofileRow/*numberRow*/) {
                         textCell.setText(LocaleController.getString("myprofile", R.string.myprofile), true);
                     } else if (i == preferencerow) {
@@ -1566,9 +1619,9 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         //    draweritems.add(new MenuItems(LocaleController.getString("TelegramFaq", R.string.TelegramFaq),R.drawable.menu_faq,true, "",2));
         draweritems.add(new MenuItems(LocaleController.getString("preferences", R.string.preferences),R.drawable.menu_pref,true, "",3));
 
-        if(!(UserPaymentInfo.getInstatance().getPaymentStatus() == UserPaymentInfo.paidUser) ){
-            draweritems.add(new MenuItems("Upgrade to Premium",R.drawable.ic_premium,true, "",4));
-        }
+
+            draweritems.add(new MenuItems("Get Karma",R.drawable.ic_premium,true, "Bal.("+getKarmaBal()+")",4));
+
 
 
         SlidingMenuAdapter adapter = new SlidingMenuAdapter(getParentActivity(),
@@ -1654,11 +1707,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                         presentFragment(new MyProfileActivity());
                     }
                     else{
-                        if(UserPaymentInfo.getInstatance().getPaymentStatus() == UserPaymentInfo.paidUser ){
-                            Toast.makeText(getParentActivity(),"YOU HAVE ALREADY SUBSCRIBED",Toast.LENGTH_SHORT).show();
-                        }else {
                             PaymentManager.createIntent(getParentActivity());
-                        }
                     }
 
                     break;
@@ -1718,6 +1767,13 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Support IM for Telegram");
         emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getParentActivity().getString(R.string.MailContent)));
         getParentActivity().startActivity(Intent.createChooser(emailIntent, "Send email..."));
+    }
+
+
+    public String getKarmaBal(){
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+
+        return p.getString("karmaBal","0");
     }
 
 

@@ -64,8 +64,6 @@
            android:text=" Be smart!\n Opt for Paid Version in just 2$ and  get :"
            android:layout_height="wrap_content" />
 
-
-
      <LinearLayout
 
     android:layout_below="@+id/buy_content1"
@@ -107,7 +105,15 @@
            android:layout_height="wrap_content" />
 
 
-</LinearLayout></LinearLayout>
+</LinearLayout>
+
+
+
+
+
+
+
+           </LinearLayout>
 
 <!--
        <TextView
@@ -120,6 +126,83 @@
            android:layout_marginTop="150dp"
            android:text="Yippie! Now you are good to go and chat with 20+ friends, on Ad-Free Screen!"
            android:layout_height="wrap_content" />-->
+
+
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:background="#d5f5e3"
+               android:layout_height="wrap_content">
+
+           <RadioGroup
+               android:layout_width="match_parent"
+               android:layout_marginLeft="20dp"
+               android:id="@+id/rg_opt"
+               android:layout_height="wrap_content">
+
+               <RadioButton
+                   android:layout_width="match_parent"
+                   android:text="Get Credit using Paypal "
+                   android:id="@+id/rb_paypal"
+                   android:checked="true"
+                   android:textSize="14sp"
+
+                   android:textColor="@color/black"
+                   android:layout_marginTop="5dp"
+                   android:layout_height="wrap_content" />
+
+
+               <RadioButton
+                   android:layout_width="match_parent"
+                   android:text="Get Credit by Watching Ads"
+                   android:id="@+id/ads"
+                   android:textSize="14sp"
+
+                   android:layout_marginTop="5dp"
+                   android:layout_marginBottom="5dp"
+                   android:textColor="@color/black"
+                   android:layout_height="wrap_content" />
+                </RadioGroup>
+
+           </LinearLayout>
+
+           <RadioGroup
+               android:layout_width="match_parent"
+               android:layout_margin="20dp"
+               android:id="@+id/op_paypal"
+               android:animateLayoutChanges="true"
+               android:layout_height="wrap_content">
+
+               <RadioButton
+                   android:layout_width="match_parent"
+                   android:text="Pay 1$ and get 10 Karma point."
+                   android:id="@+id/pay1$"
+                   android:checked="true"
+                   android:textSize="14sp"
+
+                   android:textColor="@color/black"
+                   android:layout_height="wrap_content" />
+
+               <RadioButton
+                   android:layout_width="match_parent"
+                   android:text="Pay 5$ and get 50 Karma point."
+                   android:id="@+id/pay5$"
+                   android:textSize="14sp"
+
+                   android:textColor="@color/black"
+                   android:layout_height="wrap_content" />
+
+               <RadioButton
+                   android:layout_width="match_parent"
+                   android:text="Pay 10$ and get 100 Karma point."
+                   android:id="@+id/pay10$"
+                   android:textSize="14sp"
+
+                   android:textColor="@color/black"
+                   android:layout_height="wrap_content" />
+
+           </RadioGroup>
+
 
 
        </LinearLayout>
@@ -149,7 +232,7 @@
                   android:textSize="20sp"
                   android:layout_margin="10dp"
                   android:textColor="@color/common_plus_signin_btn_text_dark_focused"
-                  android:text="Buy Now" />
+                  android:text="Get Now" />
 
 
            <Button

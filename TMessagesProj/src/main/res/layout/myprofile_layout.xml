@@ -179,7 +179,7 @@
                     android:id="@+id/id_age"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="XX/MM/YYYY"
+                    android:text="01/01/1990"
                     android:layout_toRightOf="@id/age_image"
                     android:layout_gravity="center_vertical"
                     android:textColor="@color/black">

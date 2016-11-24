@@ -48,7 +48,6 @@ public class GetUserRequester implements Runnable {
                     }
                     p.edit().putString("visibility", resUser.visibility).commit();
                     p.edit().putString("userHash", resUser.userHash).commit();
-
                     login.onSocialFailer(resUser.userId);
                 } else {
                   login.onSocialLoginSuccess();

@@ -38,6 +38,7 @@ import org.telegram.socialuser.Util;
 import org.telegram.socialuser.model.CustomHttpParams;
 import org.telegram.socialuser.runable.AddContactRequester;
 import org.telegram.socialuser.runable.AddUserRequester;
+import org.telegram.socialuser.runable.GetKarmaBalanceRequester;
 import org.telegram.tgnet.TLRPC;
 //import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.tracker.AnalyticsTrackers;
@@ -47,13 +48,14 @@ import org.telegram.ui.Adapters.CountryAdapter;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
 //import org.telegram.ui.Components.FrameLayoutFixed;
+import org.telegram.ui.listners.KarmaBalanceListener;
 import org.telegram.ui.listners.OnAddUserListner;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class MyProfileActivity extends BaseFragment implements PhotoViewer.PhotoViewerProvider,View.OnClickListener,NotificationCenter.NotificationCenterDelegate{
+public class MyProfileActivity extends BaseFragment implements KarmaBalanceListener, PhotoViewer.PhotoViewerProvider,View.OnClickListener,NotificationCenter.NotificationCenterDelegate{
     private BackupImageView avatarImageView;
     private TextView statusTextView,nameTextView;
     private FrameLayout avatarContainer;
@@ -156,7 +158,7 @@ public class MyProfileActivity extends BaseFragment implements PhotoViewer.Photo
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         dob_txt.setText(preferences.getString("dob",""));
-        gender_txt.setText(getGender(preferences.getString("sex","")));
+        gender_txt.setText(getGender(preferences.getString("sex","Male")));
         if(currentUser!=null&&currentUser.username!= null) {
             nameTextView.setText(currentUser.username);
         } else {
@@ -266,8 +268,16 @@ public class MyProfileActivity extends BaseFragment implements PhotoViewer.Photo
                 newuser.setname((currentUser.first_name!=null?currentUser.first_name:"")+" "+(currentUser.last_name!=null?currentUser.last_name:""));
                 newuser.setPhoto(currentUser.photo);
                 newuser.setPhone(currentUser.phone);
-                newuser.setUsername(currentUser.username);
+                newuser.setUsername(currentUser.username!=null?currentUser.username:currentUser.first_name);
+
+
                 BackgroundExecuter.getInstance().execute(new AddUserRequester(newuser,null));
+
+                SharedPreferences sp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+
+                String mob  =  sp.getString("mob","9888888");
+                String cc   =   sp.getString("cCode","US");
+       //         BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester(mob,cc,this));
                 finishFragment();
                 break;
         }
@@ -502,6 +512,16 @@ public class MyProfileActivity extends BaseFragment implements PhotoViewer.Photo
             params.add(new CustomHttpParams("userId", pp.getString("social_id", "")));
             BackgroundExecuter.getInstance().execute(new AddContactRequester(telegramUserses, params));
         }
+
+    }
+
+    @Override
+    public void onGetKarmaSuccess(int v) {
+
+    }
+
+    @Override
+    public void onGetKarmaFailure() {
 
     }
 }

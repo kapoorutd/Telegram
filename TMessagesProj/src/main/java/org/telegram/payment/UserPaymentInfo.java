@@ -28,6 +28,13 @@ import org.telegram.messenger.ApplicationLoader;
     public static final int unPaidUser      = 2 ;
     public static final int pendingUser     = 3 ;
 
+    public static String videoAds="";
+    public static String videoCall="";
+    public static String voiceCall="";
+    public static String liveStreaming="";
+    public static String socialFriend="";
+
+
 
     private static UserPaymentInfo _paymentInfo ;
 

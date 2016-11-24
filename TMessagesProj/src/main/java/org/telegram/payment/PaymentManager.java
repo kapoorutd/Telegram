@@ -4,13 +4,19 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.Transformation;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -24,6 +30,7 @@ import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 
 import org.json.JSONException;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.R;
 import org.telegram.payment.billingModel.PaymentResponse;
 import org.telegram.socialuser.BackgroundExecuter;
@@ -34,21 +41,21 @@ import java.math.BigDecimal;
  * Created by craterzone3 on 13/6/16.
  */
 
-public class PaymentManager extends Activity implements PaymentConfirmationListener{
+public class PaymentManager extends Activity implements PaymentConfirmationListener {
 
     public static final String TAG = PaymentManager.class.getName().toString();
 
     /**
      * - Set to PayPalConfiguration.ENVIRONMENT_PRODUCTION to move real money.
-     *
+     * <p>
      * - Set to PayPalConfiguration.ENVIRONMENT_SANDBOX to use your test credentials
-     *
-     *
+     * <p>
+     * <p>
      * - Set to PayPalConfiguration.ENVIRONMENT_NO_NETWORK to kick the tires
-     *    without communicating to PayPal's servers.
+     * without communicating to PayPal's servers.
      */
 
-    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_PRODUCTION ;
+    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_PRODUCTION;
 
 
     // note that these credentials will differ between live & sandbox environments.
@@ -61,7 +68,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
      */
 
 
-    private static final String CONFIG_CLIENT_ID ="ARafipSb7SknBnBKsQY1Na9CvKZPypeHORyOQ-f-1sEAfwt0NEymuOniy4__9oIJ1JYEleESrqSkESGB";
+    private static final String CONFIG_CLIENT_ID = "ARafipSb7SknBnBKsQY1Na9CvKZPypeHORyOQ-f-1sEAfwt0NEymuOniy4__9oIJ1JYEleESrqSkESGB";
     private static final int REQUEST_CODE_PAYMENT = 1;
     private static final int REQUEST_CODE_FUTURE_PAYMENT = 2;
     private static final int REQUEST_CODE_PROFILE_SHARING = 3;
@@ -69,14 +76,17 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
     private TextView success;
     private Button payButton;
     private Button cancelButton;
-
+    private android.widget.RadioButton rbPaypal;
+    private Button getNow;
 
     private static PayPalConfiguration config = new PayPalConfiguration()
             .environment(CONFIG_ENVIRONMENT)
             .clientId(CONFIG_CLIENT_ID)
             // The following are only used in PayPalFuturePaymentActivity.
             .merchantName("CRATERZONE PVT LTD").acceptCreditCards(true);
-
+    private RadioGroup rgOption;
+    private int paymentValue;
+    private RadioButton adBtn;
 
 
     @Override
@@ -87,6 +97,44 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         startService(intent);
         acttionBarSetup();
+        rbPaypal = (android.widget.RadioButton) findViewById(R.id.rb_paypal);
+        final RadioGroup view = (RadioGroup) findViewById(R.id.op_paypal);
+        getNow = (Button) findViewById(R.id.buyItBtn);
+        rgOption = (RadioGroup) findViewById(R.id.rg_opt);
+        adBtn = (RadioButton) findViewById(R.id.ads);
+
+        rgOption.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (rbPaypal.isChecked()) {
+                    view.setVisibility(View.VISIBLE);
+                } else {
+                    view.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        getNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (rbPaypal.isChecked()) {
+                    onBuyPressed(paymentValue);
+                } else if (adBtn.isChecked()) {
+
+                }
+
+            }
+        });
+
+
+        view.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                setPaymentValue(checkedId);
+            }
+        });
+
         findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +145,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
 
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void acttionBarSetup(){
+    private void acttionBarSetup() {
         // getActionBar().setTitle(" Premium");
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getActionBar().setCustomView(R.layout.custom_actionbar);
@@ -111,7 +159,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
     }
 
 
-    public void onBuyPressed(View pressed) {
+    public void onBuyPressed(int paymentValue) {
         /*
          * PAYMENT_INTENT_SALE will cause the payment to complete immediately.
          * Change PAYMENT_INTENT_SALE to
@@ -122,7 +170,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
          * Also, to include additional payment details and an item list, see getStuffToBuy() below.
          */
 
-        PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE,"2");
+        PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE, String.valueOf(paymentValue));
 
         /*
          * See getStuffToBuy(..) for examples of some available payment options.
@@ -138,29 +186,20 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
     }
 
 
-
-
     /**
      * @param paymentIntent
      * @return
      */
 
 
-    private PayPalPayment getThingToBuy(String paymentIntent,String paymentValue) {
+    private PayPalPayment getThingToBuy(String paymentIntent, String paymentValue) {
         return new PayPalPayment(new BigDecimal(paymentValue), "USD", "PREMIUM FEATURES",
                 paymentIntent);
 
     }
 
 
-
-
-
-
-
-
-
-    public void onHomePressed(View view){
+    public void onHomePressed(View view) {
         finish();
     }
 
@@ -212,19 +251,19 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
                         data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
                 if (confirm != null) {
                     try {
-                        Gson gson =  new Gson(); // new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                        PaymentResponse response =  gson.fromJson(confirm.toJSONObject().toString(), PaymentResponse.class);
+                        Gson gson = new Gson(); // new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                        PaymentResponse response = gson.fromJson(confirm.toJSONObject().toString(), PaymentResponse.class);
 
                         UserPaymentInfo.getInstatance().setPaymentId(response.getResponse().getId());
                         UserPaymentInfo.getInstatance().setPaymentStatus(UserPaymentInfo.paidUser);
                         findViewById(R.id.buyItBtn).setVisibility(View.GONE);
                         findViewById(R.id.cancelBtn).setVisibility(View.VISIBLE);
-                        sendAuthorizationToServer();
+
+                        sendAuthorizationToServer(String.valueOf(paymentValue));
+
                         findViewById(R.id.content).setVisibility(View.GONE);
                         findViewById(R.id.done_content).setVisibility(View.VISIBLE);
-
                         //  cancelButton.setVisibility(View.VISIBLE);
-
                         Log.i(TAG, confirm.toJSONObject().toString(4));
                         Log.i(TAG, confirm.getPayment().toJSONObject().toString(4));
 
@@ -306,9 +345,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
     }
 
 
-
-
-    private void sendAuthorizationToServer(/*PayPalAuthorization authorization*/) {
+    private void sendAuthorizationToServer(String amount) {
         /**
          * TODO: Send the authorization response to your server, where it can
          * exchange the authorization code for OAuth access and refresh tokens.
@@ -321,16 +358,20 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
          * https://github.com/paypal/rest-api-sdk-python/tree/master/samples/mobile_backend
          */
 
-        String id=UserPaymentInfo.getInstatance().getUserId();
+        String id = UserPaymentInfo.getInstatance().getUserId();
 
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
         // TODO change the amount selected by user.
+        String cc = p.getString("cCode", "zz");
+        String mob = p.getString("mob", "00000000");
 
-        String amount="";
-        if(! id.equalsIgnoreCase("")) {
+        if (!id.equalsIgnoreCase("")) {
             BackgroundExecuter.getInstance().execute(new
-                    ConfirmationRequester(UserPaymentInfo.getInstatance().getPaymentId(), id,amount));
-           }
-          }
+                    ConfirmationRequester(UserPaymentInfo.getInstatance().getPaymentId(), id, amount, mob, cc));
+        }
+
+
+    }
 
     /*
     public void onFuturePaymentPurchasePressed(View pressed) {
@@ -361,6 +402,28 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
     @Override
     public void onPaymentConfirmationFailed() {
         UserPaymentInfo.getInstatance().setPaymentStatus(UserPaymentInfo.unPaidUser);
+    }
+
+
+    public int setPaymentValue(int id) {
+
+        switch (id) {
+
+            case R.id.pay1$:
+                paymentValue = 1;
+                break;
+
+            case R.id.pay5$:
+                paymentValue = 5;
+                break;
+
+            case R.id.pay10$:
+                paymentValue = 10;
+                break;
+
+        }
+
+        return paymentValue;
     }
 
 

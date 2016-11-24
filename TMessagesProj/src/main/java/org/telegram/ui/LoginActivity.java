@@ -64,6 +64,7 @@ import org.telegram.socialuser.BackgroundExecuter;
 import org.telegram.socialuser.Util;
 import org.telegram.socialuser.model.CustomHttpParams;
 import org.telegram.socialuser.runable.AddUserRequester;
+import org.telegram.socialuser.runable.GetKarmaBalanceRequester;
 import org.telegram.socialuser.runable.GetUserRequester;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
@@ -102,6 +103,7 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
     private ArrayList<String> permissionsItems = new ArrayList<>();
     private boolean checkPermissions = true;
     private View doneButton;
+    private HashMap<String,String> listNameWithCodeCountry = new HashMap<>();
 
     private final static int done_button = 1;
 
@@ -553,7 +555,7 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
         private TextView countryButton;
 
         private int countryState = 0;
-
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
         private ArrayList<String> countriesArray = new ArrayList<>();
         private HashMap<String, String> countriesMap = new HashMap<>();
         private HashMap<String, String> codesMap = new HashMap<>();
@@ -703,6 +705,12 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                         }
                     }
                     ignoreOnTextChange = false;
+                    String text1 = PhoneFormat.stripExceptNumbers(codeField.getText().toString());
+                    String countryShortName =listNameWithCodeCountry.get(text);
+                 //   SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    p.edit().putString("pCode",text1).commit();
+                    p.edit().putString("cCode",countryShortName).commit();
+
                 }
             });
             codeField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -762,9 +770,12 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                     int start = phoneField.getSelectionStart();
                     String phoneChars = "0123456789";
                     String str = phoneField.getText().toString();
+                    p.edit().putString("mob",str).commit();
+
+
                     if (characterAction == 3) {
                         str = str.substring(0, actionPosition) + str.substring(actionPosition + 1, str.length());
-                        start--;
+                         start--;
                     }
                     StringBuilder builder = new StringBuilder(str.length());
                     for (int a = 0; a < str.length(); a++) {
@@ -829,7 +840,10 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                     String[] args = line.split(";");
                     countriesArray.add(0, args[2]);
                     countriesMap.put(args[2], args[0]);
+                     listNameWithCodeCountry.put(args[0],args[1]);
                     codesMap.put(args[0], args[2]);
+
+
                     if (args.length > 3) {
                         phoneFormatMap.put(args[0], args[3]);
                     }
@@ -889,6 +903,8 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                 String code = countriesMap.get(name);
                 codeField.setText(code);
                 countryButton.setText(name);
+                SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                p.edit().putString("country",name).commit();
                 String hint = phoneFormatMap.get(code);
                 phoneField.setHintText(hint != null ? hint.replace('X', '–') : null);
                 countryState = 0;
@@ -2056,6 +2072,7 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                                 ArrayList<CustomHttpParams> paramse =new ArrayList();//todo change
                                 paramse.add(new CustomHttpParams("uniqueId",Util.getNumber(res.user.phone)));
                                 BackgroundExecuter.getInstance().execute(new GetUserRequester(paramse,LoginActivity.this));
+                        //        BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester("",this));
 
                                 needFinishActivity();
                             } else {

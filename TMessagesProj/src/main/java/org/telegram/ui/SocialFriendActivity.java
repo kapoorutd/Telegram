@@ -1,8 +1,12 @@
 package org.telegram.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +21,7 @@ import android.widget.Toast;
 
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.ContactsController;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
@@ -28,14 +33,19 @@ import org.telegram.socialuser.CustomGridAdapter;
 import org.telegram.socialuser.GridViewWithHeaderAndFooter;
 import org.telegram.socialuser.OnTelegramSync;
 import org.telegram.socialuser.Util;
+import org.telegram.socialuser.model.CreditModel;
 import org.telegram.socialuser.model.CustomHttpParams;
 import org.telegram.socialuser.runable.AddContactRequester;
+import org.telegram.socialuser.runable.DeductKarmaRequester;
+import org.telegram.socialuser.runable.GetKarmaBalanceRequester;
 import org.telegram.socialuser.runable.GetSuggestFriendsRq;
 import org.telegram.tgnet.TLRPC;
 
 import org.telegram.tracker.AnalyticsTrackers;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
+import org.telegram.ui.listners.KarmaBalanceListener;
+import org.telegram.ui.listners.KarmaDeductionListener;
 import org.telegram.ui.listners.OnServerResponse;
 
 import java.util.ArrayList;
@@ -44,7 +54,7 @@ import java.util.HashMap;
 /**
  * Created by ram on 3/6/16.
  */
-public class SocialFriendActivity extends BaseFragment implements OnServerResponse,OnTelegramSync {
+public class SocialFriendActivity extends BaseFragment implements KarmaDeductionListener,OnServerResponse,OnTelegramSync, KarmaBalanceListener {
     private static boolean isSend;
     private Context mContext;
     private ImageView img_Back;
@@ -55,12 +65,16 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
     private Button paybutton;
     private Bundle bundle;
     ProgressBar progressBar;
+    private static int friendsReq=0;
     private ArrayList<TLRPC.TelegramUsers> listnew;
     GridViewWithHeaderAndFooter gr_View;
     private ArrayList<TLRPC.TelegramUsers> telegramUsersesList = new ArrayList<>();
     private String friendId;
     private TextView emptyView;
     private static int remPosition = -1;
+    private static boolean isPending = false;
+
+
 
     public SocialFriendActivity(Bundle args){
         this.bundle = args;
@@ -102,10 +116,15 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
             ArrayList<CustomHttpParams> params = new ArrayList<>();
             params.add(new CustomHttpParams("userId", pp.getString("social_id", "")));
             BackgroundExecuter.getInstance().execute(new AddContactRequester(telegramUsersesList, params));
+
+
+            SharedPreferences sp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+            String mob  =  sp.getString("mob","9888888");
+            String cc   =   sp.getString("cCode","US");
+            BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester("8978690567",cc,this));
         }
 
         hideTabsAnsMenu();
-        //ArrayList<CustomHttpParams> parem = new ArrayList<>();
         ArrayList<CustomHttpParams> params = new ArrayList<>();
         params.add(new CustomHttpParams("userId", pp.getString("social_id", "")));
         if(bundle.get("s_friend").equals("wink")){
@@ -113,7 +132,6 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
         } else {
             reqester = new GetSuggestFriendsRq(params,SocialFriendActivity.this,"searchdgree");
         }
-
         actionBar.setBackButtonImage(0x00000000);//todo
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTextLast("");
@@ -134,26 +152,59 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
         listnew = new ArrayList<>();
 
         fragmentView = View.inflate(getParentActivity(), R.layout.gridview, null);
-
-
         gr_View = (GridViewWithHeaderAndFooter)fragmentView.findViewById(R.id.grid);
         paybutton =(Button)fragmentView.findViewById(R.id.paypal_btn_id) ;
         progressBar = (ProgressBar)fragmentView.findViewById(R.id.pb_load);
         progressBar.setVisibility(View.VISIBLE);
 
-        if(UserPaymentInfo.getInstatance().getPaymentStatus()!=UserPaymentInfo.paidUser){
+
+        final SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        paybutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int d=  Integer.parseInt( p.getString("karmaBal","0"));
+                if( d > 4){
+                    SharedPreferences sp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+
+                    String mob  =  sp.getString("mob","9888888");
+                    String cc   =   sp.getString("cCode","US");
+                    BackgroundExecuter.getInstance().execute(new DeductKarmaRequester(new CreditModel("",mob,cc),SocialFriendActivity.this));
+                }
+                else{
+                    openDialog();
+                }
+     }
+        });
+
+
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////
+
+        //p.edit().putString("karmaBal",String.valueOf(noOfCredit)).commit();
+/*
+         int d=  Integer.parseInt( p.getString("karmaBal","0"));
+        //int vals=d.intValue();
+        if(false*//*d < 9*//*){
             gr_View.setPadding(0,0,0,0);
             paybutton.setVisibility(View.VISIBLE);
             paybutton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PaymentManager.createIntent(getParentActivity());
+                   // PaymentManager.createIntent(getParentActivity());
+                   openDialog();
                 }
             });
         } else {
             paybutton.setVisibility(View.GONE);
             gr_View.setPadding(0,0,0,0);
-        }
+        }*/
+
         img_Back = (ImageView)fragmentView.findViewById(R.id.backview) ;
         adapter = new CustomGridAdapter(mContext,listnew);
         emptyView = (TextView)fragmentView.findViewById(R.id.empty_view);
@@ -167,16 +218,42 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
         });
         BackgroundExecuter.getInstance().execute(reqester);
 
+
+
+
+
+
+
+/*
         grid.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
+                  }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-                if (UserPaymentInfo.getInstatance().getPaymentStatus() != UserPaymentInfo.paidUser) {
+           */
+/*     if (reqester.isMore)
+                    BackgroundExecuter.getInstance().execute(reqester.loadMore());
+       *//*
+
+            }
+
+
+           //     BackgroundExecuter.getInstance().execute(reqester.loadMore());
+              */
+/*    if(!isPending){
+
+               BackgroundExecuter.getInstance().execute(new DeductKarmaRequester(new CreditModel("","","")));
+
+
+                  }
+*//*
+
+                   //TODO in this segment
+         */
+/*       if (UserPaymentInfo.getInstatance().getPaymentStatus() != UserPaymentInfo.paidUser) {
                     paybutton.setVisibility(View.VISIBLE);
 
                     paybutton.setOnClickListener(new View.OnClickListener() {
@@ -191,9 +268,12 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
                     if (reqester.isMore)
                         BackgroundExecuter.getInstance().execute(reqester.loadMore());
                 }
+            }*//*
 
-            }
         });
+*/
+
+
 
 
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -203,7 +283,6 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
                                     int position, long id) {
 
                 remPosition = position;
-
                 Bundle args = new Bundle();
                 try {
                     final int pos=position;
@@ -239,6 +318,8 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
 
         return fragmentView;
     }
+
+
 
     @Override
     public void onResume() {
@@ -277,7 +358,6 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
                         }
                         else{ actionBar.setTextLast("");
                         }
-
                         adapter.notifyDataSetChanged();
 
                     }
@@ -300,26 +380,73 @@ public class SocialFriendActivity extends BaseFragment implements OnServerRespon
                 }
         );
     }
-
-
-
-
-
-
-
     @Override
     public void onUserSyncSuccess(final TLRPC.User user) {
-
     }
 
     @Override
     public void onUserSyncFailed() {
-
     }
 
     public static  void setMessageSend(boolean isMessageSend){
         isSend = isMessageSend;
     }
+
+
+
+
+
+    public void openDialog(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setMessage(LocaleController.getString("InviteUser", R.string.InviteUser));
+        builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
+     /*   final String arg1 = usePhone;*/
+        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    PaymentManager.createIntent(getParentActivity());
+                } catch (Exception e) {
+                    FileLog.e("tmessages", e);
+                }
+            }
+        });
+        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        showDialog(builder.create());
+    }
+
+
+    @Override
+    public void onGetKarmaSuccess(int karmaPoints) { }
+
+
+    @Override
+    public void onGetKarmaFailure() {
+    }
+
+
+    @Override
+    public void onKarmaDeductSuccess() {
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+        friendsReq++;
+        p.edit().putString("friendrequest",String.valueOf(friendsReq)).commit();
+
+
+      //  isPending=false;
+
+        if (reqester.isMore)
+            BackgroundExecuter.getInstance().execute(reqester.loadMore());
+
+    }
+
+
+    @Override
+    public void onKarmaDeductFailed() {
+
+    }
+
+
 
 
 
