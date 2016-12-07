@@ -40,6 +40,7 @@ public class GetSuggestFriendsRq implements Runnable{
         if(isPending){
             return;
         }
+
         isPending = true;
         if(isPending) {
             try {

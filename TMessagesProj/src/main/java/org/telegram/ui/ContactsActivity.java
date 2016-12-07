@@ -20,8 +20,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,7 @@ import android.view.ViewParent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -37,6 +40,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
@@ -44,6 +53,12 @@ import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.SecretChatHelper;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.UserObject;
+import org.telegram.payment.ConfirmationRequester;
+import org.telegram.payment.PaymentManager;
+import org.telegram.payment.UserPaymentInfo;
+import org.telegram.payment.billingModel.PaymentResponse;
+import org.telegram.socialuser.BackgroundExecuter;
+import org.telegram.socialuser.runable.GetKarmaBalanceRequester;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.FileLog;
@@ -63,11 +78,13 @@ import org.telegram.ui.ActionBar.ActionBarMenuItem;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.LetterSectionsListView;
+import org.telegram.ui.listners.KarmaBalanceListener;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ContactsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
+public class ContactsActivity extends BaseFragment implements KarmaBalanceListener,NotificationCenter.NotificationCenterDelegate {
 
     private BaseSectionsAdapter listViewAdapter;
     private TextView emptyTextView;
@@ -90,6 +107,35 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
     private boolean allowUsernameSearch = true;
     private ContactsActivityDelegate delegate;
     private View mView;
+    private ArrayList<MenuItems> draweritems;
+    private String bal;
+    private SlidingMenuAdapter adapter;
+
+    @Override
+    public void onGetKarmaSuccess(int karmaPoints) {
+
+
+        if(bal!=null){
+
+            if(Integer.parseInt(bal)!=karmaPoints){
+           getParentActivity().runOnUiThread(new Runnable() {
+               @Override
+               public void run() {
+                   adapter.notifyDataSetChanged();
+               }
+           });
+
+            }
+        }
+    }
+
+    @Override
+    public void onGetKarmaFailure() {
+
+    }
+
+
+
 
     public interface ContactsActivityDelegate {
         void didSelectContact(TLRPC.User user, String param);
@@ -343,7 +389,10 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
 
                             else if(row == 1){
                                 try {
-                                    SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+
+                                ApplicationLoader.getInstance().trackEvent("Clicked on people you may know","clicked","want to get friends");
+
+                                  SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
                                     if(pp.getString("social_id","").equals("")) {
                                         presentFragment(new MyProfileActivity());
                                     }
@@ -556,6 +605,55 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
         }
     }
 
+
+    @Override
+    public void onActivityResultFragment(int requestCode, int resultCode, Intent data) {
+        super.onActivityResultFragment(requestCode, resultCode, data);
+
+
+        if (requestCode == UserPaymentInfo.REQUEST_CODE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                PaymentConfirmation confirm =
+                        data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if (confirm != null) {
+                    try {
+                        Gson gson = new Gson(); // new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                        PaymentResponse response = gson.fromJson(confirm.toJSONObject().toString(), PaymentResponse.class);
+                        UserPaymentInfo.getInstatance().setPaymentId(response.getResponse().getId());
+                        UserPaymentInfo.getInstatance().setPaymentStatus(UserPaymentInfo.paidUser);
+
+                        sendAuthorizationToServer(String.valueOf(2));
+
+                    } catch (Exception e) {
+                        Log.e("", "an extremely unlikely failure occurred: ", e);
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("", "The user canceled.");
+            } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i("",
+                        "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
+            }
+        }
+    }
+
+    private void sendAuthorizationToServer(String amount) {
+
+        String id = UserPaymentInfo.getInstatance().getUserId();
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+        // TODO change the amount selected by user.
+        String cc = p.getString("cCode", "zz");
+        String mob = p.getString("mob", "00000000");
+
+        if (!id.equalsIgnoreCase("")) {
+            BackgroundExecuter.getInstance().execute(new
+                    ConfirmationRequester(UserPaymentInfo.getInstatance().getPaymentId(), id, amount, mob, cc));
+        }
+
+    }
+
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -571,6 +669,13 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
         else{showTabsAndmenu();}
 
 
+        SharedPreferences sp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+
+        String mob  =  sp.getString("mob","9888888");
+        String cc   =   sp.getString("cCode","US");
+
+
+        BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester(mob,cc,this));
         setContactMenuList();
 
     }
@@ -631,17 +736,31 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
 
 
 
+    public String getKarmaBal(){
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+        bal =p.getString("karmaBal","0");
+        return bal;
+    }
 
     private void setContactMenuList(){
-        ArrayList<MenuItems> draweritems=new ArrayList<MenuItems>();
+       draweritems=new ArrayList<MenuItems>();
        /* draweritems.add(new MenuItems(LocaleController.getString("AddNewContact", R.string.add_new_contact),R.drawable.menu_plus,true, "",0));*/
         draweritems.add(new MenuItems(LocaleController.getString("InviteFriends", R.string.InviteFriends), R.drawable.menu_bar_contact_plus, true, "",0));
         draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat),R.drawable.menu_sectretchat,true, "",0));
         draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel),R.drawable.menu_broadcast,true, "",0));
         draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink),R.drawable.menu_wink,true, "",0));
+////////////
+        if(UserPaymentInfo.getInstatance().getPaymentStatus() !=UserPaymentInfo.paidUser
+                && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase("")) ){
+            draweritems.add(new MenuItems(LocaleController.getString("Hide Ads", R.string.hide_ads),R.drawable.hide_ad,true, "$2",4));
+ }
+        draweritems.add(new MenuItems(LocaleController.getString("get", R.string.more_karma),R.drawable.ic_premium,true, getKarmaBal(),4));
 
-        SlidingMenuAdapter adapter = new SlidingMenuAdapter(getParentActivity(),
+
+         adapter = new SlidingMenuAdapter(getParentActivity(),
                 draweritems);
+
+
 
         ViewParent view=  parentLayout.getParent();
         ListView drawerList=((ListView)((View) view.getParent()).findViewById(R.id.contact_slidermenu));
@@ -660,11 +779,6 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                                 long id) {
             switch(position){
 
-               /* case 0:
-               parentLayout.closeDrawer();
-
-                    //     closeDrawer();
-                    break;*/
                 case 0:
                     parentLayout.closeDrawer();
                     //   closeDrawer();
@@ -709,18 +823,98 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                     SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("preferences", Activity.MODE_PRIVATE);
                     if(p.getString("minage","0").equals("0")){
                         presentFragment(new PreferencesActivity());
-                    }
+                        ApplicationLoader.getInstance().trackEvent("Clicked on my preferences","clicked","want to get friends");
+ }
                     else {
                         Bundle args2 = new Bundle();
                         args2.putString("s_friend", "wink");
                         presentFragment(new SocialFriendActivity(args2));
+                        ApplicationLoader.getInstance().trackEvent("Clicked on social friends","clicked","want social friends");
+
                     }
                     break;
 
-            }
+                case 4:
+                    parentLayout.closeDrawer();
+                    openDialog();
+                    break;
 
+                case 5:
+                    parentLayout.closeDrawer();
+                    ApplicationLoader.getInstance().trackEvent("Clicked on Get Karma","clicked","want to get credit");
+                    SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    if(pp.getString("social_id","").equals("")) {
+                        presentFragment(new MyProfileActivity());
+                    }
+                    else {
+                        PaymentManager.createIntent(getParentActivity(), false);
+                    }
+                    break;
+            }
         }
     }
+    public void openDialog(){
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+
+        LayoutInflater inflater = (LayoutInflater) getParentActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.custom_dialog, null);
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        view.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        Button button = (Button)view.findViewById(R.id.btn_yes);
+        button.setSelected(true);
+        TextView textView = (TextView)view.findViewById(R.id.txt_dia) ;
+        textView.setText(LocaleController.getString("hide_ads",R.string.remove_ads_content));
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    onBuyPressed(2);
+                    // PaymentManager.createIntent(getParentActivity(),false);
+                } catch (Exception e) {
+                    FileLog.e("tmessages", e);
+                }
+            }
+        });
+        /*  AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setMessage("REMOVE ANNOYING ADS?\nPay once , Use forever!");
+        builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
+     *//*   final String arg1 = usePhone;*//*
+        builder.setPositiveButton( "BUY $2.00", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    onBuyPressed(2);
+                } catch (Exception e) {
+                    FileLog.e("tmessages", e);
+                }
+            }
+        });
+        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        showDialog(builder.create());*/
+    }
+
+    public void onBuyPressed(int paymentValue) {
+
+        PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE, String.valueOf(paymentValue));
+        Intent intent = new Intent(getParentActivity(), PaymentActivity.class);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, UserPaymentInfo.getConfiguration());
+        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
+        getParentActivity().startActivityForResult(intent, UserPaymentInfo.REQUEST_CODE_PAYMENT);
+    }
+
+    private PayPalPayment getThingToBuy(String paymentIntent, String paymentValue) {
+        return new PayPalPayment(new BigDecimal(paymentValue), "USD", "PREMIUM FEATURES",
+                paymentIntent);
+
+    }
 
 }

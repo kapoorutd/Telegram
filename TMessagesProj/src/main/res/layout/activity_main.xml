@@ -2,7 +2,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:background="@color/hockeyapp_text_white"
     xmlns:android="http://schemas.android.com/apk/res/android" >
+
 
 
 
@@ -12,45 +14,61 @@
        android:layout_alignParentTop="true"
        android:paddingBottom="10dp"
        android:id="@+id/sv_content"
-       android:layout_height="wrap_content">
+       android:background="#ebedef"
+       android:layout_height="match_parent">
 
        <LinearLayout
            android:layout_width="match_parent"
            android:orientation="vertical"
-           android:layout_height="wrap_content">
-
-
-
-           <TextView
-               android:id="@+id/done_content"
-               android:layout_width="match_parent"
-               android:textSize="16sp"
-               android:layout_marginLeft="20dp"
-               android:textColor="@color/header"
-               android:visibility="gone"
-               android:layout_marginTop="50dp"
-               android:gravity="center"
-               android:text="Yippie! Now you are good to go and chat with 20+ friends, on Ad-Free Screen!"
-               android:layout_height="wrap_content" />
-
-
-
-
+           android:layout_height="match_parent">
 
            <LinearLayout
            android:layout_width="match_parent"
            android:orientation="vertical"
            android:id="@+id/content"
-           android:layout_height="wrap_content">
+           android:layout_weight="1"
+           android:layout_height="0dp">
+
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:orientation="horizontal"
+
+                   android:id="@+id/ll_credit"
+                   android:layout_height="40dp">
+
+               <!--    <ProgressBar
+                       android:id="@+id/progress_bar"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       style="@android:style/Widget.ProgressBar.Small"
+                       android:layout_gravity="center"/>-->
            <TextView
            android:id="@+id/buy_content"
-           android:layout_width="match_parent"
-          android:layout_marginLeft="20dp"
+           android:layout_width="0dp"
            android:textSize="16sp"
-           android:textColor="#9b9b9b"
-           android:layout_marginTop="20dp"
-           android:text="@string/buy_premium_content"
-           android:layout_height="wrap_content" />
+           android:layout_weight="1"
+           android:text="Karma: 30"
+           android:gravity="center_vertical"
+           android:paddingLeft="20dp"
+           android:layout_margin="5dp"
+           android:textColor="#53595d"
+           android:layout_height="match_parent" />
+
+
+
+                   <TextView
+                       android:id="@+id/get_more"
+                       android:layout_width="0dp"
+                       android:layout_weight="1"
+                       android:gravity="center"
+                       android:textSize="16sp"
+                       android:layout_margin="5dp"
+                       android:text="@string/more_karma"
+                       android:textColor="#53595d"
+                       android:layout_height="match_parent" />
+
+               </LinearLayout>
 
 
 
@@ -58,10 +76,12 @@
            android:id="@+id/buy_content1"
            android:layout_width="match_parent"
            android:textSize="16sp"
-           android:layout_marginLeft="20dp"
-           android:textColor="#9b9b9b"
+           android:paddingLeft="20dp"
+           android:textColor="#53595d"
+           android:background="@color/hockeyapp_text_white"
            android:layout_marginTop="10dp"
-           android:text=" Be smart!\n Opt for Paid Version in just 2$ and  get :"
+           android:paddingTop="10dp"
+           android:text="@string/karma_content"
            android:layout_height="wrap_content" />
 
      <LinearLayout
@@ -69,12 +89,12 @@
     android:layout_below="@+id/buy_content1"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:layout_marginTop="10dp"
     android:gravity="center_vertical"
     android:paddingLeft="20dp"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:background="#f0f8ff"
+    android:scrollbars="horizontal"
+    android:background="@color/hockeyapp_text_white"
+    android:paddingBottom="30dp"
     android:layout_height="wrap_content">
 
 
@@ -82,11 +102,12 @@
            android:id="@+id/buy_content2"
            android:layout_width="match_parent"
            android:textSize="14sp"
-           android:textColor="#2e2e2e"
+           android:textColor="#9b9b9b"
            android:singleLine="true"
+           android:ellipsize="end"
            android:drawableLeft="@drawable/ic_bullet"
            android:drawablePadding="2dp"
-           android:text="Access to 20+ profiles to build beautiful friendship"
+           android:text="@string/karma_content1"
            android:layout_height="wrap_content" />
 
 
@@ -99,109 +120,78 @@
            android:layout_width="match_parent"
            android:textSize="14sp"
            android:drawablePadding="2dp"
-           android:textColor="#2e2e2e"
+           android:textColor="#9b9b9b"
            android:layout_marginTop="16sp"
-           android:text="Ad-Free screens all the time "
+           android:text="@string/karma_content2"
            android:layout_height="wrap_content" />
 
+         <TextView
+             android:id="@+id/buy_content4"
+             android:drawableLeft="@drawable/ic_bullet"
+             android:singleLine="true"
+             android:layout_width="match_parent"
+             android:textSize="14sp"
+             android:drawablePadding="2dp"
+             android:textColor="#9b9b9b"
+             android:layout_marginTop="16sp"
+             android:text="@string/karma_content3"
+             android:layout_height="wrap_content" />
 
-</LinearLayout>
 
 
-
-
-
+     </LinearLayout>
 
 
            </LinearLayout>
-
-<!--
-       <TextView
-           android:id="@+id/done_content"
-           android:layout_width="match_parent"
-           android:gravity="center"
-           android:textSize="16sp"
-           android:visibility="gone"
-           android:textColor="@color/header"
-           android:layout_marginTop="150dp"
-           android:text="Yippie! Now you are good to go and chat with 20+ friends, on Ad-Free Screen!"
-           android:layout_height="wrap_content" />-->
 
 
 
            <LinearLayout
                android:layout_width="match_parent"
-               android:background="#d5f5e3"
-               android:layout_height="wrap_content">
+               android:background="#ebedef"
+               android:id="@+id/op_credit"
+               android:paddingBottom="20dp"
+               android:paddingTop="80dp"
+               android:orientation="vertical"
+               android:layout_weight="1"
 
-           <RadioGroup
-               android:layout_width="match_parent"
-               android:layout_marginLeft="20dp"
-               android:id="@+id/rg_opt"
-               android:layout_height="wrap_content">
+               android:layout_height="0dp">
 
-               <RadioButton
+
+               <Button
                    android:layout_width="match_parent"
-                   android:text="Get Credit using Paypal "
-                   android:id="@+id/rb_paypal"
-                   android:checked="true"
-                   android:textSize="14sp"
-
-                   android:textColor="@color/black"
-                   android:layout_marginTop="5dp"
+                   android:id="@+id/pay1"
+                   android:layout_marginLeft="20dp"
+                   android:layout_marginRight="20dp"
+                   android:text="120 Karmas for $10 "
+                   android:textAllCaps="false"
+                   android:textColor="@color/hockeyapp_text_white"
+                   android:background="@drawable/button_selector1"
+                   android:layout_marginTop="10dp"
                    android:layout_height="wrap_content" />
 
-
-               <RadioButton
+               <Button
                    android:layout_width="match_parent"
-                   android:text="Get Credit by Watching Ads"
-                   android:id="@+id/ads"
-                   android:textSize="14sp"
-
-                   android:layout_marginTop="5dp"
-                   android:layout_marginBottom="5dp"
-                   android:textColor="@color/black"
+                   android:id="@+id/pay3"
+                   android:layout_marginLeft="20dp"
+                   android:text="10 Karmas for $1"
+                   android:textColor="@color/hockeyapp_text_white"
+                   android:layout_marginRight="20dp"
+                   android:background="@drawable/button_selector1"
+                   android:layout_marginTop="10dp"
                    android:layout_height="wrap_content" />
-                </RadioGroup>
+               <Button
+                   android:layout_width="match_parent"
+                   android:background="@drawable/button_selector1"
+                   android:id="@+id/pay2"
+                   android:text="55 Karmas for $5 "
+                   android:textColor="@color/hockeyapp_text_white"
+                   android:layout_marginLeft="20dp"
+                   android:layout_marginRight="20dp"
+                   android:layout_marginTop="10dp"
+                   android:layout_height="wrap_content" />
 
            </LinearLayout>
-
-           <RadioGroup
-               android:layout_width="match_parent"
-               android:layout_margin="20dp"
-               android:id="@+id/op_paypal"
-               android:animateLayoutChanges="true"
-               android:layout_height="wrap_content">
-
-               <RadioButton
-                   android:layout_width="match_parent"
-                   android:text="Pay 1$ and get 10 Karma point."
-                   android:id="@+id/pay1$"
-                   android:checked="true"
-                   android:textSize="14sp"
-
-                   android:textColor="@color/black"
-                   android:layout_height="wrap_content" />
-
-               <RadioButton
-                   android:layout_width="match_parent"
-                   android:text="Pay 5$ and get 50 Karma point."
-                   android:id="@+id/pay5$"
-                   android:textSize="14sp"
-
-                   android:textColor="@color/black"
-                   android:layout_height="wrap_content" />
-
-               <RadioButton
-                   android:layout_width="match_parent"
-                   android:text="Pay 10$ and get 100 Karma point."
-                   android:id="@+id/pay10$"
-                   android:textSize="14sp"
-
-                   android:textColor="@color/black"
-                   android:layout_height="wrap_content" />
-
-           </RadioGroup>
 
 
 
@@ -216,36 +206,12 @@
            android:orientation="horizontal"
            android:gravity="center"
            android:id="@+id/buttons"
-
            android:layout_above="@+id/back"
            android:layout_alignParentBottom="true"
            android:layout_marginBottom="50dp"
            android:layout_height="wrap_content">
 
 
-              <Button
-                  android:id="@+id/buyItBtn"
-                  android:layout_width="200dp"
-                  android:layout_height="wrap_content"
-                  android:onClick="onBuyPressed"
-                  android:background="@color/header"
-                  android:textSize="20sp"
-                  android:layout_margin="10dp"
-                  android:textColor="@color/common_plus_signin_btn_text_dark_focused"
-                  android:text="Get Now" />
-
-
-           <Button
-               android:id="@+id/cancelBtn"
-               android:layout_width="200dp"
-               android:layout_height="wrap_content"
-               android:onClick="onHomePressed"
-               android:background="@color/header"
-
-               android:visibility="gone"
-               android:layout_margin="10dp"
-               android:textColor="@color/common_plus_signin_btn_text_dark_focused"
-               android:text="HOME" />
 
 
 

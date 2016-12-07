@@ -8,6 +8,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.paypal.android.sdk.payments.PayPalConfiguration;
+
 import org.telegram.messenger.ApplicationLoader;
 
 /**
@@ -33,7 +35,9 @@ import org.telegram.messenger.ApplicationLoader;
     public static String voiceCall="";
     public static String liveStreaming="";
     public static String socialFriend="";
-
+     public static final int REQUEST_CODE_PAYMENT = 1;
+     static final int REQUEST_CODE_FUTURE_PAYMENT = 2;
+     static final int REQUEST_CODE_PROFILE_SHARING = 3;
 
 
     private static UserPaymentInfo _paymentInfo ;
@@ -76,5 +80,21 @@ import org.telegram.messenger.ApplicationLoader;
               .getString("social_id","");
 
 }
+
+
+    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_PRODUCTION;
+    private static final String CONFIG_CLIENT_ID = "ARafipSb7SknBnBKsQY1Na9CvKZPypeHORyOQ-f-1sEAfwt0NEymuOniy4__9oIJ1JYEleESrqSkESGB";;
+
+    public static PayPalConfiguration getConfiguration(){
+
+        return  new PayPalConfiguration()
+                .environment(CONFIG_ENVIRONMENT)
+                .clientId(CONFIG_CLIENT_ID)
+                // The following are only used in PayPalFuturePaymentActivity.
+                .merchantName("CRATERZONE PVT LTD").acceptCreditCards(true);
+    }
+
+
+
 
 }

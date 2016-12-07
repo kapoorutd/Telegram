@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:text="Premium Benefits"
+        android:text="@string/premium_fea"
         android:textColor="#ffffff"
         android:textSize="20sp" />
 </LinearLayout>

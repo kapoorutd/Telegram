@@ -2,7 +2,12 @@ apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
+    maven {
+        url  "https://adcolony.bintray.com/AdColony"
+    }
 }
+
+
 
 dependencies {
     compile 'com.android.support:support-v4:23.4.0'
@@ -19,8 +24,17 @@ dependencies {
     compile 'com.paypal.sdk:paypal-android-sdk:2.14.2'
     compile 'com.google.android.gms:play-services-ads:8.4.0'
     compile 'com.android.support:multidex:1.0.1'
-}
+    compile 'com.adcolony:sdk:3.0.5'
 
+
+
+//applovin
+    //compile 'com.fyber.mediation:applovin:6.3.2-r1@aar'
+   // compile(name:'heyzap-unified-platform-10.2.0', ext:'aar')
+    //compile 'com.adcolony:sdk:3.0.5'
+//adcolony
+    //compile 'com.fyber.mediation:adcolony:3.0.4-r1@aar'
+}
 
 
 android {
@@ -34,6 +48,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
+    lintOptions {
+
+        checkReleaseBuilds false
+    }
     signingConfigs {
         debug {
           /*  storeFile file("config/release.keystore")
@@ -56,14 +74,16 @@ android {
             jniDebuggable true
             signingConfig signingConfigs.debug
             applicationIdSuffix ".beta"*/
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
 
         release {/*
             debuggable false
             jniDebuggable false
             signingConfig signingConfigs.release
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'*/
+            minifyEnabled false*/
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         foss {
@@ -92,7 +112,7 @@ android {
         manifest.srcFile 'config/foss/AndroidManifest.xml'
     }
 
-    productFlavors {
+ /*   productFlavors {
         x86 {
             ndk {
                 abiFilter "x86"
@@ -114,21 +134,21 @@ android {
         fat {
             versionCode = 3
         }
-    }
+    }*/
 
-    applicationVariants.all { variant ->
+  /*  applicationVariants.all { variant ->
         def abiVersion = variant.productFlavors.get(0).versionCode
         variant.mergedFlavor.versionCode = defaultConfig.versionCode * 10 + abiVersion;
     }
-
+*/
     defaultConfig {
 
-       multiDexEnabled true
-
-        minSdkVersion 9
+        multiDexEnabled true
+        minSdkVersion 11
         targetSdkVersion 23
-        versionCode 14
-        versionName "4.0.0"
+        versionCode 17
+        versionName "3.3.0"
+        ndk { abiFilters "armeabi", "armeabi-v7a", "x86"}
     }
 
     /*defaultConfig {

@@ -1256,4 +1256,22 @@
     \nTime to Switch to the paid version !
     </string>
 
+
+    <!--                                                    -->
+
+    <string name="more_karma">Get More Karmas</string>
+    <string name="karmapoint">Karmas:</string>
+    <string name="hide_ads">Hide Ads</string>
+    <string name="karma_content">Unlock premium features NOW!</string>
+    <string name="karma_content1">Build friendships that last with 20+ profile at just 5 Karmas.</string>
+    <string name="karma_content2">Coming soon with Live Stream and View your friends!</string>
+    <string name="karma_content3">Unlimited calling coming up shortly!</string>
+    <string name="premium_fea">Premium Features !</string>
+
+    <string name="watch_ads">Watch video and earn more Karmas!</string>
+    <string name="get_more_karma">Get More karmas to connect  with more friends, Do you want to get more karmas ? </string>
+    <string name="remove_ads_content">"REMOVE ANNOYING ADS?\n \nPay $2 for one year!"</string>
+
+    <string name="looking_more_frnds">loading more friends..</string>
+
 </resources>

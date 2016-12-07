@@ -18,14 +18,17 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Outline;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -33,6 +36,7 @@ import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -40,6 +44,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
@@ -55,11 +65,15 @@ import org.telegram.messenger.support.widget.LinearLayoutManager;
 import org.telegram.messenger.support.widget.RecyclerView;
 import org.telegram.messenger.FileLog;
 import org.telegram.payment.CheckPremiumUserRequester;
+import org.telegram.payment.ConfirmationRequester;
+import org.telegram.payment.PaymentManager;
 import org.telegram.payment.UserPaymentInfo;
+import org.telegram.payment.billingModel.PaymentResponse;
 import org.telegram.socialuser.BackgroundExecuter;
 import org.telegram.socialuser.Util;
 import org.telegram.socialuser.model.CustomHttpParams;
 import org.telegram.socialuser.runable.AddUserRequester;
+import org.telegram.socialuser.runable.GetKarmaBalanceRequester;
 import org.telegram.socialuser.runable.GetUserRequester;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.ContactsController;
@@ -87,11 +101,13 @@ import org.telegram.ui.Components.EmptyTextProgressView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.listners.KarmaBalanceListener;
 import org.telegram.ui.listners.OnSocialLogin;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
-public class DialogsActivity extends BaseFragment implements OnSocialLogin, NotificationCenter.NotificationCenterDelegate {
+public class DialogsActivity extends BaseFragment implements KarmaBalanceListener,OnSocialLogin, NotificationCenter.NotificationCenterDelegate {
     
     private RecyclerListView listView;
     private LinearLayoutManager layoutManager;
@@ -127,7 +143,8 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
     private long openedDialogId;
 
     private DialogsActivityDelegate delegate;
-
+    private String bal;
+    private SlidingMenuAdapter adapter;
 
 
     @Override
@@ -150,6 +167,26 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
 
     @Override
     public void onSocialFailer(String userid) {
+
+    }
+
+    @Override
+    public void onGetKarmaSuccess(int karmaPoints) {
+      
+        if(Integer.parseInt(bal)!=karmaPoints){
+            getParentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+
+        }
+        
+    }
+
+    @Override
+    public void onGetKarmaFailure() {
 
     }
 
@@ -330,9 +367,6 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
             }
 
 
-
-
-
             @Override
             public void onTextChanged(EditText editText) {
                 String text = editText.getText().toString();
@@ -412,10 +446,14 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
         listView.setLayoutManager(layoutManager);
         listView.setVerticalScrollbarPosition(LocaleController.isRTL ? ListView.SCROLLBAR_POSITION_LEFT : ListView.SCROLLBAR_POSITION_RIGHT);
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+
         listView.setOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 if (listView == null || listView.getAdapter() == null) {
+                    return;
+                }
+                if(position != 0 && (position+1)%6 == 0){
                     return;
                 }
                 long dialog_id = 0;
@@ -913,6 +951,11 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
         super.onResume();
         showTabsAndmenu();
         setChatMenuList();
+        SharedPreferences sp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+        String mob  =  sp.getString("mob","9888888");
+        String cc   =   sp.getString("cCode","US");
+        BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester(mob,cc,this));
+
         if (dialogsAdapter != null) {
             dialogsAdapter.notifyDataSetChanged();
         }
@@ -1169,6 +1212,54 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
         }
     }
 
+
+    @Override
+    public void onActivityResultFragment(int requestCode, int resultCode, Intent data) {
+        super.onActivityResultFragment(requestCode, resultCode, data);
+
+        if (requestCode == UserPaymentInfo.REQUEST_CODE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                PaymentConfirmation confirm =
+                        data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if (confirm != null) {
+                    try {
+                        Gson gson = new Gson(); // new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                        PaymentResponse response = gson.fromJson(confirm.toJSONObject().toString(), PaymentResponse.class);
+                        UserPaymentInfo.getInstatance().setPaymentId(response.getResponse().getId());
+                        UserPaymentInfo.getInstatance().setPaymentStatus(UserPaymentInfo.paidUser);
+
+                        sendAuthorizationToServer(String.valueOf(2));
+
+                    } catch (Exception e) {
+                        Log.e("", "an extremely unlikely failure occurred: ", e);
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("", "The user canceled.");
+            } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i("",
+                        "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
+            }
+        }
+    }
+
+    private void sendAuthorizationToServer(String amount) {
+
+        String id = UserPaymentInfo.getInstatance().getUserId();
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+        // TODO change the amount selected by user.
+        String cc = p.getString("cCode", "zz");
+        String mob = p.getString("mob", "00000000");
+
+        if (!id.equalsIgnoreCase("")) {
+            BackgroundExecuter.getInstance().execute(new
+                    ConfirmationRequester(UserPaymentInfo.getInstatance().getPaymentId(), id, amount, mob, cc));
+        }
+
+    }
+
+
+
     public void setDelegate(DialogsActivityDelegate dialogsActivityDelegate) {
         delegate = dialogsActivityDelegate;
     }
@@ -1256,6 +1347,13 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
 
     ////////////////////////////////////////Drawer menu list updated and redesigned below/////////////////////////////////
 
+    public String getKarmaBal(){
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+        bal=p.getString("karmaBal","0");
+        return bal;
+    }
+
+
 
     private void setChatMenuList() {
         ArrayList<MenuItems> draweritems = new ArrayList<MenuItems>();
@@ -1265,7 +1363,13 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
         draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel), R.drawable.menu_broadcast, true, "",0));
         draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink),R.drawable.menu_wink,true, "",0));
 
-        SlidingMenuAdapter adapter = new SlidingMenuAdapter(getParentActivity(),
+        if(UserPaymentInfo.getInstatance().getPaymentStatus() !=UserPaymentInfo.paidUser
+                && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase("")) ){
+            draweritems.add(new MenuItems(LocaleController.getString("Hide Ads", R.string.hide_ads),R.drawable.hide_ad,true, "$2",4));
+        }
+        draweritems.add(new MenuItems(LocaleController.getString("get", R.string.more_karma),R.drawable.ic_premium,true, getKarmaBal(),4));
+
+        adapter = new SlidingMenuAdapter(getParentActivity(),
                 draweritems);
         ViewParent view = parentLayout.getParent();
         ListView drawerList = ((ListView) ((View) view.getParent()).findViewById(R.id.contact_slidermenu));
@@ -1356,13 +1460,94 @@ public class DialogsActivity extends BaseFragment implements OnSocialLogin, Noti
                         presentFragment(new SocialFriendActivity(arg));
                     }
                     break;
+                case 5:
+                    parentLayout.closeDrawer();
+                    openDialog();
+                    break;
+
+                case 6:
+                    parentLayout.closeDrawer();
+                    ApplicationLoader.getInstance().trackEvent("Clicked on Get Karma","clicked","want to get credit");
+                    SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    if(pp.getString("social_id","").equals("")) {
+                        presentFragment(new MyProfileActivity());
+                    }
+                    else{
+                        PaymentManager.createIntent(getParentActivity(),false);
+                    }
+                    break;
+
+
+
+
+
             }
 
         }
     }
 
+    public void openDialog(){
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
 
+        LayoutInflater inflater = (LayoutInflater) getParentActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.custom_dialog, null);
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        view.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        Button button = (Button)view.findViewById(R.id.btn_yes);
+        button.setSelected(true);
+        TextView textView = (TextView)view.findViewById(R.id.txt_dia) ;
+        textView.setText(LocaleController.getString("hide_ads",R.string.remove_ads_content));
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    onBuyPressed(2);
+                    // PaymentManager.createIntent(getParentActivity(),false);
+                } catch (Exception e) {
+                    FileLog.e("tmessages", e);
+                }
+            }
+        });
+        /*  AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setMessage("REMOVE ANNOYING ADS?\nPay once , Use forever!");
+        builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
+     *//*   final String arg1 = usePhone;*//*
+        builder.setPositiveButton( "BUY $2.00", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    onBuyPressed(2);
+                } catch (Exception e) {
+                    FileLog.e("tmessages", e);
+                }
+            }
+        });
+        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        showDialog(builder.create());*/
+    }
 
+    public void onBuyPressed(int paymentValue) {
+
+        PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE, String.valueOf(paymentValue));
+        Intent intent = new Intent(getParentActivity(), PaymentActivity.class);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, UserPaymentInfo.getConfiguration());
+        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
+        getParentActivity().startActivityForResult(intent, UserPaymentInfo.REQUEST_CODE_PAYMENT);
+    }
+
+    private PayPalPayment getThingToBuy(String paymentIntent, String paymentValue) {
+        return new PayPalPayment(new BigDecimal(paymentValue), "USD", "PREMIUM FEATURES",
+                paymentIntent);
+
+    }
 
 }

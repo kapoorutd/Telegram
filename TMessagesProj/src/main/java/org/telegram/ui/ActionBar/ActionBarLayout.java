@@ -36,6 +36,7 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.R;
 import org.telegram.messenger.AnimatorListenerAdapterProxy;
 import org.telegram.ui.Components.LayoutHelper;
+import org.telegram.ui.SettingsActivity;
 
 import java.util.ArrayList;
 
@@ -1185,6 +1186,9 @@ public class ActionBarLayout extends FrameLayout {
                 parentActivity.startActivityForResult(intent, requestCode);
             }
         }
+
+
+
     }
 
     public void setUseAlphaAnimations(boolean value) {

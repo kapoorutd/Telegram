@@ -4405,6 +4405,10 @@ public class MessagesController implements NotificationCenter.NotificationCenter
         editor = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE).edit();
         editor.remove("gifhint").commit();
 
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor1=p.edit();
+        editor.clear();
+
         if (byUser) {
             unregistedPush();
             TLRPC.TL_auth_logOut req = new TLRPC.TL_auth_logOut();
@@ -4423,6 +4427,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
         cleanup();
         ContactsController.getInstance().deleteAllAppAccounts();
     }
+
 
     public void generateUpdateMessage() {
         if (BuildVars.DEBUG_VERSION || UserConfig.lastUpdateVersion == null || UserConfig.lastUpdateVersion.equals(BuildVars.BUILD_VERSION_STRING)) {

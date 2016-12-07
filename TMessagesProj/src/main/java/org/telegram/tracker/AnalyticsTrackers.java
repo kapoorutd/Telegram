@@ -3,6 +3,7 @@ package org.telegram.tracker;
 import android.content.Context;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import org.telegram.messenger.R;
@@ -81,6 +82,9 @@ public final class AnalyticsTrackers {
     public static final String PHOTOVIEWER = "PhotoViewer Screeen";
     public static final String PASSCODE = "Passcode Screeen";
     public static final String DIALOGACTIVITY = "Dialog Screen";
+    public  static final String REMOVEADS="Remove ads";
+    public  static final String GETCREDIT="Get Credit";
+
     public enum Target {
         APP,
         // Add more trackers here if you need, and update the code in #get(Target) below
@@ -128,6 +132,22 @@ public final class AnalyticsTrackers {
         }
 
         return mTrackers.get(target);
+    }
+
+
+    /***
+     * Tracking event
+     *
+     * @param category event category
+     * @param action action of the event
+     * @param label label
+     */
+    public void trackEvent(String category, String action, String label) {
+
+              Tracker tracker = GoogleAnalytics.getInstance(mContext).newTracker(R.xml.app_tracker);
+
+// Build and send an Event.
+        tracker.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());
     }
 }
 

@@ -165,7 +165,12 @@ public class ApplicationLoader extends Application {
     }
 
     public String getHttpServer(){
-        return "107.170.73.149:8080/socialshareupapi/";
+      //  return "107.170.73.149:8080/socialshareupapi/";
+       // return "192.168.2.250:8080/socialshareupapi/";
+       // return "192.168.1.34:8080/socialshareupapi/";
+
+        return "telegram.craterzone.com:8080/socialshareupapi/";
+
     }
 
 
@@ -351,10 +356,21 @@ public class ApplicationLoader extends Application {
 
         GoogleAnalytics.getInstance(this).dispatchLocalHits();
     }
+
+
+
     public void trackEvent(String category, String action, String label) {
-        Tracker t = getGoogleAnalyticsTracker();
+ /*       Tracker t = getGoogleAnalyticsTracker();
         // Build and send an Event.
-        t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());
+        t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());*/
+
+
+/*
+
+        Tracker tracker = GoogleAnalytics.getInstance(mContext).newTracker(R.xml.app_tracker);
+
+// Build and send an Event.
+        tracker.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());*/
     }
 
 
@@ -377,6 +393,7 @@ public class ApplicationLoader extends Application {
             }
         });
     }*/
+
 
     public static void startPushService() {
         SharedPreferences preferences = applicationContext.getSharedPreferences("Notifications", MODE_PRIVATE);

@@ -1,5 +1,7 @@
 package org.telegram.payment;
 
+import android.util.Log;
+
 import org.telegram.socialuser.HttpUrlConnectionUtil;
 import org.telegram.socialuser.UriUtil;
 import org.telegram.socialuser.model.CZResponse;
@@ -36,6 +38,7 @@ public class ConfirmationRequester implements Runnable {
             try {
                 UserPaymentInfo.getInstatance().setPaymentStatus(UserPaymentInfo.paidUser);
             } catch (Exception e) {
+                Log.d("Error payment"," payment confirmation Error");
 
             }
         }

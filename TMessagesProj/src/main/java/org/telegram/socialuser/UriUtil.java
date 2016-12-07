@@ -35,7 +35,7 @@ public class UriUtil {
     public static String getKarmaBalanceUrl(String mobileNo){
         // return  /socialshareupapi/user/   getCredit?mobile=9990243020";
 
-        return new StringBuilder().append("http://192.168.2.250:8080/socialshareupapi/user"/*getHTTPRootPath()*/).append("/").append("getCredit").toString();
+        return new StringBuilder().append(getHTTPRootPath()).append("/").append("getCredit").toString();
 
     }
 
@@ -45,7 +45,9 @@ public class UriUtil {
      public static String getCreditUrl(){
          http://{{host}}/socialshareupapi/user/     credit?source=VIDEO_ADS&mobile=9990243020
 
-         return  new StringBuilder().append("http://192.168.2.250:8080/socialshareupapi/user"/*getHTTPRootPath()*/).append("/").append("credit").toString();
+
+         // "192.168.2.250:8080/socialshareupapi/"
+         return  new StringBuilder().append(getHTTPRootPath()).append("/").append("credit").toString();
 
      }
 
@@ -54,10 +56,12 @@ public class UriUtil {
     public static String getDebitUrl(){
         http://{{host}}/socialshareupapi/user/debit?source=VIDEO_WATCH&mobile=9990243020
 
-        return  new StringBuilder().append("http://192.168.2.250:8080/socialshareupapi/user"/*getHTTPRootPath()*/).append("/").append("debit").toString();
+        return  new StringBuilder().append( getHTTPRootPath()).append("/").append("debit").toString();
 
     }
-
+    public static String getAllowedRequestURL(){
+        return new StringBuilder().append(getHTTPRootPath()).append("/getSocialRequest").toString();
+    }
 
 
 }

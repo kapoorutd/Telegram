@@ -35,8 +35,10 @@ import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Base64;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -54,6 +57,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.paypal.android.sdk.payments.PayPalAuthorization;
+import com.paypal.android.sdk.payments.PayPalFuturePaymentActivity;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalProfileSharingActivity;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+
+import org.json.JSONException;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.AnimatorListenerAdapterProxy;
 import org.telegram.PhoneFormat.PhoneFormat;
@@ -65,8 +78,10 @@ import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.browser.Browser;
+import org.telegram.payment.ConfirmationRequester;
 import org.telegram.payment.PaymentManager;
 import org.telegram.payment.UserPaymentInfo;
+import org.telegram.payment.billingModel.PaymentResponse;
 import org.telegram.socialuser.BackgroundExecuter;
 import org.telegram.socialuser.model.CreditModel;
 import org.telegram.socialuser.model.CustomHttpParams;
@@ -111,6 +126,7 @@ import org.telegram.ui.listners.KarmaBalanceListener;
 import org.telegram.ui.listners.KarmaDeductionListener;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -137,6 +153,7 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
     private int premiumFeature;
 
     private int preferencerow;
+    private int adsFreeRow;
   //  private int usernameRow;
     private int settingsSectionRow;
     private int settingsSectionRow2;
@@ -178,20 +195,32 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
 
     private final static int edit_name = 1;
     private final static int logout = 2;
-    private double bal;
+    private int bal;
 
     @Override
     public void onGetKarmaSuccess(int karmaPoints) {
 
         if (listView != null) {
            if(karmaPoints != bal )
-
-            listView.invalidateViews();
+            getParentActivity().runOnUiThread(new Runnable() {
+             @Override
+             public void run() {
+                 listView.invalidateViews();
+             }
+         });
+        //    listView.invalidateViews();
         }
     }
 
     @Override
     public void onGetKarmaFailure() {
+
+        getParentActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+              //  Toast.makeText(getParentActivity(),"Error in update balance",Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -285,11 +314,12 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
           myprofileRow = rowCount++;
           preferencerow = rowCount++;
           premiumFeature=rowCount++;
+          adsFreeRow=rowCount++;
 
-   /*     if(UserPaymentInfo.getInstatance().getPaymentStatus() ==UserPaymentInfo.paidUser
+        if(UserPaymentInfo.getInstatance().getPaymentStatus() ==UserPaymentInfo.paidUser
                 && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase("")) ){
-            premiumFeature=rowCount--;
-        }*/
+            adsFreeRow=rowCount--;
+        }
 
 
 
@@ -343,9 +373,9 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
         String cc   =   sp.getString("cCode","US");
 
 
-    //   BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester("8978690567",cc,this));
+       BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester(mob,cc,this));
 
-        BackgroundExecuter.getInstance().execute(new DeductKarmaRequester(new CreditModel("VIDEO_ADS","8978690567",cc),SettingsActivity.this));
+     // BackgroundExecuter.getInstance().execute(new DeductKarmaRequester(new CreditModel("VIDEO_ADS","8978690567",cc),SettingsActivity.this));
 
 
         return true;
@@ -441,7 +471,7 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
         AndroidUtilities.setListViewEdgeEffectColor(listView, AvatarDrawable.getProfileBackColorForId(5));
        // frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
 
-/////////////////////////////////////////////
+
 
         LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         layout.setMargins(0, 0, 0, 0);
@@ -497,7 +527,9 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
 
                 else if(i==premiumFeature){
 
-                    PaymentManager.createIntent(getParentActivity());
+                    ApplicationLoader.getInstance().trackEvent("Clicked on Get Karma","clicked","want to get credit");
+
+                    PaymentManager.createIntent(getParentActivity(),false);
 
 
 
@@ -515,6 +547,15 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
 
                         // PaymentManager.createIntent(getParentActivity());
                     }*/
+                }
+
+                else if(i==adsFreeRow){
+                    ApplicationLoader.getInstance().trackEvent("Clicked on Ads Free ","clicked","want to be ads free user");
+
+                    openDialog();
+                    //TODO
+                  //  PaymentManager.createIntent(getParentActivity(),true);
+                  //  PaymentManager.createIntent(SettingsActivity.this);
                 }
 
 
@@ -747,6 +788,8 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
 
                 else if (i == preferencerow) {
                     SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    ApplicationLoader.getInstance().trackEvent("Clicked on Looking for someone","clicked","want to social friends");
+
                     if(pp.getString("social_id","").equals("")) {
                         presentFragment(new MyProfileActivity());
                     }
@@ -754,7 +797,7 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
                         presentFragment(new PreferencesActivity());
                     }
                 } else if (i ==myprofileRow /*numberRow*/) {
-
+                    ApplicationLoader.getInstance().trackEvent("Clicked on My Profile","clicked","want to see own profile");
                     presentFragment(new MyProfileActivity());
                 }
 
@@ -1113,9 +1156,100 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
 
     @Override
     public void onActivityResultFragment(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == UserPaymentInfo.REQUEST_CODE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                PaymentConfirmation confirm =
+                        data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if (confirm != null) {
+                    try {
+                        Gson gson = new Gson(); // new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                        PaymentResponse response = gson.fromJson(confirm.toJSONObject().toString(), PaymentResponse.class);
+                        UserPaymentInfo.getInstatance().setPaymentId(response.getResponse().getId());
+                        UserPaymentInfo.getInstatance().setPaymentStatus(UserPaymentInfo.paidUser);
+
+                        sendAuthorizationToServer(String.valueOf(2));
+
+                    } catch (Exception e) {
+                        Log.e("", "an extremely unlikely failure occurred: ", e);
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("", "The user canceled.");
+            } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i("",
+                        "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
+            }
+        }
         avatarUpdater.onActivityResult(requestCode, resultCode, data);
     }
 
+
+    public void openDialog(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+
+        LayoutInflater inflater = (LayoutInflater) getParentActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.custom_dialog, null);
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        view.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        Button button = (Button)view.findViewById(R.id.btn_yes);
+        button.setSelected(true);
+        TextView textView = (TextView)view.findViewById(R.id.txt_dia) ;
+        textView.setText("REMOVE ANNOYING ADS?\n \nPay $2 for one year!");
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    onBuyPressed(2);
+                    dialog.dismiss();
+                    // PaymentManager.createIntent(getParentActivity(),false);
+                } catch (Exception e) {
+                    FileLog.e("tmessages", e);
+                }
+            }
+        });
+        /*  AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setMessage("REMOVE ANNOYING ADS?\nPay once , Use forever!");
+        builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
+     *//*   final String arg1 = usePhone;*//*
+        builder.setPositiveButton( "BUY $2.00", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    onBuyPressed(2);
+                } catch (Exception e) {
+                    FileLog.e("tmessages", e);
+                }
+            }
+        });
+        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        showDialog(builder.create());*/
+    }
+
+
+    private void sendAuthorizationToServer(String amount) {
+
+        String id = UserPaymentInfo.getInstatance().getUserId();
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+        // TODO change the amount selected by user.
+        String cc = p.getString("cCode", "zz");
+        String mob = p.getString("mob", "00000000");
+
+        if (!id.equalsIgnoreCase("")) {
+            BackgroundExecuter.getInstance().execute(new
+                    ConfirmationRequester(UserPaymentInfo.getInstatance().getPaymentId(), id, amount, mob, cc));
+        }
+
+    }
     @Override
     public void saveSelfArgs(Bundle args) {
         if (avatarUpdater != null && avatarUpdater.currentPicturePath != null) {
@@ -1149,6 +1283,13 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
+        SharedPreferences sp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+
+        String mob  =  sp.getString("mob","9888888");
+        String cc   =   sp.getString("cCode","US");
+        BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester(mob,cc,this));
+
+
         updateUserData();
         fixLayout();
     }
@@ -1312,7 +1453,7 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
 
         @Override
         public boolean isEnabled(int i) {
-            return i == textSizeRow || i == enableAnimationsRow || i == notificationRow || i == backgroundRow || i == myprofileRow || i==premiumFeature /*|| i == numberRow*/ ||
+            return i == textSizeRow || i == enableAnimationsRow || i == notificationRow || i == backgroundRow || i == myprofileRow || i==premiumFeature || i == adsFreeRow ||
                     i == askQuestionRow || i == sendLogsRow || i == sendByEnterRow || i == autoplayGifsRow || i == privacyRow || i == wifiDownloadRow ||
                     i == mobileDownloadRow || i == clearLogsRow || i == roamingDownloadRow || i == languageRow || i == preferencerow/*|| i == usernameRow*/ ||
                     i == switchBackendButtonRow || i == telegramFaqRow || i == contactsSortRow || i == contactsReimportRow || i == saveToGalleryRow ||
@@ -1557,13 +1698,17 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
 
                     if(i==premiumFeature){
                         SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-                         bal= Double.parseDouble(  p.getString("karmaBal","0"));
-                          textCell.setTextAndValue("Get Karma",  "Balance ("+p.getString("karmaBal","0")+")",true);/*R.drawable.icpre*/
+                         bal= Integer.parseInt(  p.getString("karmaBal","0"));
+                          textCell.setTextAndValue(LocaleController.getString("getMore",R.string.more_karma),  p.getString("karmaBal","0"),true);/*R.drawable.icpre*/
 
                     }else if (i == myprofileRow/*numberRow*/) {
                         textCell.setText(LocaleController.getString("myprofile", R.string.myprofile), true);
                     } else if (i == preferencerow) {
                         textCell.setText(LocaleController.getString("preferences", R.string.preferences), true);
+                    }
+                else if(i==adsFreeRow){
+                        textCell.setTextAndValue("Hide Ads"," $2", true);
+
                     }
                 }
 
@@ -1589,7 +1734,7 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
             } else if (i == settingsSectionRow2 || i == messagesSectionRow2 || i == supportSectionRow2 || i == numberSectionRow || i == mediaDownloadSection2) {
                 return 4;
             }
-            else if (i == myprofileRow || i == preferencerow|| i==premiumFeature) {
+            else if (i == myprofileRow || i == preferencerow|| i==premiumFeature || i==adsFreeRow) {
                 return 7;
             }
             else {
@@ -1619,15 +1764,18 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
         //    draweritems.add(new MenuItems(LocaleController.getString("TelegramFaq", R.string.TelegramFaq),R.drawable.menu_faq,true, "",2));
         draweritems.add(new MenuItems(LocaleController.getString("preferences", R.string.preferences),R.drawable.menu_pref,true, "",3));
 
+//        draweritems.add(new MenuItems("Get More Karmas",R.drawable.ic_premium,true, getKarmaBal(),4));
+        if(UserPaymentInfo.getInstatance().getPaymentStatus() != UserPaymentInfo.paidUser
+                && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase("")) ){
+            draweritems.add(new MenuItems("Hide Ads",R.drawable.hide_ad,true, "$2",4));
+        }
 
-            draweritems.add(new MenuItems("Get Karma",R.drawable.ic_premium,true, "Bal.("+getKarmaBal()+")",4));
-
-
+        draweritems.add(new MenuItems(LocaleController.getString("getMore",R.string.more_karma),R.drawable.ic_premium,true, getKarmaBal(),4));
 
         SlidingMenuAdapter adapter = new SlidingMenuAdapter(getParentActivity(),
                 draweritems);
 
-        ViewParent view=  parentLayout.getParent();
+        ViewParent view =  parentLayout.getParent();
         ListView drawerList=((ListView)((View) view.getParent()).findViewById(R.id.contact_slidermenu));
         drawerList.setAdapter(adapter);
         drawerList.setOnItemClickListener(new SettingMenuClickListener());
@@ -1696,24 +1844,27 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
                     }
                     else {
                         presentFragment(new PreferencesActivity());
+                        ApplicationLoader.getInstance().trackEvent("Clicked on my preferences","clicked","want to get friends");
+
                     }
                     break;
 
-
-                case 2 :
+                case 2:
                     parentLayout.closeDrawer();
+                    openDialog();
+                    break;
+                case 3 :
+                    parentLayout.closeDrawer();
+                    ApplicationLoader.getInstance().trackEvent("Clicked on Get Karma","clicked","want to get credit");
                     SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
                     if(pp.getString("social_id","").equals("")) {
                         presentFragment(new MyProfileActivity());
                     }
                     else{
-                            PaymentManager.createIntent(getParentActivity());
+                            PaymentManager.createIntent(getParentActivity(),false);
                     }
-
                     break;
             }
-
-
         }
     }
 
@@ -1735,8 +1886,6 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
         showDialog(builder.create());
 
     }
-
-
 
 
     public void askQuestion(){
@@ -1772,9 +1921,153 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
 
     public String getKarmaBal(){
         SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-
         return p.getString("karmaBal","0");
     }
+
+
+
+
+
+    public void onBuyPressed(int paymentValue) {
+
+        PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE, String.valueOf(paymentValue));
+        Intent intent = new Intent(getParentActivity(), PaymentActivity.class);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, UserPaymentInfo.getConfiguration());
+        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
+        getParentActivity().startActivityForResult(intent, UserPaymentInfo.REQUEST_CODE_PAYMENT);
+    }
+
+
+
+
+    private PayPalPayment getThingToBuy(String paymentIntent, String paymentValue) {
+        return new PayPalPayment(new BigDecimal(paymentValue), "USD", "PREMIUM FEATURES",
+                paymentIntent);
+
+    }
+
+
+
+
+
+/*
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == UserPaymentInfo.REQUEST_CODE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                PaymentConfirmation confirm =
+                        data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if (confirm != null) {
+                    try {
+                        Gson gson = new Gson(); // new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                        PaymentResponse response = gson.fromJson(confirm.toJSONObject().toString(), PaymentResponse.class);
+                        UserPaymentInfo.getInstatance().setPaymentId(response.getResponse().getId());
+
+
+                        UserPaymentInfo.getInstatance().setPaymentStatus(UserPaymentInfo.paidUser);
+
+*/
+/*
+                        findViewById(R.id.buyItBtn).setVisibility(View.GONE);
+                        findViewById(R.id.cancelBtn).setVisibility(View.VISIBLE);
+
+                        sendAuthorizationToServer(String.valueOf(paymentValue));
+
+                        findViewById(R.id.content).setVisibility(View.GONE);
+                        findViewById(R.id.done_content).setVisibility(View.VISIBLE);*//*
+
+                        //  cancelButton.setVisibility(View.VISIBLE);
+                   */
+/*     Log.i(TAG, confirm.toJSONObject().toString(4));
+                        Log.i(TAG, confirm.getPayment().toJSONObject().toString(4));
+*//*
+
+                        //confirm.getProofOfPayment()
+
+                        */
+/**
+                         *  TODO: send 'confirm' (and possibly confirm.getPayment() to your server for verification
+                         * or consent completion.
+                         * See https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
+                         * for more details.
+                         *
+                         * For sample mobile backend interactions, see
+                         * https://github.com/paypal/rest-api-sdk-python/tree/master/samples/mobile_backend
+                         *//*
+
+                        //  displayResultText("PaymentConfirmation info received from PayPal");
+
+                    } catch (Exception e) {
+                        Log.e("", "an extremely unlikely failure occurred: ", e);
+                    }
+         */
+/*       }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i(TAG, "The user canceled.");
+            } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i(TAG,
+                        "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
+            }
+        } else if (requestCode == UserPaymentInfo.REQUEST_CODE_FUTURE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                PayPalAuthorization auth =
+                        data.getParcelableExtra(PayPalFuturePaymentActivity.EXTRA_RESULT_AUTHORIZATION);
+                if (auth != null) {
+                    try {
+                        Log.i("FuturePaymentExample", auth.toJSONObject().toString(4));
+
+                        String authorization_code = auth.getAuthorizationCode();
+                        Log.i("FuturePaymentExample", authorization_code);
+
+                        //  sendAuthorizationToServer(auth);
+                        //  displayResultText("Future Payment code received from PayPal");
+
+                    } catch (JSONException e) {
+                        Log.e("FuturePaymentExample", "an extremely unlikely failure occurred: ", e);
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("FuturePaymentExample", "The user canceled.");
+            } else if (resultCode == PayPalFuturePaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i(
+                        "FuturePaymentExample",
+                        "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration. Please see the docs.");
+            }
+        } else if (requestCode == REQUEST_CODE_PROFILE_SHARING) {
+            if (resultCode == Activity.RESULT_OK) {
+                PayPalAuthorization auth =
+                        data.getParcelableExtra(PayPalProfileSharingActivity.EXTRA_RESULT_AUTHORIZATION);
+                if (auth != null) {
+                    try {
+                        Log.i("ProfileSharingExample", auth.toJSONObject().toString(4));
+
+                        String authorization_code = auth.getAuthorizationCode();
+                        Log.i("ProfileSharingExample", authorization_code);
+
+                        // sendAuthorizationToServer(auth);
+                        //  displayResultText("Profile Sharing code received from PayPal");
+
+                    } catch (JSONException e) {
+                        Log.e("ProfileSharingExample", "an extremely unlikely failure occurred: ", e);
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("ProfileSharingExample", "The user canceled.");
+            } else if (resultCode == PayPalFuturePaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i(
+                        "ProfileSharingExample",
+                        "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration. Please see the docs.");
+            }
+        }*//*
+
+                    //   String s = UserPaymentInfo.getInstatance().getPaymentId();
+                }
+
+
+            }}}
+*/
 
 
 }

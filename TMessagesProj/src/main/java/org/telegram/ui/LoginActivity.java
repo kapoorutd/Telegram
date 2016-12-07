@@ -682,6 +682,7 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                             if (index != -1) {
                                 ignoreSelection = true;
                                 countryButton.setText(countriesArray.get(index));
+                                p.edit().putString("country",countriesArray.get(index)).commit();
                                 String hint = phoneFormatMap.get(text);
                                 phoneField.setHintText(hint != null ? hint.replace('X', '–') : null);
                                 countryState = 0;
@@ -708,9 +709,10 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                     String text1 = PhoneFormat.stripExceptNumbers(codeField.getText().toString());
                     String countryShortName =listNameWithCodeCountry.get(text);
                  //   SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-                    p.edit().putString("pCode",text1).commit();
-                    p.edit().putString("cCode",countryShortName).commit();
-
+                  if(countryShortName!=null) {
+                      p.edit().putString("pCode", text1.replace(" ", "")).commit();
+                      p.edit().putString("cCode", countryShortName.replace(" ", "")).commit();
+                  }
                 }
             });
             codeField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -770,7 +772,7 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                     int start = phoneField.getSelectionStart();
                     String phoneChars = "0123456789";
                     String str = phoneField.getText().toString();
-                    p.edit().putString("mob",str).commit();
+                    p.edit().putString("mob",str.replace(" ","")).commit();
 
 
                     if (characterAction == 3) {
@@ -904,7 +906,7 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                 codeField.setText(code);
                 countryButton.setText(name);
                 SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-                p.edit().putString("country",name).commit();
+                p.edit().putString("country",name.replace(" ","")).commit();
                 String hint = phoneFormatMap.get(code);
                 phoneField.setHintText(hint != null ? hint.replace('X', '–') : null);
                 countryState = 0;
@@ -1965,6 +1967,9 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
             resetAccountText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             resetAccountText.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             addView(resetAccountText, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT), 0, 7, 0, 14));
+
+            hideTabsAnsMenu();
+
         }
 
         @Override
@@ -2214,6 +2219,7 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                     }
                 }
             });
+            hideTabsAnsMenu();
         }
 
         @Override
@@ -2445,6 +2451,7 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
                     showDialog(builder.create());
                 }
             });
+            hideTabsAnsMenu();
         }
 
         @Override

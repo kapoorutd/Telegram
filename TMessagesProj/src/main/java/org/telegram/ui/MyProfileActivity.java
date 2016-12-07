@@ -152,7 +152,11 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
         checkAndUpdateAvatar();
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
 
-        country_txt.setText(preferences.getString("country","Indonesia"));
+        //country_txt.setText(preferences.getString("country","Indonesia"));
+
+        CountryAdapter.Country cu = Util.getcountry(preferences.getString("country","Indonesia"));
+        country_txt.setText(cu.name);
+
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
@@ -190,10 +194,6 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
         fragmentView.findViewById(R.id.backview).setOnClickListener(this);
         return fragmentView;
     }
-
-
-
-
 
     @Override
     public void onClick(View v) {
