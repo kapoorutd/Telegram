@@ -445,15 +445,7 @@ public class DocumentSelectActivity extends BaseFragment {
                     return lhs.isDirectory() ? -1 : 1;
                 }
                 return lhs.getName().compareToIgnoreCase(rhs.getName());
-                /*long lm = lhs.lastModified();
-                long rm = lhs.lastModified();
-                if (lm == rm) {
-                    return 0;
-                } else if (lm > rm) {
-                    return -1;
-                } else {
-                    return 1;
-                }*/
+
             }
         });
         for (int a = 0; a < files.length; a++) {

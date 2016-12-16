@@ -8,8 +8,8 @@ import org.telegram.tgnet.TLRPC;
 public interface OnTelegramSync {
 
 
-    public void onUserSyncSuccess(TLRPC.User user);
-    public void onUserSyncFailed();
+    void onUserSyncSuccess(TLRPC.User user);
+    void onUserSyncFailed();
 
 
 

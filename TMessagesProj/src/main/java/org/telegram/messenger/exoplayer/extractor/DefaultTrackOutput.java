@@ -219,10 +219,7 @@ public class DefaultTrackOutput implements TrackOutput {
     if (!haveNext) {
       return false;
     }
-    if (spliceOutTimeUs != Long.MIN_VALUE && sampleInfoHolder.timeUs >= spliceOutTimeUs) {
-      return false;
-    }
-    return true;
+    return !(spliceOutTimeUs != Long.MIN_VALUE && sampleInfoHolder.timeUs >= spliceOutTimeUs);
   }
 
   // Called by the loading thread.

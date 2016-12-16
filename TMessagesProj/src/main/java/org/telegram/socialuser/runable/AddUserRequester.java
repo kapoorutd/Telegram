@@ -44,12 +44,6 @@ public class AddUserRequester implements Runnable {
                 p.edit().putString("visibility",resUser.visibility).commit();
                 p.edit().putString("userHash",resUser.userHash).commit();
 
-          /*      for(OnAddUserListner listner : ApplicationLoader.getInstance().getUIListeners(OnAddUserListner.class)){
-
-                    listner.setUserAddSuccess();
-                }*/
-
-
             }catch (Exception e){
             Logger.d("UserRegistration",e.getStackTrace().toString());
             }
@@ -57,11 +51,6 @@ public class AddUserRequester implements Runnable {
         }
         else{
 
-        /*    for(OnAddUserListner listner : ApplicationLoader.getInstance().getUIListeners(OnAddUserListner.class)){
-
-                listner.setUserAddFailed();
-            }
-*/
 
         }
 

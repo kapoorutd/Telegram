@@ -6,8 +6,8 @@ package org.telegram.ui.listners;
 
 public interface KarmaBalanceListener {
 
-     public void onGetKarmaSuccess(int karmaPoints);
-     public void onGetKarmaFailure();
+     void onGetKarmaSuccess(int karmaPoints);
+     void onGetKarmaFailure();
 
 
 }

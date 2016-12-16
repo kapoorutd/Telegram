@@ -304,11 +304,8 @@ public static final String TAG = HttpUrlConnectionUtil.class.getName();
 	}
 	
 	public static boolean checkHTTPS(String url){
-		if(url.contains("https")){
-			return true;
-		}
-		return false;
-		
+		return url.contains("https");
+
 	}
 	
 	  /**

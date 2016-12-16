@@ -58,7 +58,7 @@ public interface FormatEvaluator {
   /**
    * A format evaluation.
    */
-  public static final class Evaluation {
+  final class Evaluation {
 
     /**
      * The desired size of the queue.
@@ -84,7 +84,7 @@ public interface FormatEvaluator {
   /**
    * Always selects the first format.
    */
-  public static final class FixedEvaluator implements FormatEvaluator {
+  final class FixedEvaluator implements FormatEvaluator {
 
     @Override
     public void enable() {
@@ -107,7 +107,7 @@ public interface FormatEvaluator {
   /**
    * Selects randomly between the available formats.
    */
-  public static final class RandomEvaluator implements FormatEvaluator {
+  final class RandomEvaluator implements FormatEvaluator {
 
     private final Random random;
 
@@ -152,7 +152,7 @@ public interface FormatEvaluator {
    * reference implementation only. It is recommended that application developers implement their
    * own adaptive evaluator to more precisely suit their use case.
    */
-  public static final class AdaptiveEvaluator implements FormatEvaluator {
+  final class AdaptiveEvaluator implements FormatEvaluator {
 
     public static final int DEFAULT_MAX_INITIAL_BITRATE = 800000;
 

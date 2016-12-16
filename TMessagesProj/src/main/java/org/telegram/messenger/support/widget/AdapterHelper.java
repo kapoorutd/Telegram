@@ -747,7 +747,7 @@ class AdapterHelper implements OpReorderer.Callback {
     /**
      * Contract between AdapterHelper and RecyclerView.
      */
-    static interface Callback {
+    interface Callback {
 
         ViewHolder findViewHolder(int position);
 

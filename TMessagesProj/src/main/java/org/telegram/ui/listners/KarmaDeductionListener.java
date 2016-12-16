@@ -6,8 +6,8 @@ package org.telegram.ui.listners;
 
 public interface KarmaDeductionListener {
 
-    public void onKarmaDeductSuccess();
-    public void onKarmaDeductFailed();
+    void onKarmaDeductSuccess();
+    void onKarmaDeductFailed();
 
 
 }

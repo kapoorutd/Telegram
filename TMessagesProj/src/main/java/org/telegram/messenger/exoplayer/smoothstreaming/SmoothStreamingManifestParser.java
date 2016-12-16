@@ -60,7 +60,7 @@ public class SmoothStreamingManifestParser implements UriLoadable.Parser<SmoothS
 
   @Override
   public SmoothStreamingManifest parse(String connectionUrl, InputStream inputStream)
-      throws IOException, ParserException {
+      throws IOException {
     try {
       XmlPullParser xmlParser = xmlParserFactory.newPullParser();
       xmlParser.setInput(inputStream, null);
@@ -101,8 +101,7 @@ public class SmoothStreamingManifestParser implements UriLoadable.Parser<SmoothS
       this.normalizedAttributes = new LinkedList<>();
     }
 
-    public final Object parse(XmlPullParser xmlParser) throws XmlPullParserException, IOException,
-        ParserException {
+    public final Object parse(XmlPullParser xmlParser) throws XmlPullParserException, IOException {
       String tagName;
       boolean foundStartTag = false;
       int skippingElementDepth = 0;

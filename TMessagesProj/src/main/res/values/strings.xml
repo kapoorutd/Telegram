@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-
 <resources>
     <string name="LanguageName">English</string>
 
     <string name="AppName">Social IM for Telegram</string>
     <string name="AppNameBeta">Social IM for Telegram</string>
-
     <string name="LanguageNameInEnglish">English</string>
     <string name="LanguageCode">en</string>
     <!--signin view-->
@@ -416,7 +413,7 @@
     <!--contacts view-->
     <string name="SelectContact">Select Contact</string>
     <string name="NoContacts">No contacts yet</string>
-    <string name="InviteText">Hey, let\'s switch to Social IM for Telegram: https://appworld.blackberry.com/webstore/content/59951054/</string>
+    <string name="InviteText">Hey, I found this app really fun-filled &amp; exciting, to socialize with my-kinda-people! Give a try, you too!: http://blck.by/29ei2Kq </string>
     <string name="TodayAt">at</string>
     <string name="YesterdayAt">yesterday at</string>
     <string name="Online">online</string>
@@ -1255,8 +1252,6 @@
     <string name="buy_premium_content">Want to befriend with more interesting people?
     \nTime to Switch to the paid version !
     </string>
-
-
     <!--                                                    -->
 
     <string name="more_karma">Get More Karmas</string>
@@ -1270,8 +1265,8 @@
 
     <string name="watch_ads">Watch video and earn more Karmas!</string>
     <string name="get_more_karma">Get More karmas to connect  with more friends, Do you want to get more karmas ? </string>
-    <string name="remove_ads_content">"REMOVE ANNOYING ADS?\n \nPay $2 for one year!"</string>
-
+    <string name="remove_ads_content">REMOVE ANNOYING ADS?\n \nPay $2 for one year!</string>
     <string name="looking_more_frnds">loading more friends..</string>
+    <string name="error_load_more">Error in loading friends</string>
 
 </resources>

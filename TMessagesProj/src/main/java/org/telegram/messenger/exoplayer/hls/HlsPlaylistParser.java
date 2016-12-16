@@ -108,7 +108,7 @@ public final class HlsPlaylistParser implements UriLoadable.Parser<HlsPlaylist> 
 
   @Override
   public HlsPlaylist parse(String connectionUrl, InputStream inputStream)
-      throws IOException, ParserException {
+      throws IOException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
     Queue<String> extraLines = new LinkedList<>();
     String line;

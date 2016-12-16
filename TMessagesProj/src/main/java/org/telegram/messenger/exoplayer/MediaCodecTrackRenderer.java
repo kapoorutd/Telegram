@@ -738,11 +738,8 @@ public abstract class MediaCodecTrackRenderer extends SampleSourceTrackRenderer 
     if (drmManagerState == DrmSessionManager.STATE_ERROR) {
       throw new ExoPlaybackException(drmSessionManager.getError());
     }
-    if (drmManagerState != DrmSessionManager.STATE_OPENED_WITH_KEYS &&
-        (sampleEncrypted || !playClearSamplesWithoutKeys)) {
-      return true;
-    }
-    return false;
+    return drmManagerState != DrmSessionManager.STATE_OPENED_WITH_KEYS &&
+            (sampleEncrypted || !playClearSamplesWithoutKeys);
   }
 
   /**

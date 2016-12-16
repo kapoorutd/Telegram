@@ -13,9 +13,11 @@ import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -24,6 +26,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.multidex.MultiDex;
 import android.util.Base64;
@@ -31,6 +34,7 @@ import android.util.Base64;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import org.telegram.calling.SinchService;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.SerializedData;
 import org.telegram.tgnet.TLRPC;
@@ -65,6 +69,7 @@ public class ApplicationLoader extends Application {
 
     public static volatile boolean isScreenOn = false;
     public static volatile boolean mainInterfacePaused = true;
+
 
     public static boolean isCustomTheme() {
         return isCustomTheme;
@@ -321,9 +326,6 @@ public class ApplicationLoader extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-    //    ACRA.init(this);
-
         applicationContext = getApplicationContext();
         NativeLoader.initNativeLibs(ApplicationLoader.applicationContext);
 
@@ -338,6 +340,7 @@ public class ApplicationLoader extends Application {
         applicationHandler = new Handler(applicationContext.getMainLooper());
 
         startPushService();
+        startSinchService();
     }
 
 
@@ -360,39 +363,7 @@ public class ApplicationLoader extends Application {
 
 
     public void trackEvent(String category, String action, String label) {
- /*       Tracker t = getGoogleAnalyticsTracker();
-        // Build and send an Event.
-        t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());*/
-
-
-/*
-
-        Tracker tracker = GoogleAnalytics.getInstance(mContext).newTracker(R.xml.app_tracker);
-
-// Build and send an Event.
-        tracker.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());*/
     }
-
-
-
-    /*public static void sendRegIdToBackend(final String token) {
-        Utilities.stageQueue.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                UserConfig.pushString = token;
-                UserConfig.registeredForPush = false;
-                UserConfig.saveConfig(false);
-                if (UserConfig.getClientUserId() != 0) {
-                    AndroidUtilities.runOnUIThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            MessagesController.getInstance().registerForPush(token);
-                        }
-                    });
-                }
-            }
-        });
-    }*/
 
 
     public static void startPushService() {
@@ -435,13 +406,6 @@ public class ApplicationLoader extends Application {
                         FileLog.d("tmessages", "GCM Registration not found.");
                     }
 
-                    //if (UserConfig.pushString == null || UserConfig
-                    // .pushString.length() == 0) {
-                    Intent intent = new Intent(applicationContext, GcmRegistrationIntentService.class);
-                    startService(intent);
-                    //} else {
-                    //    FileLog.d("tmessages", "GCM regId = " + UserConfig.pushString);
-                    //}
                 } else {
                     FileLog.d("tmessages", "No valid Google Play Services APK found.");
                 }
@@ -449,32 +413,6 @@ public class ApplicationLoader extends Application {
         }, 1000);
     }
 
-    /*private void initPlayServices() {
-        AndroidUtilities.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                if (checkPlayServices()) {
-                    if (UserConfig.pushString != null && UserConfig.pushString.length() != 0) {
-                        FileLog.d("tmessages", "GCM regId = " + UserConfig.pushString);
-                    } else {
-                        FileLog.d("tmessages", "GCM Registration not found.");
-                    }
-                    try {
-                        if (!FirebaseApp.getApps(ApplicationLoader.applicationContext).isEmpty()) {
-                            String token = FirebaseInstanceId.getInstance().getToken();
-                            if (token != null) {
-                                sendRegIdToBackend(token);
-                            }
-                        }
-                    } catch (Throwable e) {
-                        FileLog.e("tmessages", e);
-                    }
-                } else {
-                    FileLog.d("tmessages", "No valid Google Play Services APK found.");
-                }
-            }
-        }, 2000);
-    }*/
 
     private boolean checkPlayServices() {
         try {
@@ -485,14 +423,14 @@ public class ApplicationLoader extends Application {
         }
         return true;
 
-        /*if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Log.i("tmessages", "This device is not supported.");
-            }
-            return false;
-        }
-        return true;*/
     }
+
+    //**************************sinch Service********************************//
+
+
+    public void startSinchService(){
+  //    applicationContext.startService(new Intent(applicationContext, SinchService.class));
+    }
+
+
 }

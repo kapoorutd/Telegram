@@ -204,7 +204,7 @@ public class BlockedUsersActivity extends BaseFragment implements NotificationCe
             }
             if (listViewAdapter != null) {
                 listViewAdapter.notifyDataSetChanged();
-                ((FrameLayout) progressView).addView(View.inflate(getParentActivity(), R.layout.notification_settings, null));
+                progressView.addView(View.inflate(getParentActivity(), R.layout.notification_settings, null));
                 progressView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

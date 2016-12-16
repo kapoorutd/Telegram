@@ -389,7 +389,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
     @Override
     public boolean onFragmentCreate() {
-        chatActivityEnterView.onListnerAttachment(this);
+        ChatActivityEnterView.onListnerAttachment(this);
         final int chatId = arguments.getInt("chat_id", 0);
         final int userId = arguments.getInt("user_id", 0);
         final int encId = arguments.getInt("enc_id", 0);
@@ -8774,16 +8774,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             MenuItems items =(MenuItems) parent.getItemAtPosition(position);
-
             switch(items.getId()){
-
                 case 0:
                     parentLayout.closeDrawer();
                     if(currentUser != null) {
                         try {
-                            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:+" + currentUser.phone));
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            getParentActivity().startActivity(intent);
+                            Intent mainActivity = new Intent(getParentActivity(), org.telegram.calling.PlaceCallActivity.class);
+                            mainActivity.putExtra("mob","+"+currentUser.phone);
+                            getParentActivity().startActivity(mainActivity);
                         } catch (Exception e) {
                             FileLog.e("tmessages", e);
                         }  }
@@ -8791,14 +8789,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                 case 1:
                     parentLayout.closeDrawer();
-                    //  if(currentUser != null){
                     openProfile();
-                    //}
                     break;
-
                 case 2:
                     parentLayout.closeDrawer();
-                    // encrypted chat
                     if (getParentActivity() == null) {
                         return;
                     }
@@ -8833,19 +8827,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
 
     public void openProfile(){
-    /*    if (mUser != null && mUser.id != UserConfig.getClientUserId()) {
-            Bundle args = new Bundle();
-            args.putInt("user_id",mUser.id);
-            ProfileActivity fragment = new ProfileActivity(args);
-            //  fragment.setPlayProfileAnimation(currentUser != null && currentUser.id == user.id);
-            presentFragment(fragment);*/
 
-
-
-        //}
-
-
-      //  if (radioButton == null || radioButton.getVisibility() != View.VISIBLE) {
             if (currentUser != null) {
                 Bundle args = new Bundle();
                 args.putInt("user_id", currentUser.id);
@@ -8855,18 +8837,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 ProfileActivity fragment = new ProfileActivity(args);
                 fragment.setPlayProfileAnimation(true);
                 presentFragment(fragment);
-            }/* else if (currentChat != null) {
-                Bundle args = new Bundle();
-                args.putInt("chat_id", currentChat.id);
-                ProfileActivity fragment = new ProfileActivity(args);
-                fragment.setChatInfo(info);
-                fragment.setPlayProfileAnimation(true);
-                presentFragment(fragment);
             }
-        } else {
-            switchImportantMode(null);
-        }*/
-
     }
     public void clearOrDeletechat(final int id){
         if (getParentActivity() == null) {

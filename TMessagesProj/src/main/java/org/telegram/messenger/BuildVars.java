@@ -26,4 +26,5 @@ public class BuildVars {
     public static int APP_ID =10661; //obtaion your own APP_ID at https://core.telegram.org/api/obtaining_api_id
     public static String APP_HASH ="ccc55b3bfab7976cd5aee1190a8506ee"; //obtaion your own APP_HASH at https://core.telegram.org/api/obtaining_api_id
 
+
 }

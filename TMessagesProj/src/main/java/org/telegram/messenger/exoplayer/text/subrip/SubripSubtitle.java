@@ -71,7 +71,7 @@ import java.util.List;
     int index = Util.binarySearchFloor(cueTimesUs, timeUs, true, false);
     if (index == -1 || cues[index] == null) {
       // timeUs is earlier than the start of the first cue, or we have an empty cue.
-      return Collections.<Cue>emptyList();
+      return Collections.emptyList();
     } else {
       return Collections.singletonList(cues[index]);
     }

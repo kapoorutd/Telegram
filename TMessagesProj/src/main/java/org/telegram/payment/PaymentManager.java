@@ -163,7 +163,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
         builder = new AlertDialog.Builder(PaymentManager.this);
 
         tv.setText(getResources().getString(R.string.karmapoint)+" "+getKarmaBal());
-      //  intializeAds();
+
 
     }
 

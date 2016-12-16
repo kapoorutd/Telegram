@@ -44,6 +44,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.paypal.android.sdk.payments.PayPalPayment;
@@ -51,6 +52,8 @@ import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 
+import org.telegram.calling.*;
+import org.telegram.calling.LoginActivity;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildVars;
@@ -158,6 +161,8 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                     }
                 }
         );
+
+
     }
 
     @Override
@@ -350,10 +355,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                         listView.setEmptyView(emptyView);
                     }
                     if (!onlySelect) {
-                      /*  floatingButton.setVisibility(View.VISIBLE);
-                        floatingHidden = true;
-                        floatingButton.setTranslationY(AndroidUtilities.dp(100));
-                        hideFloatingButton(false);*/
                     }
                     if (listView.getAdapter() != dialogsAdapter) {
                         listView.setAdapter(dialogsAdapter);
@@ -762,36 +763,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
         progressView = new ProgressBar(context);
         progressView.setVisibility(View.GONE);
         frameLayout.addView(progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
-/*
-
-        floatingButton = new ImageView(context);
-        floatingButton.setVisibility(onlySelect ? View.GONE : View.VISIBLE);
-        floatingButton.setScaleType(ImageView.ScaleType.CENTER);
-        floatingButton.setBackgroundResource(R.drawable.floating_states);
-        floatingButton.setImageResource(R.drawable.floating_pencil);
-        if (Build.VERSION.SDK_INT >= 21) {
-            StateListAnimator animator = new StateListAnimator();
-            animator.addState(new int[]{android.R.attr.state_pressed}, ObjectAnimator.ofFloat(floatingButton, "translationZ", AndroidUtilities.dp(2), AndroidUtilities.dp(4)).setDuration(200));
-            animator.addState(new int[]{}, ObjectAnimator.ofFloat(floatingButton, "translationZ", AndroidUtilities.dp(4), AndroidUtilities.dp(2)).setDuration(200));
-            floatingButton.setStateListAnimator(animator);
-            floatingButton.setOutlineProvider(new ViewOutlineProvider() {
-                @SuppressLint("NewApi")
-                @Override
-                public void getOutline(View view, Outline outline) {
-                    outline.setOval(0, 0, AndroidUtilities.dp(56), AndroidUtilities.dp(56));
-                }
-            });
-        }
-        frameLayout.addView(floatingButton, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.BOTTOM, LocaleController.isRTL ? 14 : 0, 0, LocaleController.isRTL ? 0 : 14, 14));
-        floatingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle args = new Bundle();
-                args.putBoolean("destroyAfterSelect", true);
-                presentFragment(new ContactsActivity(args));
-            }
-        });
-*/
 
         listView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -819,28 +790,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                     }
                 }
 
-             /*   if (floatingButton.getVisibility() != View.GONE) {
-                    final View topChild = recyclerView.getChildAt(0);
-                    int firstViewTop = 0;
-                    if (topChild != null) {
-                        firstViewTop = topChild.getTop();
-                    }
-                    boolean goingDown;
-                    boolean changed = true;
-                    if (prevPosition == firstVisibleItem) {
-                        final int topDelta = prevTop - firstViewTop;
-                        goingDown = firstViewTop < prevTop;
-                        changed = Math.abs(topDelta) > 1;
-                    } else {
-                        goingDown = firstVisibleItem > prevPosition;
-                    }
-                    if (changed && scrollUpdated) {
-                        hideFloatingButton(goingDown);
-                    }
-                    prevPosition = firstVisibleItem;
-                    prevTop = firstViewTop;
-                    scrollUpdated = true;
-                }*/
             }
         });
 
@@ -1018,22 +967,7 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-   /*     if (!onlySelect && floatingButton != null) {
-            floatingButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    floatingButton.setTranslationY(floatingHidden ? AndroidUtilities.dp(100) : 0);
-                    floatingButton.setClickable(!floatingHidden);
-                    if (floatingButton != null) {
-                        if (Build.VERSION.SDK_INT < 16) {
-                            floatingButton.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        } else {
-                            floatingButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        }
-                    }
-                }
-            });
-        }*/
+
     }
 
     @Override
@@ -1162,14 +1096,7 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
     }
 
     private void hideFloatingButton(boolean hide) {
-      /*  if (floatingHidden == hide) {
-            return;
-        }
-        floatingHidden = hide;
-        ObjectAnimator animator = ObjectAnimator.ofFloat(floatingButton, "translationY", floatingHidden ? AndroidUtilities.dp(100) : 0).setDuration(300);
-        animator.setInterpolator(floatingInterpolator);
-        floatingButton.setClickable(!hide);
-        animator.start();*/
+
     }
 
     private void updateVisibleRows(int mask) {
@@ -1377,7 +1304,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
         drawerList.setOnItemClickListener(new ChatMenuClickListener());
         ((View) view.getParent()).findViewById(R.id.divider).setVisibility(View.INVISIBLE);
         ((View) view.getParent()).findViewById(R.id.bottom_panel).setVisibility(View.INVISIBLE);
-        // ((View) view.getParent()).findViewById(R.id.divider).setBackgroundColor(getParentActivity().getResources().getColor(R.color.divider));
         ((ImageView) ((View) view.getParent()).findViewById(R.id.menu_image)).setImageResource(R.drawable.transparent);
         ((TextView) ((View) view.getParent()).findViewById(R.id.row_title)).setText("");
         ((View) view.getParent()).findViewById(R.id.menu_container).setOnClickListener(new View.OnClickListener() {
@@ -1462,7 +1388,8 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                     break;
                 case 5:
                     parentLayout.closeDrawer();
-                    openDialog();
+                   // openDialog();
+                   logInToSinch();
                     break;
 
                 case 6:
@@ -1517,22 +1444,7 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                 }
             }
         });
-        /*  AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setMessage("REMOVE ANNOYING ADS?\nPay once , Use forever!");
-        builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
-     *//*   final String arg1 = usePhone;*//*
-        builder.setPositiveButton( "BUY $2.00", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                try {
-                    onBuyPressed(2);
-                } catch (Exception e) {
-                    FileLog.e("tmessages", e);
-                }
-            }
-        });
-        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
-        showDialog(builder.create());*/
+
     }
 
     public void onBuyPressed(int paymentValue) {
@@ -1549,5 +1461,26 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                 paymentIntent);
 
     }
+
+
+    public void logInToSinch(){
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+        String userName =   p.getString("social_id","1231313");
+
+        if (userName.isEmpty()) {
+            Toast.makeText(getParentActivity(), "Please enter a name", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        openPlaceCallActivity();
+    }
+
+
+    private void openPlaceCallActivity() {
+        Intent mainActivity = new Intent(getParentActivity(), org.telegram.calling.PlaceCallActivity.class);
+        getParentActivity().startActivity(mainActivity);
+
+    }
+
 
 }

@@ -176,20 +176,6 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
             }
         });
 
-        /*fragmentView = new FrameLayout(context);
-        FrameLayout frameLayout = (FrameLayout) fragmentView;
-
-        listView = new ListView(context);
-        listView.setDivider(null);
-        listView.setDividerHeight(0);
-        listView.setVerticalScrollBarEnabled(false);
-        frameLayout.addView(listView);
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) listView.getLayoutParams();
-        layoutParams.width = LayoutHelper.MATCH_PARENT;
-        layoutParams.height = LayoutHelper.MATCH_PARENT;
-        listView.setLayoutParams(layoutParams);
-        listView.setAdapter(new ListAdapter(context));
-        */
 
 
         fragmentView =View.inflate(context, R.layout.settings_layout, null);
@@ -388,33 +374,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
                     } else {
                         ApplicationLoader.stopPushService();
                     }
-                    /*if (!enabled) {
 
-                    } else {
-                        if (getParentActivity() == null) {
-                            return;
-                        }
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-                        builder.setMessage(LocaleController.getString("NotificationsServiceDisableInfo", R.string.NotificationsServiceDisableInfo));
-                        builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
-                        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                final SharedPreferences.Editor editor = preferences.edit();
-                                editor.putBoolean("pushService", false);
-                                editor.commit();
-                                listView.invalidateViews();
-                            }
-                        });
-                        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ((TextCheckCell) view).setChecked(true);
-                            }
-                        });
-                        showDialog(builder.create());
-                    }*/
                 } else if (i == messageLedRow || i == groupLedRow) {
                     if (getParentActivity() == null) {
                         return;
@@ -611,27 +571,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
     }
 
     public void updateServerNotificationsSettings(boolean group) {
-        //disable global settings sync
-        /*SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("Notifications", Activity.MODE_PRIVATE);
-        TLRPC.TL_account_updateNotifySettings req = new TLRPC.TL_account_updateNotifySettings();
-        req.settings = new TLRPC.TL_inputPeerNotifySettings();
-        req.settings.sound = "default";
-        req.settings.events_mask = 0;
-        if (!group) {
-            req.peer = new TLRPC.TL_inputNotifyUsers();
-            req.settings.mute_until = preferences.getBoolean("EnableAll", true) ? 0 : Integer.MAX_VALUE;
-            req.settings.show_previews = preferences.getBoolean("EnablePreviewAll", true);
-        } else {
-            req.peer = new TLRPC.TL_inputNotifyChats();
-            req.settings.mute_until = preferences.getBoolean("EnableGroup", true) ? 0 : Integer.MAX_VALUE;
-            req.settings.show_previews = preferences.getBoolean("EnablePreviewGroup", true);
-        }
-        ConnectionsManager.getInstance().sendRequest(req, new RPCRequest.RPCRequestDelegate() {
-            @Override
-            public void run(TLObject response, TLRPC.TL_error error) {
 
-            }
-        });*/
     }
 
     @Override
@@ -923,10 +863,6 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
             return false;
         }
     }
-
-
-    ////////////////////////////////////////////////////////////////
-
 
 
 }

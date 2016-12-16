@@ -83,7 +83,7 @@ import org.telegram.messenger.ApplicationLoader;
 
 
     private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_PRODUCTION;
-    private static final String CONFIG_CLIENT_ID = "ARafipSb7SknBnBKsQY1Na9CvKZPypeHORyOQ-f-1sEAfwt0NEymuOniy4__9oIJ1JYEleESrqSkESGB";;
+    private static final String CONFIG_CLIENT_ID = "ARafipSb7SknBnBKsQY1Na9CvKZPypeHORyOQ-f-1sEAfwt0NEymuOniy4__9oIJ1JYEleESrqSkESGB";
 
     public static PayPalConfiguration getConfiguration(){
 

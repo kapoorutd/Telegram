@@ -5,5 +5,5 @@ package org.telegram.ui.listners;
  */
 public interface OnclicklistnerOnChatActivity {
 
-    public void onClickListnerOnUi(int index);
+    void onClickListnerOnUi(int index);
 }

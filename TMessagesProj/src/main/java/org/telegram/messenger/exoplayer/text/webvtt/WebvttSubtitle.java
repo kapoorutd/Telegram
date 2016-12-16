@@ -120,7 +120,7 @@ public final class WebvttSubtitle implements Subtitle {
     if (list != null) {
       return list;
     } else {
-      return Collections.<Cue>emptyList();
+      return Collections.emptyList();
     }
   }
 

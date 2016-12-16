@@ -87,14 +87,9 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
         hideTabsAnsMenu();
         mcContext = context;
         currentUser = UserConfig.getCurrentUser();
-        //actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setBackButtonImage(0x00000000);//todo
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(LocaleController.getString("myprofile", R.string.myprofile));
-
-        /* ActionBarMenu menu = actionBar.createMenu();
-        doneButton = menu.addItemWithWidth(done_button, R.drawable.ic_done, AndroidUtilities.dp(56));
-*/
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -105,9 +100,7 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
         });
 
         avatarContainer = new FrameLayout(context);
-        /* avatarContainer.setBackgroundResource(R.drawable.bar_selector);*/
         avatarContainer.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);
-
         fragmentView = View.inflate(context, R.layout.myprofile_layout, null);
         location = (RelativeLayout)fragmentView.findViewById(R.id.location);
         country_txt= (TextView)fragmentView.findViewById(R.id.id_country) ;
@@ -136,8 +129,7 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
                 fragment.setCountrySelectActivityDelegate(new CountrySelectActivity.CountrySelectActivityDelegate() {
                     @Override
                     public void didSelectCountry(String name) {
-                        //   cName = name;
-                        ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).edit().putString("country",name).commit();;
+                        ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).edit().putString("country",name).commit();
                         country_txt.setText(name);
                     }
                 });
@@ -151,12 +143,8 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
         save_btn.setOnClickListener(this);
         checkAndUpdateAvatar();
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-
-        //country_txt.setText(preferences.getString("country","Indonesia"));
-
         CountryAdapter.Country cu = Util.getcountry(preferences.getString("country","Indonesia"));
         country_txt.setText(cu.name);
-
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
@@ -257,11 +245,9 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
                 currentUser =UserConfig.getCurrentUser();
 
                 TLRPC.TelegramUsers newuser = new TLRPC.TelegramUsers();
-                //String dob =Util.convertDate(p.getString("dob",showDate(year,month,day)));
                 newuser.setDob(Util.convertDate(p.getString("dob","2000-02-02")));
                 newuser.setSex(p.getString("sex",getGender()));
                 newuser.setId(currentUser.id+"");
-                // p.edit().putString("country",name).commit();
                 CountryAdapter.Country cu =getcountry((ApplicationLoader.
                         applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("country","india")));
                 newuser.setcCode(cu.shortname);
@@ -269,15 +255,7 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
                 newuser.setPhoto(currentUser.photo);
                 newuser.setPhone(currentUser.phone);
                 newuser.setUsername(currentUser.username!=null?currentUser.username:currentUser.first_name);
-
-
                 BackgroundExecuter.getInstance().execute(new AddUserRequester(newuser,null));
-
-                SharedPreferences sp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-
-                String mob  =  sp.getString("mob","9888888");
-                String cc   =   sp.getString("cCode","US");
-       //         BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester(mob,cc,this));
                 finishFragment();
                 break;
         }
@@ -338,7 +316,6 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
             object.thumb = object.imageReceiver.getBitmap();
             object.size = -1;
             object.radius = avatarImageView.getImageReceiver().getRoundRadius();
-         //   object.scale = ViewProxy.getScaleX(avatarImageView);
             return object;
         }
         return null;
@@ -390,10 +367,6 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
 
     }
 
-    /*private String showDate(int year, int month, int day) {
-        return (new StringBuilder().append(year+"").append("-")
-                .append(Util.getMonth(month)).append("-").append(day+"".length()==1?"0"+day:day+"")).toString();
-    }*/
 
     private String getDatetoserver(int year, int month, int day) {
         return (new StringBuilder().append(year+"").append("-")
@@ -415,17 +388,7 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
 
             }
         });
-   /*     alt_bld.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if(fragmentView !=null){
-                    ApplicationLoader.applicationContext.
-                            getSharedPreferences("socialuser", Activity.MODE_PRIVATE).edit().putString("sex",getGender()).commit();
-                    gender_txt.setText(items[selectedgender]);
-                }
 
-            }
-        });*/
         AlertDialog alert = alt_bld.create();
         alert.show();
         alert.setCancelable(false);
@@ -437,7 +400,6 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
     public CountryAdapter.Country getcountry(String name){
         CountryAdapter k = new CountryAdapter(mcContext);
         HashMap<String, ArrayList<CountryAdapter.Country>> countries = k.getCountries();
-    //    ArrayList<String> sortedCountries = k.getSortedCountries();
         String s = name.substring(0,1).toUpperCase();
         ArrayList<CountryAdapter.Country> dd = countries.get(s);
         for(CountryAdapter.Country selectcountry:dd){
@@ -460,11 +422,7 @@ public class MyProfileActivity extends BaseFragment implements KarmaBalanceListe
             Calendar calendar = Calendar.getInstance();
             calendar.set(yr, mn, dt);
             long startDate = calendar.getTimeInMillis();
-            if(startDate > Calendar.getInstance().getTimeInMillis()){
-                return false;
-            } else {
-                return true;
-            }
+            return startDate <= Calendar.getInstance().getTimeInMillis();
         } catch (Exception e) {
             e.printStackTrace();
             return false;

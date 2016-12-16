@@ -163,25 +163,19 @@ public class WallpapersActivity extends BaseFragment implements NotificationCent
 
         ActionBarMenu menu = actionBar.createMenu();
         doneButton = menu.addItemWithWidth(done_button, R.drawable.ic_done, AndroidUtilities.dp(56));
-
-        // FrameLayout frameLayout = new FrameLayout(context);
-        fragmentView = View.inflate(context,R.layout.layout_wallpaper_activity,null);//frameLayout;
-
-        backgroundImage = (ImageView)fragmentView.findViewById(R.id.iv_wallpaper); //new ImageView(context);
+        fragmentView = View.inflate(context,R.layout.layout_wallpaper_activity,null);
+        backgroundImage = (ImageView)fragmentView.findViewById(R.id.iv_wallpaper);
         backgroundImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        //frameLayout.addView(backgroundImage, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         backgroundImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;
             }
         });
-
-        progressBar = (ProgressBar)fragmentView.findViewById(R.id.pb_wall); //new ProgressBar(context);
+        progressBar = (ProgressBar)fragmentView.findViewById(R.id.pb_wall);
         progressBar.setPadding(AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6));
-        //  frameLayout.addView(progressBar, LayoutHelper.createFrame(60, 60, Gravity.CENTER, 0, 0, 0, 52));
 
-        RecyclerListView listView =/* (RecyclerListView)fragmentView.findViewById(R.id.lv_wal); //*/new RecyclerListView(context);
+        RecyclerListView listView =new RecyclerListView(context);
         listView.setClipToPadding(false);
         listView.setPadding(AndroidUtilities.dp(40), 0, AndroidUtilities.dp(40), 0);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
@@ -195,26 +189,6 @@ public class WallpapersActivity extends BaseFragment implements NotificationCent
         }
         listView.setAdapter(listAdapter = new ListAdapter(context));
         ((RelativeLayout)fragmentView).addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 102));
-//        View mView = View.inflate(context, R.layout.settings_layout, null);
-/*
-
-        frameLayout.addView(mView);//, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 102, Gravity.LEFT | Gravity.BOTTOM));
-
-
-        mView.findViewById(R.id.black_view).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        mView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showTabsAndmenu();
-                finishFragment();
-            }
-        });
-*/
         fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

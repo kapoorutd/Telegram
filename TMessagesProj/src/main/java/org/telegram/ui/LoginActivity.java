@@ -1122,7 +1122,6 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
         private TextView problemText;
         private Bundle currentParams;
         private ProgressView progressView;
-
         private Timer timeTimer;
         private Timer codeTimer;
         private int openTime;
@@ -2593,4 +2592,9 @@ public class LoginActivity extends BaseFragment implements OnSocialLogin {
             }
         }
     }
+
+
+
+
+
 }

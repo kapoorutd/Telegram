@@ -71,14 +71,11 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
     private Button paybutton;
     private Bundle bundle;
     ProgressBar progressBar;
-//    private static int friendsReq=0;
     private ArrayList<TLRPC.TelegramUsers> listnew;
     GridViewWithHeaderAndFooter gr_View;
     private ArrayList<TLRPC.TelegramUsers> telegramUsersesList = new ArrayList<>();
-    //private String friendId;
     private TextView emptyView;
     private static int remPosition = -1;
-  //  private static boolean isPending = false;
     int req=0;
 
 
@@ -91,7 +88,6 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
     @Override
     public View createView(final Context context) {
         mContext = context;
-        //SharedPreferences pp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
         if(!sp.getBoolean("datasend",false)) {
             HashMap<String, ArrayList<TLRPC.TL_contact>> usersSectionsDict = ContactsController.getInstance().usersSectionsDict;
             ArrayList<ContactsController.Contact> contactses = ContactsController.getInstance().phoneBookContacts;
@@ -121,7 +117,6 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
                 uu.setUsername(null);
                 telegramUsersesList.add(uu);
             }
-
 
             ArrayList<CustomHttpParams> params = new ArrayList<>();
             params.add(new CustomHttpParams("userId", sp.getString("social_id", "")));
@@ -164,13 +159,9 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
 
         pd = new ProgressDialog(getParentActivity());
         pd.setMessage(LocaleController.getString("loading_more",R.string.looking_more_frnds));
-
-      //  final SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-
         paybutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 int allowedRequest = sp.getInt("allowedRequest",0);
                 if (reqester.isMore && !reqester.isPending) {
                     if (req < allowedRequest) {
@@ -201,26 +192,6 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
         });
 
 
-
-        //p.edit().putString("karmaBal",String.valueOf(noOfCredit)).commit();
-/*
-         int d=  Integer.parseInt( p.getString("karmaBal","0"));
-        //int vals=d.intValue();
-        if(false*//*d < 9*//*){
-            gr_View.setPadding(0,0,0,0);
-            paybutton.setVisibility(View.VISIBLE);
-            paybutton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                   // PaymentManager.createIntent(getParentActivity());
-                   openDialog();
-                }
-            });
-        } else {
-            paybutton.setVisibility(View.GONE);
-            gr_View.setPadding(0,0,0,0);
-        }*/
-
         img_Back = (ImageView)fragmentView.findViewById(R.id.backview) ;
         adapter = new CustomGridAdapter(mContext,listnew);
         emptyView = (TextView)fragmentView.findViewById(R.id.empty_view);
@@ -237,59 +208,6 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
         BackgroundExecuter.getInstance().execute(reqester);
         BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester(mob,cc,this));
         BackgroundExecuter.getInstance().execute(new AllowedSocialRequester(mob,cc));
-
-
-
-/*
-        grid.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                  }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-           */
-/*     if (reqester.isMore)
-                    BackgroundExecuter.getInstance().execute(reqester.loadMore());
-       *//*
-
-            }
-
-
-           //     BackgroundExecuter.getInstance().execute(reqester.loadMore());
-              */
-/*    if(!isPending){
-
-               BackgroundExecuter.getInstance().execute(new DeductKarmaRequester(new CreditModel("","","")));
-
-
-                  }
-*//*
-
-                   //TODO in this segment
-         */
-/*       if (UserPaymentInfo.getInstatance().getPaymentStatus() != UserPaymentInfo.paidUser) {
-                    paybutton.setVisibility(View.VISIBLE);
-
-                    paybutton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            PaymentManager.createIntent(getParentActivity());
-                        }
-                    });
-                } else {
-                    paybutton.setVisibility(View.GONE);
-
-                    if (reqester.isMore)
-                        BackgroundExecuter.getInstance().execute(reqester.loadMore());
-                }
-            }*//*
-
-        });
-*/
-
-
 
 
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -312,8 +230,6 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
                         params.add(new CustomHttpParams("userId", ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("social_id", "")));
                         ArrayList<TLRPC.TelegramUsers> telegramList = new ArrayList<>();
                         telegramList.add(listnew.get(pos));
-                        //  BackgroundExecuter.getInstance().execute(new AddContactRequester(telegramList, params));
-                        //  listnew.remove(listnew.get(pos));
 
                     } else {
 
@@ -462,7 +378,7 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
         getParentActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getParentActivity(),"Error in load more friends",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getParentActivity(),LocaleController.getString("problem_in_loading",R.string.error_load_more),Toast.LENGTH_SHORT).show();
             }
         });
     }

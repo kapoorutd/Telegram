@@ -928,11 +928,11 @@ public class ImageLoader {
         public VMRuntimeHack() {
             try {
                 Class cl = Class.forName("dalvik.system.VMRuntime");
-                Method getRt = cl.getMethod("getRuntime", new Class[0]);
+                Method getRt = cl.getMethod("getRuntime");
                 Object[] objects = new Object[0];
                 runtime = getRt.invoke(null, objects);
-                trackAllocation = cl.getMethod("trackExternalAllocation", new Class[]{long.class});
-                trackFree = cl.getMethod("trackExternalFree", new Class[]{long.class});
+                trackAllocation = cl.getMethod("trackExternalAllocation", long.class);
+                trackFree = cl.getMethod("trackExternalFree", long.class);
             } catch (Exception e) {
                 FileLog.e("tmessages", e);
                 runtime = null;

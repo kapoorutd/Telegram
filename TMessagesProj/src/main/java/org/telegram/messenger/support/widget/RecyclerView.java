@@ -8682,7 +8682,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
      *
      * @see SimpleOnItemTouchListener
      */
-    public static interface OnItemTouchListener {
+    public interface OnItemTouchListener {
         /**
          * Silently observe and/or take over touch events sent to the RecyclerView
          * before they are handled by either the RecyclerView itself or its child views.
@@ -8697,7 +8697,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
          *         to continue with the current behavior and continue observing future events in
          *         the gesture.
          */
-        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e);
+        boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e);
 
         /**
          * Process a touch event as part of a gesture that was claimed by returning true from
@@ -8706,7 +8706,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
          * @param e MotionEvent describing the touch event. All coordinates are in
          *          the RecyclerView's coordinate system.
          */
-        public void onTouchEvent(RecyclerView rv, MotionEvent e);
+        void onTouchEvent(RecyclerView rv, MotionEvent e);
 
         /**
          * Called when a child of RecyclerView does not want RecyclerView and its ancestors to
@@ -8717,7 +8717,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
          *            intercept touch events.
          * @see ViewParent#requestDisallowInterceptTouchEvent(boolean)
          */
-        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept);
+        void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept);
     }
 
     /**
@@ -8795,7 +8795,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
          *
          * @param holder The ViewHolder containing the view that was recycled
          */
-        public void onViewRecycled(ViewHolder holder);
+        void onViewRecycled(ViewHolder holder);
     }
 
     /**
@@ -8809,14 +8809,14 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
          *
          * @param view The View which is attached to the RecyclerView
          */
-        public void onChildViewAttachedToWindow(View view);
+        void onChildViewAttachedToWindow(View view);
 
         /**
          * Called when a view is detached from RecyclerView.
          *
          * @param view The View which is being detached from the RecyclerView
          */
-        public void onChildViewDetachedFromWindow(View view);
+        void onChildViewDetachedFromWindow(View view);
     }
 
     /**

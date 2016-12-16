@@ -56,12 +56,7 @@ public class UserProfileActivity extends BaseFragment implements PhotoViewer.Pho
     protected TLRPC.Chat currentChat;
     protected TLRPC.User currentUser;
     private Context mcContext;
-    /*private DatePicker datePicker;
-    private Calendar calendar;
-    private int year, month, day;
-    private int selectedgender;
-    private Button save_btn;
-    */private  GridView grid;
+    private  GridView grid;
     private CustomGridAdapter adapter;
     private GetMutualFriendRq reqester;
     private View doneButton;
@@ -69,9 +64,6 @@ public class UserProfileActivity extends BaseFragment implements PhotoViewer.Pho
     private String friendId;
     ProgressBar progressBar;
     private static TLRPC.User currUserTemp;
-//    public static int ii;
-    //  private static TLRPC.TelegramUsers telegramUsers = null;
-
     private static TLRPC.TelegramUsers user = null;
     private boolean isMessageSend ;
     private TextView emptyView;
@@ -85,9 +77,6 @@ public class UserProfileActivity extends BaseFragment implements PhotoViewer.Pho
     public void onUserSyncFailed() {
 
     }
-
-
-
     public class MutualFriend {
         public  String userId;
         public String friendId;
@@ -153,7 +142,6 @@ public class UserProfileActivity extends BaseFragment implements PhotoViewer.Pho
         nameTextView=(TextView)fragmentView.findViewById(R.id.user_name_label);
         statusTextView =(TextView)fragmentView.findViewById(R.id.user_staus_label);
         avatarImageView.setRoundRadius(AndroidUtilities.dp(30));
-        //   emptyView=(TextView)fragmentView.findViewById(R.id.empty_view);
         checkAndUpdateAvatar();
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
         country_txt.setText(cCode);
@@ -320,7 +308,6 @@ public class UserProfileActivity extends BaseFragment implements PhotoViewer.Pho
             object.thumb = object.imageReceiver.getBitmap();
             object.size = -1;
             object.radius = avatarImageView.getImageReceiver().getRoundRadius();
-           // object.scale = ViewProxy.getScaleX(avatarImageView);
             return object;
         }
         return null;
@@ -409,14 +396,5 @@ public class UserProfileActivity extends BaseFragment implements PhotoViewer.Pho
         );
     }
 
-
-
-
-
-    /*public static void setCurrentUser(TLRPC.User user, TLRPC.TelegramUsers telegramUsers1) {
-
-        currUserTemp = user;
-        telegramUsers = telegramUsers1;
-    }*/
 
 }

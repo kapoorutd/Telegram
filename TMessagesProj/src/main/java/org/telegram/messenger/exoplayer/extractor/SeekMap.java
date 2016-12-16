@@ -23,7 +23,7 @@ public interface SeekMap {
   /**
    * A {@link SeekMap} that does not support seeking.
    */
-  public static final SeekMap UNSEEKABLE = new SeekMap() {
+  SeekMap UNSEEKABLE = new SeekMap() {
 
     @Override
     public boolean isSeekable() {

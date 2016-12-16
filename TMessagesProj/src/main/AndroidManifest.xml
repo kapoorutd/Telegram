@@ -3,7 +3,6 @@
     package="org.telegram.messenger"
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto">
-
     <uses-sdk android:minSdkVersion="9"
         tools:overrideLibrary="com.paypal.android.sdk.payments"/>
 
@@ -57,6 +56,7 @@
         android:theme="@style/Theme.TMessages.Start"
         android:manageSpaceActivity="org.telegram.ui.ManageSpaceActivity">
 
+        <service android:name="org.telegram.calling.SinchService"></service>
 
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
@@ -127,7 +127,6 @@
             <meta-data android:name="android.service.chooser.chooser_target_service" android:value=".TgChooserTargetService" />
         </activity>
 
-
         <activity android:name="org.telegram.payment.PaymentManager"
             android:label=""></activity>
         <activity android:name="org.telegram.ui.OsmLocation"
@@ -158,7 +157,6 @@
             android:theme="@style/Theme.TMessages.PopupNotification"
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
-
         <receiver
             android:name=".AutoMessageHeardReceiver"
             android:exported="false">
@@ -166,7 +164,6 @@
                 <action android:name="org.telegram.messenger.ACTION_MESSAGE_HEARD"/>
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".AutoMessageReplyReceiver"
             android:exported="false">
@@ -174,19 +171,16 @@
                 <action android:name="org.telegram.messenger.ACTION_MESSAGE_REPLY"/>
             </intent-filter>
         </receiver>
-
         <receiver android:name=".CallReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".SmsListener">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-
         <service android:name=".AuthenticatorService" android:exported="true">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>
@@ -194,7 +188,6 @@
             <meta-data android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/auth"/>
         </service>
-
         <service android:name=".ContactsSyncAdapterService" android:exported="true">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
@@ -204,7 +197,6 @@
             <meta-data android:name="android.provider.CONTACTS_STRUCTURE"
                 android:resource="@xml/contacts" />
         </service>
-
         <service
             android:name="org.telegram.messenger.TgChooserTargetService"
             android:label="@string/AppName"
@@ -213,7 +205,6 @@
                 <action android:name="android.service.chooser.ChooserTargetService" />
             </intent-filter>
         </service>
-
         <service android:name=".NotificationsService" android:enabled="true"/>
         <service android:name=".NotificationRepeat" android:exported="false"/>
         <service android:name=".ClearCacheService" android:exported="false"/>
@@ -224,7 +215,6 @@
                 <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
         </service>
-
         <receiver android:name=".MusicPlayerReceiver" >
             <intent-filter>
                 <action android:name="org.telegram.android.musicplayer.close" />
@@ -260,7 +250,6 @@
         <meta-data android:name="com.google.android.gms.car.notification.SmallIcon" android:resource="@drawable/ic_player" />
         <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/automotive_app_desc" />
 
-
         //////////////////Heyzap setup//////////////
 
         <meta-data android:name="applovin.sdk.key" android:value="dfk5Pw2g-MATQrrpwnty_SmFI6SpbdlEHSKhNMNLiXv7NlxHVoEVF_lT5BLgq4v6XDpwaAFIi9Q5vLMP8avOZd"/><!--JdRV_FOXtZc-mX_BuQGEnE7MrSEsRH_mvQFvgeQXC2WzaV8SwPghdp3TGHJiZJSTliMPMoyTrSVPyest3XZgLc-->"  />
@@ -272,30 +261,16 @@
             android:configChanges="keyboardHidden|orientation|screenSize"/>
 
 
-        <!--  &lt;!&ndash; AdColony &ndash;&gt;
-        <activity android:name="com.jirbo.adcolony.AdColonyOverlay"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-        <activity android:name="com.jirbo.adcolony.AdColonyFullscreen"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-        <activity android:name="com.jirbo.adcolony.AdColonyBrowser"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-        <activity android:name="com.fyber.mediation.adcolony.rv.VideoProxyActivity" />
-        <activity android:name="com.fyber.mediation.adcolony.interstitial.InterstitialProxyActivity" />
+   //////////////////////////////////////////////////////////////////////////////////////////
 
-        &lt;!&ndash; AppLovin &ndash;&gt;
-        <activity android:name="com.applovin.adview.AppLovinInterstitialActivity" />
-        <activity android:name="com.applovin.adview.AppLovinConfirmationActivity" />
-        &lt;!&ndash; Fyber Marketplace &ndash;&gt;
-        <activity android:name="com.heyzap.sdk.ads.HeyzapIncentivizedActivity"  android:theme="@android:style/Theme.Translucent" android:hardwareAccelerated="true" />
-        <activity android:name="com.heyzap.sdk.ads.HeyzapInterstitialActivity"  android:theme="@android:style/Theme.Translucent" />
-        <activity android:name="com.heyzap.sdk.ads.MediationTestActivity" />
-        <activity android:name="com.fyber.ads.ofw.OfferWallUnityActivity" android:configChanges="orientation|screenSize" />
-        <service android:name="com.fyber.cache.CacheVideoDownloadService" android:exported="false" />
-        <meta-data android:name="FYBVideoPlayerOptionCloseButtonDelay" android:value="-1" />
--->
+
+        <activity android:name="org.telegram.calling.CallScreenActivity" android:screenOrientation="portrait"/>
+        <activity android:name="org.telegram.calling.PlaceCallActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="org.telegram.calling.LoginActivity"
+            android:screenOrientation="portrait"/>
+
+
 
     </application>
 

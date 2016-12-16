@@ -84,6 +84,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 public class ContactsActivity extends BaseFragment implements KarmaBalanceListener,NotificationCenter.NotificationCenterDelegate {
 
     private BaseSectionsAdapter listViewAdapter;
@@ -744,7 +745,6 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
 
     private void setContactMenuList(){
        draweritems=new ArrayList<MenuItems>();
-       /* draweritems.add(new MenuItems(LocaleController.getString("AddNewContact", R.string.add_new_contact),R.drawable.menu_plus,true, "",0));*/
         draweritems.add(new MenuItems(LocaleController.getString("InviteFriends", R.string.InviteFriends), R.drawable.menu_bar_contact_plus, true, "",0));
         draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat),R.drawable.menu_sectretchat,true, "",0));
         draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel),R.drawable.menu_broadcast,true, "",0));
@@ -781,7 +781,6 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
 
                 case 0:
                     parentLayout.closeDrawer();
-                    //   closeDrawer();
                     try {
                         Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.setType("text/plain");
@@ -878,28 +877,11 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
             public void onClick(View v) {
                 try {
                     onBuyPressed(2);
-                    // PaymentManager.createIntent(getParentActivity(),false);
                 } catch (Exception e) {
                     FileLog.e("tmessages", e);
                 }
             }
         });
-        /*  AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setMessage("REMOVE ANNOYING ADS?\nPay once , Use forever!");
-        builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
-     *//*   final String arg1 = usePhone;*//*
-        builder.setPositiveButton( "BUY $2.00", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                try {
-                    onBuyPressed(2);
-                } catch (Exception e) {
-                    FileLog.e("tmessages", e);
-                }
-            }
-        });
-        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
-        showDialog(builder.create());*/
     }
 
     public void onBuyPressed(int paymentValue) {

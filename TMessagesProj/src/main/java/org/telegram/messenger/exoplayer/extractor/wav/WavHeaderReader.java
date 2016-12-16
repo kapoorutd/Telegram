@@ -47,7 +47,7 @@ import java.io.IOException;
    *     supported WAV format.
    */
   public static WavHeader peek(ExtractorInput input)
-      throws IOException, InterruptedException, ParserException {
+      throws IOException, InterruptedException {
     Assertions.checkNotNull(input);
 
     // Allocate a scratch buffer large enough to store the format chunk.
@@ -122,7 +122,7 @@ import java.io.IOException;
    * @throws ParserException If an error occurs parsing chunks.
    */
   public static void skipToData(ExtractorInput input, WavHeader wavHeader)
-      throws IOException, InterruptedException, ParserException {
+      throws IOException, InterruptedException {
     Assertions.checkNotNull(input);
     Assertions.checkNotNull(wavHeader);
 

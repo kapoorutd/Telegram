@@ -879,7 +879,7 @@ public final class ExtractorSampleSource implements SampleSource, SampleSourceRe
      * @throws InterruptedException Thrown if the thread was interrupted.
      */
     public Extractor selectExtractor(ExtractorInput input)
-        throws UnrecognizedInputFormatException, IOException, InterruptedException {
+        throws IOException, InterruptedException {
       if (extractor != null) {
         return extractor;
       }

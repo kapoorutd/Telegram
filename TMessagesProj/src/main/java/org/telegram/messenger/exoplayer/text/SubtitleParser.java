@@ -28,7 +28,7 @@ public interface SubtitleParser {
    * @param mimeType A subtitle mime type.
    * @return Whether the mime type is supported.
    */
-  public boolean canParse(String mimeType);
+  boolean canParse(String mimeType);
 
   /**
    * Parses a {@link Subtitle} from the provided {@code byte[]}.
@@ -39,6 +39,6 @@ public interface SubtitleParser {
    * @return A parsed representation of the subtitle.
    * @throws ParserException If a problem occurred parsing the subtitle data.
    */
-  public Subtitle parse(byte[] bytes, int offset, int length) throws ParserException;
+  Subtitle parse(byte[] bytes, int offset, int length) throws ParserException;
 
 }

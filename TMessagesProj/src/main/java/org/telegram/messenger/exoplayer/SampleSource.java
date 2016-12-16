@@ -29,26 +29,26 @@ public interface SampleSource {
   /**
    * The end of stream has been reached.
    */
-  public static final int END_OF_STREAM = -1;
+  int END_OF_STREAM = -1;
   /**
    * Neither a sample nor a format was read in full. This may be because insufficient data is
    * buffered upstream. If multiple tracks are enabled, this return value may indicate that the
    * next piece of data to be returned from the {@link SampleSource} corresponds to a different
    * track than the one for which data was requested.
    */
-  public static final int NOTHING_READ = -2;
+  int NOTHING_READ = -2;
   /**
    * A sample was read.
    */
-  public static final int SAMPLE_READ = -3;
+  int SAMPLE_READ = -3;
   /**
    * A format was read.
    */
-  public static final int FORMAT_READ = -4;
+  int FORMAT_READ = -4;
   /**
    * Returned from {@link SampleSourceReader#readDiscontinuity(int)} to indicate no discontinuity.
    */
-  public static final long NO_DISCONTINUITY = Long.MIN_VALUE;
+  long NO_DISCONTINUITY = Long.MIN_VALUE;
 
   /**
    * A consumer of samples should call this method to register themselves and gain access to the
@@ -59,12 +59,12 @@ public interface SampleSource {
    *
    * @return A {@link SampleSourceReader} that provides access to the source.
    */
-  public SampleSourceReader register();
+  SampleSourceReader register();
 
   /**
    * An interface providing read access to a {@link SampleSource}.
    */
-  public interface SampleSourceReader {
+  interface SampleSourceReader {
 
     /**
      * If the source is currently having difficulty preparing or loading samples, then this method
@@ -72,7 +72,7 @@ public interface SampleSource {
      *
      * @throws IOException The underlying error.
      */
-    public void maybeThrowError() throws IOException;
+    void maybeThrowError() throws IOException;
 
     /**
      * Prepares the source.
@@ -85,7 +85,7 @@ public interface SampleSource {
      * @param positionUs The player's current playback position.
      * @return True if the source was prepared, false otherwise.
      */
-    public boolean prepare(long positionUs);
+    boolean prepare(long positionUs);
 
     /**
      * Returns the number of tracks exposed by the source.
@@ -94,7 +94,7 @@ public interface SampleSource {
      *
      * @return The number of tracks.
      */
-    public int getTrackCount();
+    int getTrackCount();
 
     /**
      * Returns the format of the specified track.
@@ -111,7 +111,7 @@ public interface SampleSource {
      * @param track The track index.
      * @return The format of the specified track.
      */
-    public MediaFormat getFormat(int track);
+    MediaFormat getFormat(int track);
 
     /**
      * Enable the specified track. This allows the track's format and samples to be read from
@@ -123,7 +123,7 @@ public interface SampleSource {
      * @param track The track to enable.
      * @param positionUs The player's current playback position.
      */
-    public void enable(int track, long positionUs);
+    void enable(int track, long positionUs);
 
     /**
      * Indicates to the source that it should still be buffering data for the specified track.
@@ -135,7 +135,7 @@ public interface SampleSource {
      * @return True if the track has available samples, or if the end of the stream has been
      *     reached. False if more data needs to be buffered for samples to become available.
      */
-    public boolean continueBuffering(int track, long positionUs);
+    boolean continueBuffering(int track, long positionUs);
 
     /**
      * Attempts to read a pending discontinuity from the source.
@@ -146,7 +146,7 @@ public interface SampleSource {
      * @return If a discontinuity was read then the playback position after the discontinuity. Else
      *     {@link #NO_DISCONTINUITY}.
      */
-    public long readDiscontinuity(int track);
+    long readDiscontinuity(int track);
 
     /**
      * Attempts to read a sample or a new format from the source.
@@ -170,8 +170,8 @@ public interface SampleSource {
      * @return The result, which can be {@link #SAMPLE_READ}, {@link #FORMAT_READ},
      *     {@link #NOTHING_READ} or {@link #END_OF_STREAM}.
      */
-    public int readData(int track, long positionUs, MediaFormatHolder formatHolder,
-        SampleHolder sampleHolder);
+    int readData(int track, long positionUs, MediaFormatHolder formatHolder,
+                 SampleHolder sampleHolder);
 
     /**
      * Seeks to the specified time in microseconds.
@@ -180,7 +180,7 @@ public interface SampleSource {
      *
      * @param positionUs The seek position in microseconds.
      */
-    public void seekToUs(long positionUs);
+    void seekToUs(long positionUs);
 
     /**
      * Returns an estimate of the position up to which data is buffered.
@@ -191,7 +191,7 @@ public interface SampleSource {
      *     or {@link TrackRenderer#END_OF_TRACK_US} if data is buffered to the end of the stream,
      *     or {@link TrackRenderer#UNKNOWN_TIME_US} if no estimate is available.
      */
-    public long getBufferedPositionUs();
+    long getBufferedPositionUs();
 
     /**
      * Disable the specified track.
@@ -200,14 +200,14 @@ public interface SampleSource {
      *
      * @param track The track to disable.
      */
-    public void disable(int track);
+    void disable(int track);
 
     /**
      * Releases the {@link SampleSourceReader}.
      * <p>
      * This method should be called when access to the {@link SampleSource} is no longer required.
      */
-    public void release();
+    void release();
 
   }
 

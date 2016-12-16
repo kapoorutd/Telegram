@@ -5,8 +5,8 @@ package org.telegram.payment;
  */
 public interface PaymentConfirmationListener {
 
-    public void onPaymentConfirmationSuccess();
-    public void onPaymentConfirmationFailed();
+    void onPaymentConfirmationSuccess();
+    void onPaymentConfirmationFailed();
 
 
 }

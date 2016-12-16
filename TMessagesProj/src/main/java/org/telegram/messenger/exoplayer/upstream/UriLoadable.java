@@ -44,7 +44,7 @@ public final class UriLoadable<T> implements Loadable {
      * @throws ParserException If an error occurs parsing the data.
      * @throws IOException If an error occurs reading data from the stream.
      */
-    T parse(String connectionUrl, InputStream inputStream) throws ParserException, IOException;
+    T parse(String connectionUrl, InputStream inputStream) throws IOException;
 
   }
 

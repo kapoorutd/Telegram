@@ -30,7 +30,7 @@ public interface TimeRange {
    *
    * @return Whether the range is static.
    */
-  public boolean isStatic();
+  boolean isStatic();
 
   /**
    * Returns the start and end times (in milliseconds) of the TimeRange in the provided array,
@@ -39,7 +39,7 @@ public interface TimeRange {
    * @param out An array to store the start and end times; can be null.
    * @return An array containing the start time (index 0) and end time (index 1) in milliseconds.
    */
-  public long[] getCurrentBoundsMs(long[] out);
+  long[] getCurrentBoundsMs(long[] out);
 
   /**
    * Returns the start and end times (in microseconds) of the TimeRange in the provided array,
@@ -48,12 +48,12 @@ public interface TimeRange {
    * @param out An array to store the start and end times; can be null.
    * @return An array containing the start time (index 0) and end time (index 1) in microseconds.
    */
-  public long[] getCurrentBoundsUs(long[] out);
+  long[] getCurrentBoundsUs(long[] out);
 
   /**
    * A static {@link TimeRange}.
    */
-  public static final class StaticTimeRange implements TimeRange {
+  final class StaticTimeRange implements TimeRange {
 
     private final long startTimeUs;
     private final long endTimeUs;
@@ -116,7 +116,7 @@ public interface TimeRange {
   /**
    * A dynamic {@link TimeRange}.
    */
-  public static final class DynamicTimeRange implements TimeRange {
+  final class DynamicTimeRange implements TimeRange {
 
     private final long minStartTimeUs;
     private final long maxEndTimeUs;

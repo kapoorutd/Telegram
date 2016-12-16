@@ -510,7 +510,7 @@ class ChildHelper {
         }
     }
 
-    static interface Callback {
+    interface Callback {
 
         int getChildCount();
 

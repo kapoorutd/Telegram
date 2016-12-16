@@ -6,7 +6,7 @@ package org.telegram.payment;
 
 public interface CheckPremiumListener {
 
-    public void onPremiumUser();
-    public void onGeneralUser();
+    void onPremiumUser();
+    void onGeneralUser();
 
 }

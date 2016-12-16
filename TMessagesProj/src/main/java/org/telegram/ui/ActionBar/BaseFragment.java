@@ -11,15 +11,19 @@ package org.telegram.ui.ActionBar;
 import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import org.telegram.calling.SinchService;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
@@ -27,7 +31,7 @@ import org.telegram.messenger.R;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tracker.AnalyticsTrackers;
 
-public class BaseFragment {
+public class BaseFragment implements ServiceConnection {
 
     private boolean isFinished = false;
     protected Dialog visibleDialog = null;
@@ -39,6 +43,8 @@ public class BaseFragment {
     protected Bundle arguments;
     protected boolean swipeBackEnabled = false;
     protected boolean hasOwnBackground = false;
+    private SinchService.SinchServiceInterface mSinchServiceInterface;
+
 
     public BaseFragment() {
         classGuid = ConnectionsManager.getInstance().generateClassGuid();
@@ -57,7 +63,12 @@ public class BaseFragment {
         return fragmentView;
     }
 
+/////////////////////////////service started if not /////////////////////////////////////
+
     public View createView(Context context) {
+      //  getParentActivity().startService(new Intent(getParentActivity(), SinchService.class));
+         getParentActivity().bindService(new Intent(getParentActivity(), SinchService.class), this,
+                Context.BIND_AUTO_CREATE);
         return null;
     }
 
@@ -89,6 +100,7 @@ public class BaseFragment {
             actionBar = null;
         }
         parentLayout = null;
+
     }
 
     protected void setParentLayout(ActionBarLayout layout) {
@@ -339,4 +351,39 @@ public class BaseFragment {
     public void setVisibleDialog(Dialog dialog) {
         visibleDialog = dialog;
     }
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        if (SinchService.class.getName().equals(name.getClassName())) {
+            mSinchServiceInterface = (SinchService.SinchServiceInterface) service;
+            onServiceConnected();
+        }
+
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        if (SinchService.class.getName().equals(name.getClassName())) {
+            mSinchServiceInterface = null;
+            onServiceDisconnected();
+        }
+    }
+
+    protected void onServiceConnected() {
+        // for subclasses
+    }
+
+    protected void onServiceDisconnected() {
+        // for subclasses
+    }
+
+    protected SinchService.SinchServiceInterface getSinchServiceInterface() {
+        return mSinchServiceInterface;
+    }
+
 }
