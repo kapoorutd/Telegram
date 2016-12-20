@@ -56,7 +56,6 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
 
     private ListView listView;
     private boolean reseting = false;
-
     private int notificationsServiceRow;
     private int notificationsServiceConnectionRow;
     private int messageSectionRow;
@@ -149,9 +148,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
         resetSectionRow2 = rowCount++;
         resetSectionRow = rowCount++;
         resetNotificationsRow = rowCount++;
-
         NotificationCenter.getInstance().addObserver(this, NotificationCenter.notificationsSettingsUpdated);
-
         return super.onFragmentCreate();
     }
 
@@ -176,14 +173,10 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
             }
         });
 
-
-
         fragmentView =View.inflate(context, R.layout.settings_layout, null);
-
         fragmentView.findViewById(R.id.black_view).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
             }
         });
         fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {

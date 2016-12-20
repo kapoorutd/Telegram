@@ -85,13 +85,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class ContactsActivity extends BaseFragment implements KarmaBalanceListener,NotificationCenter.NotificationCenterDelegate {
-
+public class ContactsActivity extends BaseFragment implements KarmaBalanceListener, NotificationCenter.NotificationCenterDelegate {
     private BaseSectionsAdapter listViewAdapter;
     private TextView emptyTextView;
     private LetterSectionsListView listView;
     private SearchAdapter searchListViewAdapter;
-
     private boolean searchWas;
     private boolean searching;
     private boolean onlyUsers;
@@ -116,15 +114,15 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
     public void onGetKarmaSuccess(int karmaPoints) {
 
 
-        if(bal!=null){
+        if (bal != null) {
 
-            if(Integer.parseInt(bal)!=karmaPoints){
-           getParentActivity().runOnUiThread(new Runnable() {
-               @Override
-               public void run() {
-                   adapter.notifyDataSetChanged();
-               }
-           });
+            if (Integer.parseInt(bal) != karmaPoints) {
+                getParentActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
 
             }
         }
@@ -134,8 +132,6 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
     public void onGetKarmaFailure() {
 
     }
-
-
 
 
     public interface ContactsActivityDelegate {
@@ -302,11 +298,11 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
         layoutParams1.weight = 0.5f;
         frameLayout.setLayoutParams(layoutParams1);
 
-        mView=View.inflate(context,R.layout.layout_contact_activity,null);
-        ((FrameLayout)fragmentView).addView(mView);
+        mView = View.inflate(context, R.layout.layout_contact_activity, null);
+        ((FrameLayout) fragmentView).addView(mView);
         mView.findViewById(R.id.ll_beck).setVisibility(View.GONE);
 
-        listView =  (LetterSectionsListView) fragmentView.findViewById(R.id.contact_list);
+        listView = (LetterSectionsListView) fragmentView.findViewById(R.id.contact_list);
         listView.setEmptyView(emptyTextLayout);
         listView.setVerticalScrollBarEnabled(false);
         listView.setDivider(null);
@@ -318,7 +314,6 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
             listView.setFastScrollAlwaysVisible(true);
             listView.setVerticalScrollbarPosition(LocaleController.isRTL ? ListView.SCROLLBAR_POSITION_LEFT : ListView.SCROLLBAR_POSITION_RIGHT);
         }
-
 
 
         fragmentView.findViewById(R.id.backview).setOnClickListener(new View.OnClickListener() {
@@ -386,20 +381,17 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                                 } catch (Exception e) {
                                     FileLog.e("tmessages", e);
                                 }
-                            }
-
-                            else if(row == 1){
+                            } else if (row == 1) {
                                 try {
 
-                                ApplicationLoader.getInstance().trackEvent("Clicked on people you may know","clicked","want to get friends");
+                                    ApplicationLoader.getInstance().trackEvent("Clicked on people you may know", "clicked", "want to get friends");
 
-                                  SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-                                    if(pp.getString("social_id","").equals("")) {
+                                    SharedPreferences pp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                                    if (pp.getString("social_id", "").equals("")) {
                                         presentFragment(new MyProfileActivity());
-                                    }
-                                    else{
+                                    } else {
                                         Bundle args22 = new Bundle();
-                                        args22.putString("s_friend","sf");
+                                        args22.putString("s_friend", "sf");
                                         presentFragment(new SocialFriendActivity(args22));
                                     }
 
@@ -654,7 +646,6 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -663,20 +654,21 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
         if (listViewAdapter != null) {
             listViewAdapter.notifyDataSetChanged();
         }
-        if(destroyAfterSelect){
+        if (destroyAfterSelect) {
             hideTabsAnsMenu();
             mView.findViewById(R.id.ll_beck).setVisibility(View.VISIBLE);
+        } else {
+            showTabsAndmenu();
         }
-        else{showTabsAndmenu();}
 
 
         SharedPreferences sp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
 
-        String mob  =  sp.getString("mob","9888888");
-        String cc   =   sp.getString("cCode","US");
+        String mob = sp.getString("mob", "9888888");
+        String cc = sp.getString("cCode", "US");
 
 
-        BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester(mob,cc,this));
+        BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester(mob, cc, this));
         setContactMenuList();
 
     }
@@ -696,13 +688,13 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                 listViewAdapter.notifyDataSetChanged();
             }
         } else if (id == NotificationCenter.updateInterfaces) {
-            int mask = (Integer)args[0];
+            int mask = (Integer) args[0];
             if ((mask & MessagesController.UPDATE_MASK_AVATAR) != 0 || (mask & MessagesController.UPDATE_MASK_NAME) != 0 || (mask & MessagesController.UPDATE_MASK_STATUS) != 0) {
                 updateVisibleRows(mask);
             }
         } else if (id == NotificationCenter.encryptedChatCreated) {
             if (createSecretChat && creatingChat) {
-                TLRPC.EncryptedChat encryptedChat = (TLRPC.EncryptedChat)args[0];
+                TLRPC.EncryptedChat encryptedChat = (TLRPC.EncryptedChat) args[0];
                 Bundle args2 = new Bundle();
                 args2.putInt("enc_id", encryptedChat.id);
                 NotificationCenter.getInstance().postNotificationName(NotificationCenter.closeChats);
@@ -736,35 +728,35 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
     }
 
 
-
-    public String getKarmaBal(){
+    public String getKarmaBal() {
         SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-        bal =p.getString("karmaBal","0");
+        bal = p.getString("karmaBal", "0");
         return bal;
     }
 
-    private void setContactMenuList(){
-        draweritems=new ArrayList<MenuItems>();
-        draweritems.add(new MenuItems(LocaleController.getString("InviteFriends", R.string.InviteFriends), R.drawable.menu_bar_contact_plus, true, "",0));
-        draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat),R.drawable.menu_sectretchat,true, "",0));
-        draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel),R.drawable.menu_broadcast,true, "",0));
-        draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink),R.drawable.menu_wink,true, "",0));
-        draweritems.add(new MenuItems("  Call",R.drawable.ic_call,true,"",5));
-        if(UserPaymentInfo.getInstatance().getPaymentStatus() !=UserPaymentInfo.paidUser
-                && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase("")) ){
-            draweritems.add(new MenuItems(LocaleController.getString("Hide Ads", R.string.hide_ads),R.drawable.hide_ad,true, "$2",4));
- }
-        draweritems.add(new MenuItems(LocaleController.getString("get", R.string.more_karma),R.drawable.ic_premium,true, getKarmaBal(),4));
-   //     draweritems.add(new MenuItems(LocaleController.getString("get", R.string.Call),R.drawable.ic_call,true, getKarmaBal(),5));
+    private void setContactMenuList() {
+        draweritems = new ArrayList<MenuItems>();
+        draweritems.add(new MenuItems(LocaleController.getString("InviteFriends", R.string.InviteFriends), R.drawable.menu_bar_contact_plus, true, "", 0));
+        draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat), R.drawable.menu_sectretchat, true, "", 0));
+        draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel), R.drawable.menu_broadcast, true, "", 0));
+        draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink), R.drawable.menu_wink, true, "", 0));
+        draweritems.add(new MenuItems("  Call", R.drawable.ic_call, true, "", 5));
+        if (UserPaymentInfo.getInstatance().getPaymentStatus() != UserPaymentInfo.paidUser
+                && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase(""))) {
+            draweritems.add(new MenuItems(LocaleController.getString("Hide Ads", R.string.hide_ads), R.drawable.hide_ad, true, "$2", 4));
+        }
+        draweritems.add(new MenuItems(LocaleController.getString("get", R.string.more_karma), R.drawable.ic_premium, true, getKarmaBal(), 4));
+        //     draweritems.add(new MenuItems(LocaleController.getString("get", R.string.Call),R.drawable.ic_call,true, getKarmaBal(),5));
         adapter = new SlidingMenuAdapter(getParentActivity(),
                 draweritems);
-        ViewParent view=  parentLayout.getParent();
-        ListView drawerList=((ListView)((View) view.getParent()).findViewById(R.id.contact_slidermenu));
-        drawerList.setAdapter(adapter);drawerList.setOnItemClickListener(new ContactMenuClickListener());
+        ViewParent view = parentLayout.getParent();
+        ListView drawerList = ((ListView) ((View) view.getParent()).findViewById(R.id.contact_slidermenu));
+        drawerList.setAdapter(adapter);
+        drawerList.setOnItemClickListener(new ContactMenuClickListener());
         ((View) view.getParent()).findViewById(R.id.divider).setVisibility(View.GONE);
         ((View) view.getParent()).findViewById(R.id.bottom_panel).setVisibility(View.GONE);
         ((ImageView) ((View) view.getParent()).findViewById(R.id.menu_image)).setImageResource(R.drawable.transparent);
-        ((TextView)((View) view.getParent()).findViewById(R.id.row_title)).setText("");
+        ((TextView) ((View) view.getParent()).findViewById(R.id.row_title)).setText("");
     }
 
     private class ContactMenuClickListener implements
@@ -772,13 +764,13 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
-            switch(position){
+            switch (position) {
                 case 0:
                     parentLayout.closeDrawer();
                     try {
                         Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.setType("text/plain");
-                        intent.putExtra(Intent.EXTRA_TEXT,  LocaleController.getString("InviteText", R.string.InviteTextsocial));
+                        intent.putExtra(Intent.EXTRA_TEXT, LocaleController.getString("InviteText", R.string.InviteTextsocial));
                         getParentActivity().startActivity(intent);
                     } catch (Exception e) {
                         FileLog.e("tmessages", e);
@@ -811,15 +803,14 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                     break;
                 case 3:
                     SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("preferences", Activity.MODE_PRIVATE);
-                    if(p.getString("minage","0").equals("0")){
+                    if (p.getString("minage", "0").equals("0")) {
                         presentFragment(new PreferencesActivity());
-                        ApplicationLoader.getInstance().trackEvent("Clicked on my preferences","clicked","want to get friends");
- }
-                    else {
+                        ApplicationLoader.getInstance().trackEvent("Clicked on my preferences", "clicked", "want to get friends");
+                    } else {
                         Bundle args2 = new Bundle();
                         args2.putString("s_friend", "wink");
                         presentFragment(new SocialFriendActivity(args2));
-                        ApplicationLoader.getInstance().trackEvent("Clicked on social friends","clicked","want social friends");
+                        ApplicationLoader.getInstance().trackEvent("Clicked on social friends", "clicked", "want social friends");
                     }
                     break;
                 case 4:
@@ -832,19 +823,19 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                     break;
                 case 6:
                     parentLayout.closeDrawer();
-                    ApplicationLoader.getInstance().trackEvent("Clicked on Get Karma","clicked","want to get credit");
-                    SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-                    if(pp.getString("social_id","").equals("")) {
+                    ApplicationLoader.getInstance().trackEvent("Clicked on Get Karma", "clicked", "want to get credit");
+                    SharedPreferences pp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+                    if (pp.getString("social_id", "").equals("")) {
                         presentFragment(new MyProfileActivity());
-                    }
-                    else {
+                    } else {
                         PaymentManager.createIntent(getParentActivity(), false);
                     }
                     break;
             }
         }
     }
-    public void openDialog(){
+
+    public void openDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
 
@@ -860,10 +851,10 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                 dialog.dismiss();
             }
         });
-        Button button = (Button)view.findViewById(R.id.btn_yes);
+        Button button = (Button) view.findViewById(R.id.btn_yes);
         button.setSelected(true);
-        TextView textView = (TextView)view.findViewById(R.id.txt_dia) ;
-        textView.setText(LocaleController.getString("hide_ads",R.string.remove_ads_content));
+        TextView textView = (TextView) view.findViewById(R.id.txt_dia);
+        textView.setText(LocaleController.getString("hide_ads", R.string.remove_ads_content));
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -890,9 +881,9 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                 paymentIntent);
     }
 
-    public void logInToSinch(){
+    public void logInToSinch() {
         SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-        String userName =   p.getString("social_id","1231313");
+        String userName = p.getString("social_id", "1231313");
 
         if (userName.isEmpty()) {
             Toast.makeText(getParentActivity(), "Please enter a name", Toast.LENGTH_LONG).show();

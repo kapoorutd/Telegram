@@ -122,12 +122,10 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
             params.add(new CustomHttpParams("userId", sp.getString("social_id", "")));
             BackgroundExecuter.getInstance().execute(new AddContactRequester(telegramUsersesList, params));
 
-
         }
 
         hideTabsAnsMenu();
         ArrayList<CustomHttpParams> params = new ArrayList<>();
-        params.add(new CustomHttpParams("userId", sp.getString("social_id", "")));
         if(bundle.get("s_friend").equals("wink")){
             reqester = new GetSuggestFriendsRq(params,SocialFriendActivity.this,"search");
         } else {

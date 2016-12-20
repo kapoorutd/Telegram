@@ -120,18 +120,10 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
     private ProgressBar progressView;
     private LinearLayout emptyView;
     private ActionBarMenuItem passcodeItem;
- //   private ImageView floatingButton;
-
     private AlertDialog permissionDialog;
-/*
-    private int prevPosition;
-    private int prevTop;
-    private boolean scrollUpdated;
-    private boolean floatingHidden;*/
     private final AccelerateDecelerateInterpolator floatingInterpolator = new AccelerateDecelerateInterpolator();
 
     private boolean checkPermission = true;
-
     private String selectAlertString;
     private String selectAlertStringGroup;
     private String addToGroupAlertString;
@@ -161,23 +153,18 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                     }
                 }
         );
-
-
     }
 
     @Override
     public void onSocialLoginError() {
-
     }
 
     @Override
     public void onSocialFailer(String userid) {
-
     }
 
     @Override
     public void onGetKarmaSuccess(int karmaPoints) {
-
         if (Integer.parseInt(bal) != karmaPoints) {
             getParentActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -185,16 +172,11 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                     adapter.notifyDataSetChanged();
                 }
             });
-
         }
-
     }
-
     @Override
     public void onGetKarmaFailure() {
-
     }
-
 
     public interface DialogsActivityDelegate {
         void didSelectDialog(DialogsActivity fragment, long dialog_id, boolean param);
@@ -203,11 +185,9 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
     public DialogsActivity(Bundle args) {
         super(args);
     }
-
     @Override
     public boolean onFragmentCreate() {
         super.onFragmentCreate();
-
         if (getArguments() != null) {
             onlySelect = arguments.getBoolean("onlySelect", false);
             dialogsType = arguments.getInt("dialogsType", 0);
@@ -215,7 +195,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
             selectAlertStringGroup = arguments.getString("selectAlertStringGroup");
             addToGroupAlertString = arguments.getString("addToGroupAlertString");
         }
-
         if (searchString == null) {
             NotificationCenter.getInstance().addObserver(this, NotificationCenter.dialogsNeedReload);
             NotificationCenter.getInstance().addObserver(this, NotificationCenter.emojiDidLoaded);
@@ -233,8 +212,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
             NotificationCenter.getInstance().addObserver(this, NotificationCenter.didLoadedReplyMessages);
             NotificationCenter.getInstance().addObserver(this, NotificationCenter.reloadHints);
         }
-
-
         if (!dialogsLoaded) {
             MessagesController.getInstance().loadDialogs(0, 100, true);
             ContactsController.getInstance().checkInviteText();
@@ -270,23 +247,18 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
     public View createView(final Context context) {
         searching = false;
         searchWas = false;
-
         AndroidUtilities.runOnUIThread(new Runnable() {
             @Override
             public void run() {
                 Theme.loadRecources(context);
             }
         });
-
         BackgroundExecuter.getInstance().execute(new CheckPremiumUserRequester(UserPaymentInfo.getInstatance().getUserId()));
-
-
         ActionBarMenu menu = actionBar.createMenu();
         if (!onlySelect && searchString == null) {
             passcodeItem = menu.addItem(1, R.drawable.lock_close);
             updatePasscodeButton();
         }
-
         if (ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getBoolean("Login_Status", true)) {
             TLRPC.User user = UserConfig.getCurrentUser();
             SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
@@ -299,7 +271,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                 newuser.setDob(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("dobforserver", "2000-01-01"));
                 newuser.setSex(ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("sex", "M"));
                 newuser.setId(user.id + "");
-
                 CountryAdapter.Country cu = Util.getcountry((ApplicationLoader.
                         applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE).getString("country", "india")));
                 newuser.setcCode(cu.shortname);
@@ -312,7 +283,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
         }
 
         BackgroundExecuter.getInstance().execute(new CheckPremiumUserRequester(UserPaymentInfo.getInstatance().getUserId()));
-
         final ActionBarMenuItem item = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
             @Override
             public void onSearchExpand() {
@@ -325,7 +295,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                         emptyView.setVisibility(View.GONE);
                     }
                     if (!onlySelect) {
-                        //   floatingButton.setVisibility(View.GONE);
                     }
                 }
                 updatePasscodeButton();
@@ -345,7 +314,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                 searching = false;
                 searchWas = false;
                 actionBar.setBackButtonImage(0);
-
                 if (listView != null) {
                     searchEmptyView.setVisibility(View.GONE);
                     if (MessagesController.getInstance().loadingDialogs && MessagesController.getInstance().dialogs.isEmpty()) {
@@ -367,7 +335,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                 }
                 updatePasscodeButton();
             }
-
 
             @Override
             public void onTextChanged(EditText editText) {
@@ -395,8 +362,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
             actionBar.setBackButtonImage(R.drawable.ic_ab_back);
             actionBar.setTitle(LocaleController.getString("SelectChat", R.string.SelectChat));
             parentLayout.addFragmentToStack(new DialogsActivity(null));
-
-
         } else {
             if (searchString != null) {
                 actionBar.setBackButtonImage(R.drawable.ic_ab_back);
@@ -431,7 +396,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
 
         FrameLayout frameLayout = new FrameLayout(context);
         fragmentView = frameLayout;
-
         listView = new RecyclerListView(context);
         listView.setVerticalScrollBarEnabled(true);
         listView.setItemAnimator(null);
@@ -722,13 +686,11 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                 return true;
             }
         });
-
         searchEmptyView = new EmptyTextProgressView(context);
         searchEmptyView.setVisibility(View.GONE);
         searchEmptyView.setShowAtCenter(true);
         searchEmptyView.setText(LocaleController.getString("NoResult", R.string.NoResult));
         frameLayout.addView(searchEmptyView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-
         emptyView = new LinearLayout(context);
         emptyView.setOrientation(LinearLayout.VERTICAL);
         emptyView.setVisibility(View.GONE);
@@ -740,14 +702,12 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                 return true;
             }
         });
-
         TextView textView = new TextView(context);
         textView.setText(LocaleController.getString("NoChats", R.string.NoChats));
         textView.setTextColor(0xff959595);
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
         emptyView.addView(textView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
-
         textView = new TextView(context);
         String help = LocaleController.getString("NoChatsHelp", R.string.NoChatsHelp);
         if (AndroidUtilities.isTablet() && !AndroidUtilities.isSmallTablet()) {
@@ -760,11 +720,9 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
         textView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(6), AndroidUtilities.dp(8), 0);
         textView.setLineSpacing(AndroidUtilities.dp(2), 1);
         emptyView.addView(textView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
-
         progressView = new ProgressBar(context);
         progressView.setVisibility(View.GONE);
         frameLayout.addView(progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
-
         listView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -793,7 +751,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
 
             }
         });
-
         if (searchString == null) {
             dialogsAdapter = new DialogsAdapter(context, dialogsType);
             if (AndroidUtilities.isTablet() && openedDialogId != 0) {
@@ -1141,24 +1098,20 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
         }
     }
 
-
     @Override
     public void onActivityResultFragment(int requestCode, int resultCode, Intent data) {
         super.onActivityResultFragment(requestCode, resultCode, data);
-
         if (requestCode == UserPaymentInfo.REQUEST_CODE_PAYMENT) {
             if (resultCode == Activity.RESULT_OK) {
                 PaymentConfirmation confirm =
                         data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
                 if (confirm != null) {
                     try {
-                        Gson gson = new Gson(); // new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                        Gson gson = new Gson();
                         PaymentResponse response = gson.fromJson(confirm.toJSONObject().toString(), PaymentResponse.class);
                         UserPaymentInfo.getInstatance().setPaymentId(response.getResponse().getId());
                         UserPaymentInfo.getInstatance().setPaymentStatus(UserPaymentInfo.paidUser);
-
                         sendAuthorizationToServer(String.valueOf(2));
-
                     } catch (Exception e) {
                         Log.e("", "an extremely unlikely failure occurred: ", e);
                     }
@@ -1179,7 +1132,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
         // TODO change the amount selected by user.
         String cc = p.getString("cCode", "zz");
         String mob = p.getString("mob", "00000000");
-
         if (!id.equalsIgnoreCase("")) {
             BackgroundExecuter.getInstance().execute(new
                     ConfirmationRequester(UserPaymentInfo.getInstatance().getPaymentId(), id, amount, mob, cc));
@@ -1281,7 +1233,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
         return bal;
     }
 
-
     private void setChatMenuList() {
         ArrayList<MenuItems> draweritems = new ArrayList<MenuItems>();
         draweritems.add(new MenuItems(LocaleController.getString("NewChat", R.string.new_chat), R.drawable.menu_bar_chat, true, "", 0));
@@ -1339,13 +1290,10 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                     break;
                 case 1:
                     parentLayout.closeDrawer();
-                    //closeDrawer();
                     presentFragment(new GroupCreateActivity());
                     break;
                 case 2:
                     parentLayout.closeDrawer();
-
-                    // closeDrawer();
                     Bundle args = new Bundle();
                     args.putBoolean("onlyUsers", true);
                     args.putBoolean("destroyAfterSelect", true);
@@ -1355,9 +1303,7 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                     presentFragment(new ContactsActivity(args));
                     break;
                 case 3:
-
                     parentLayout.closeDrawer();
-
                     if (!MessagesController.isFeatureEnabled("broadcast_create", parentLayout.fragmentsStack.get(parentLayout.fragmentsStack.size() - 1))) {
                         return;
                     }
@@ -1365,15 +1311,11 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                     if (preferences.getBoolean("channel_intro", false)) {
                         Bundle ars = new Bundle();
                         ars.putInt("step", 0);
-
                         presentFragment(new ChannelCreateActivity(ars));
                     } else {
                         presentFragment(new ChannelIntroActivity());
                         preferences.edit().putBoolean("channel_intro", true).commit();
-
-
                     }
-
                     break;
                 case 4:
                     SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("preferences", Activity.MODE_PRIVATE);
@@ -1387,10 +1329,8 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                     break;
                 case 5:
                     parentLayout.closeDrawer();
-                    // openDialog();
                     logInToSinch();
                     break;
-
                 case 6:
                     parentLayout.closeDrawer();
                     ApplicationLoader.getInstance().trackEvent("Clicked on Get Karma", "clicked", "want to get credit");
@@ -1401,17 +1341,12 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                         PaymentManager.createIntent(getParentActivity(), false);
                     }
                     break;
-
-
             }
-
         }
     }
 
     public void openDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-
         LayoutInflater inflater = (LayoutInflater) getParentActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.custom_dialog, null);
@@ -1433,17 +1368,13 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
             public void onClick(View v) {
                 try {
                     onBuyPressed(2);
-                    // PaymentManager.createIntent(getParentActivity(),false);
                 } catch (Exception e) {
                     FileLog.e("tmessages", e);
                 }
             }
         });
-
     }
-
     public void onBuyPressed(int paymentValue) {
-
         PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE, String.valueOf(paymentValue));
         Intent intent = new Intent(getParentActivity(), PaymentActivity.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, UserPaymentInfo.getConfiguration());
@@ -1454,19 +1385,16 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
     private PayPalPayment getThingToBuy(String paymentIntent, String paymentValue) {
         return new PayPalPayment(new BigDecimal(paymentValue), "USD", "PREMIUM FEATURES",
                 paymentIntent);
-
     }
 
-
+    //TODO  not well organised the flow of sinch
     public void logInToSinch() {
         SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
         String userName = p.getString("social_id", "1231313");
-
         if (userName.isEmpty()) {
             Toast.makeText(getParentActivity(), "Please enter a name", Toast.LENGTH_LONG).show();
             return;
         }
-
         openPlaceCallActivity();
     }
 
@@ -1476,6 +1404,4 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
         getParentActivity().startActivity(mainActivity);
 
     }
-
-
 }
