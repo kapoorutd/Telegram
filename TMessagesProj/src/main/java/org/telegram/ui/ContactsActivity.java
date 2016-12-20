@@ -744,24 +744,20 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
     }
 
     private void setContactMenuList(){
-       draweritems=new ArrayList<MenuItems>();
+        draweritems=new ArrayList<MenuItems>();
         draweritems.add(new MenuItems(LocaleController.getString("InviteFriends", R.string.InviteFriends), R.drawable.menu_bar_contact_plus, true, "",0));
         draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat),R.drawable.menu_sectretchat,true, "",0));
         draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel),R.drawable.menu_broadcast,true, "",0));
         draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink),R.drawable.menu_wink,true, "",0));
-////////////
+        draweritems.add(new MenuItems("  Call",R.drawable.ic_call,true,"",5));
         if(UserPaymentInfo.getInstatance().getPaymentStatus() !=UserPaymentInfo.paidUser
                 && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase("")) ){
             draweritems.add(new MenuItems(LocaleController.getString("Hide Ads", R.string.hide_ads),R.drawable.hide_ad,true, "$2",4));
  }
         draweritems.add(new MenuItems(LocaleController.getString("get", R.string.more_karma),R.drawable.ic_premium,true, getKarmaBal(),4));
-
-
-         adapter = new SlidingMenuAdapter(getParentActivity(),
+   //     draweritems.add(new MenuItems(LocaleController.getString("get", R.string.Call),R.drawable.ic_call,true, getKarmaBal(),5));
+        adapter = new SlidingMenuAdapter(getParentActivity(),
                 draweritems);
-
-
-
         ViewParent view=  parentLayout.getParent();
         ListView drawerList=((ListView)((View) view.getParent()).findViewById(R.id.contact_slidermenu));
         drawerList.setAdapter(adapter);drawerList.setOnItemClickListener(new ContactMenuClickListener());
@@ -771,14 +767,12 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
         ((TextView)((View) view.getParent()).findViewById(R.id.row_title)).setText("");
     }
 
-
     private class ContactMenuClickListener implements
             ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             switch(position){
-
                 case 0:
                     parentLayout.closeDrawer();
                     try {
@@ -792,7 +786,6 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                     break;
                 case 1:
                     parentLayout.closeDrawer();
-                    //    closeDrawer();
                     Bundle args = new Bundle();
                     args.putBoolean("onlyUsers", true);
                     args.putBoolean("destroyAfterSelect", true);
@@ -803,7 +796,6 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                     break;
                 case 2:
                     parentLayout.closeDrawer();
-
                     if (!MessagesController.isFeatureEnabled("broadcast_create", parentLayout.fragmentsStack.get(parentLayout.fragmentsStack.size() - 1))) {
                         return;
                     }
@@ -811,7 +803,6 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                     if (preferences.getBoolean("channel_intro", false)) {
                         Bundle ars = new Bundle();
                         ars.putInt("step", 0);
-
                         presentFragment(new ChannelCreateActivity(ars));
                     } else {
                         presentFragment(new ChannelIntroActivity());
@@ -829,16 +820,17 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                         args2.putString("s_friend", "wink");
                         presentFragment(new SocialFriendActivity(args2));
                         ApplicationLoader.getInstance().trackEvent("Clicked on social friends","clicked","want social friends");
-
                     }
                     break;
-
                 case 4:
+                    parentLayout.closeDrawer();
+                    logInToSinch();
+                    break;
+                case 5:
                     parentLayout.closeDrawer();
                     openDialog();
                     break;
-
-                case 5:
+                case 6:
                     parentLayout.closeDrawer();
                     ApplicationLoader.getInstance().trackEvent("Clicked on Get Karma","clicked","want to get credit");
                     SharedPreferences pp  = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
@@ -896,7 +888,21 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
     private PayPalPayment getThingToBuy(String paymentIntent, String paymentValue) {
         return new PayPalPayment(new BigDecimal(paymentValue), "USD", "PREMIUM FEATURES",
                 paymentIntent);
-
     }
 
+    public void logInToSinch(){
+        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
+        String userName =   p.getString("social_id","1231313");
+
+        if (userName.isEmpty()) {
+            Toast.makeText(getParentActivity(), "Please enter a name", Toast.LENGTH_LONG).show();
+            return;
+        }
+        openPlaceCallActivity();
+    }
+
+    private void openPlaceCallActivity() {
+        Intent mainActivity = new Intent(getParentActivity(), org.telegram.calling.PlaceCallActivity.class);
+        getParentActivity().startActivity(mainActivity);
+    }
 }

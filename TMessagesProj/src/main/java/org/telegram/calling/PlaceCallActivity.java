@@ -59,10 +59,8 @@ public class PlaceCallActivity extends BaseActivity implements SinchService.Star
         finish();
     }
 
-
     private void callButtonClicked() {
         loginClicked();
-
         String phoneNumber = mCallName.getText().toString();
         if (phoneNumber.isEmpty()) {
             Toast.makeText(this, "Please enter a number to call", Toast.LENGTH_LONG).show();
@@ -79,6 +77,7 @@ public class PlaceCallActivity extends BaseActivity implements SinchService.Star
 
 
     private void loginClicked() {
+      //ToDO // get unique  user name to register a user:
         String userName = "Ashish Srivastava";
       try {
     if (!getSinchServiceInterface().isStarted()) {

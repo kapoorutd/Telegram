@@ -191,7 +191,6 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
 
         });
 
-
         img_Back = (ImageView)fragmentView.findViewById(R.id.backview) ;
         adapter = new CustomGridAdapter(mContext,listnew);
         emptyView = (TextView)fragmentView.findViewById(R.id.empty_view);
@@ -208,7 +207,6 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
         BackgroundExecuter.getInstance().execute(reqester);
         BackgroundExecuter.getInstance().execute(new GetKarmaBalanceRequester(mob,cc,this));
         BackgroundExecuter.getInstance().execute(new AllowedSocialRequester(mob,cc));
-
 
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -250,14 +248,10 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
         return fragmentView;
     }
 
-
-
     @Override
     public void onResume() {
         super.onResume();
         ApplicationLoader.getInstance().trackScreenView(AnalyticsTrackers.CHANGE_PHONE_HELP);
-
-
         if(isSend && remPosition!= -1)
         {
             listnew.remove(listnew.get(remPosition));
@@ -270,11 +264,9 @@ public class SocialFriendActivity extends BaseFragment implements KarmaDeduction
         }
     }
 
-
     public static void getResponse(TLRPC.TelegramUsers respon){
         response = respon;
     }
-
 
     @Override
     public void setFriendList(final ArrayList<TLRPC.TelegramUsers> users) {

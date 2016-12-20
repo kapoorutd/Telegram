@@ -1605,6 +1605,8 @@ public class SettingsActivity extends BaseFragment implements KarmaBalanceListen
             draweritems.add(new MenuItems("Hide Ads",R.drawable.hide_ad,true, "$2",4));
         }
         draweritems.add(new MenuItems(LocaleController.getString("getMore",R.string.more_karma),R.drawable.ic_premium,true, getKarmaBal(),4));
+      //  draweritems.add(new MenuItems(LocaleController.getString("get", R.string.Call),R.drawable.ic_call,true,"",5));
+
 
         SlidingMenuAdapter adapter = new SlidingMenuAdapter(getParentActivity(),
                 draweritems);

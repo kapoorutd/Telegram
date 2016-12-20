@@ -28,10 +28,8 @@ public class CallScreenActivity extends BaseActivity {
     private AudioPlayer mAudioPlayer;
     private Timer mTimer;
     private UpdateCallDurationTask mDurationTask;
-
     private String mCallId;
     private long mCallStart = 0;
-
     private TextView mCallDuration;
     private TextView mCallState;
     private TextView mCallerName;
@@ -122,8 +120,7 @@ public class CallScreenActivity extends BaseActivity {
     private void updateCallDuration() {
         if (mCallStart > 0) {
             mCallDuration.setText(formatTimespan(System.currentTimeMillis() - mCallStart));
-        }
-    }
+        } }
 
     private class SinchCallListener implements CallListener {
 
@@ -155,7 +152,6 @@ public class CallScreenActivity extends BaseActivity {
 
         @Override
         public void onShouldSendPushNotification(Call call, List<PushPair> pushPairs) {
-            // Send a push through your push provider here, e.g. GCM
         }
 
     }
