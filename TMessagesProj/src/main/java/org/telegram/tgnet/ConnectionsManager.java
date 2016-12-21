@@ -201,7 +201,6 @@ public class ConnectionsManager {
         native_setUseIpv6(useIpv6Address());
         native_setNetworkAvailable(isNetworkOnline());
     }
-
     public void setPushConnectionEnabled(boolean value) {
         native_setPushConnectionEnabled(value);
     }

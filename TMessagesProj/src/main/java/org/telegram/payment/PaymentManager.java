@@ -25,15 +25,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.adcolony.sdk.AdColony;
-import com.adcolony.sdk.AdColonyAdOptions;
-import com.adcolony.sdk.AdColonyAppOptions;
-import com.adcolony.sdk.AdColonyInterstitial;
-import com.adcolony.sdk.AdColonyInterstitialListener;
-import com.adcolony.sdk.AdColonyReward;
-import com.adcolony.sdk.AdColonyRewardListener;
-import com.adcolony.sdk.AdColonyUserMetadata;
-import com.adcolony.sdk.AdColonyZone;
+
 import com.google.gson.Gson;
 
 import com.paypal.android.sdk.payments.PayPalAuthorization;
@@ -105,9 +97,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
     final private String APP_ID = "app185a7e71e1714831a49ec7";
     final private String ZONE_ID = "vzdf92c3785a1945eea7";
 
-    private AdColonyInterstitial ad;
-    private AdColonyInterstitialListener listener;
-    private AdColonyAdOptions ad_options;
+
     private boolean isAddLoad=false;
     private boolean isLoading=false;
     private boolean isWatch=false;
@@ -125,7 +115,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
     private RadioButton adBtn;
     private ProgressBar progress;
     private Button show_button;
-    private AdColonyRewardListener listner1;
+
     private View view;
     private static View dialogView;
     private Dialog dialog;
@@ -180,32 +170,32 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
 
 
 
-    public void intializeAds(){
-        /*
+  /*  public void intializeAds()*//*{
+        *//*
         LayoutInflater inflater = (LayoutInflater)PaymentManager.this
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
        view = inflater.inflate(R.layout.layout_dialog_watch, null);
        show_button=(Button)view.findViewById(R.id.watch_ads);
-        progress = (ProgressBar) view.findViewById( R.id.progress );*/
+        progress = (ProgressBar) view.findViewById( R.id.progress );*//*
 
-        /** Construct optional app options object to be sent with configure */
+        *//** Construct optional app options object to be sent with configure *//*
         AdColonyAppOptions app_options = new AdColonyAppOptions()
                 .setUserID( "unique_user_id" );
         app_options.setOriginStore("Blackberry");
 
-        /**
+        *//**
          * Configure AdColony in your launching Activity's onCreate() method so that cached ads can
          * be available as soon as possible.
-         */
+         *//*
         AdColony.configure( this, app_options, APP_ID, ZONE_ID );
 
-        /** Optional user metadata sent with the ad options in each request */
+        *//** Optional user metadata sent with the ad options in each request *//*
         AdColonyUserMetadata metadata = new AdColonyUserMetadata()
                 .setUserAge( 26 )
                 .setUserEducation( AdColonyUserMetadata.USER_EDUCATION_BACHELORS_DEGREE )
                 .setUserGender( AdColonyUserMetadata.USER_MALE );
 
-        /** Ad specific options to be sent with request */
+        *//** Ad specific options to be sent with request *//*
         ad_options = new AdColonyAdOptions()
                 .enableConfirmationDialog( true )
                 .enableResultsDialog( true )
@@ -222,38 +212,38 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
         };
 
 
-     /*   *//** Create and set a reward listener *//*
+     *//*   *//**//** Create and set a reward listener *//**//*
         AdColony.setRewardListener( new AdColonyRewardListener()
         {
             @Override
             public void onReward( AdColonyReward reward )
             {
-                *//** Query reward object for info here *//*
+                *//**//** Query reward object for info here *//**//*
                 Log.d( TAG, "onReward" );
             }
-        } );*/
+        } );*//*
 
-        /**
+        *//**
          * Set up listener for interstitial ad callbacks. You only need to implement the callbacks
          * that you care about. The only required callback is onRequestFilled, as this is the only
          * way to get an ad object.
-         */
+         *//*
         listener = new AdColonyInterstitialListener()
         {
-            /** Ad passed back in request filled callback, ad can now be shown */
+            *//** Ad passed back in request filled callback, ad can now be shown *//*
             @Override
             public void onRequestFilled( AdColonyInterstitial ad )
             {
                 PaymentManager.this.ad = ad;
                 isAddLoad=true;
                 isLoading=false;
-                /* show_button.setEnabled( true );
+                *//* show_button.setEnabled( true );
                 show_button.setSelected(true);
-                progress.setVisibility( View.GONE );*/
+                progress.setVisibility( View.GONE );*//*
                 Log.d( TAG, "onRequestFilled" );
             }
 
-            /** Ad request was not filled */
+            *//** Ad request was not filled *//*
             @Override
             public void onRequestNotFilled( AdColonyZone zone )
             {
@@ -263,18 +253,18 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
                 Log.d( TAG, "onRequestNotFilled");
             }
 
-            /** Ad opened, reset UI to reflect state change */
+            *//** Ad opened, reset UI to reflect state change *//*
             @Override
             public void onOpened( AdColonyInterstitial ad )
             {
                 isLoading=false;
                 isAddLoad=false;
-                /*show_button.setEnabled( false );
+                *//*show_button.setEnabled( false );
                 progress.setVisibility( View.VISIBLE );
-                Log.d( TAG, "onOpened" );*/
+                Log.d( TAG, "onOpened" );*//*
             }
 
-            /** Request a new ad if ad is expiring */
+            *//** Request a new ad if ad is expiring *//*
             @Override
             public void onExpiring( AdColonyInterstitial ad )
             {
@@ -282,16 +272,16 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
                 isLoading=false;
                 isAddLoad=false;
 
-                /*show_button.setEnabled( false );
+                *//*show_button.setEnabled( false );
                 progress.setVisibility( View.VISIBLE );
                 AdColony.requestInterstitial( ZONE_ID, this, ad_options );
-                Log.d( TAG, "onExpiring" );*/
+                Log.d( TAG, "onExpiring" );*//*
             }
         };
 
-        /** Set up button to show an ad when clicked */
+        *//** Set up button to show an ad when clicked *//*
 
-       /* show_button.setOnClickListener( new View.OnClickListener()
+       *//* show_button.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick( View view )
@@ -301,30 +291,30 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
                   Toast.makeText(PaymentManager.this,"Currently ads not available!",Toast.LENGTH_SHORT).show();
               }
             }
-        } );*/
+        } );*//*
 
-    }
+    }*/
 
 
-    public void showAds(){
-        /** Construct optional app options object to be sent with configure */
+    /*public void showAds()*//*{
+        *//** Construct optional app options object to be sent with configure *//*
         AdColonyAppOptions app_options = new AdColonyAppOptions()
                 .setUserID( "unique_user_id" );
 
-        /**
+        *//**
          * Configure AdColony in your launching Activity's onCreate() method so that cached ads can
          * be available as soon as possible.
-         */
+         *//*
         AdColony.configure( this, app_options, APP_ID, ZONE_ID );
 
 
-        /** Optional user metadata sent with the ad options in each request */
+        *//** Optional user metadata sent with the ad options in each request *//*
         AdColonyUserMetadata metadata = new AdColonyUserMetadata()
                 .setUserAge( 26 )
                 .setUserEducation( AdColonyUserMetadata.USER_EDUCATION_BACHELORS_DEGREE )
                 .setUserGender( AdColonyUserMetadata.USER_MALE );
 
-        /** Ad specific options to be sent with request */
+        *//** Ad specific options to be sent with request *//*
         ad_options = new AdColonyAdOptions()
                 .enableConfirmationDialog( true )
                 .enableResultsDialog( true )
@@ -333,25 +323,25 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
 
 
   /////////////////////////////////////////////////////
-        /** Create and set a reward listener */
+        *//** Create and set a reward listener *//*
         AdColony.setRewardListener( new AdColonyRewardListener()
         {
             @Override
             public void onReward( AdColonyReward reward )
             {
-                /** Query reward object for info here */
+                *//** Query reward object for info here *//*
                 Log.d( TAG, "onReward" );
             }
         } );
 
-        /**
+        *//**
          * Set up listener for interstitial ad callbacks. You only need to implement the callbacks
          * that you care about. The only required callback is onRequestFilled, as this is the only
          * way to get an ad object.
-         */
+         *//*
         listener = new AdColonyInterstitialListener()
         {
-            /** Ad passed back in request filled callback, ad can now be shown */
+            *//** Ad passed back in request filled callback, ad can now be shown *//*
             @Override
             public void onRequestFilled( AdColonyInterstitial ad )
             {
@@ -363,7 +353,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
                 Log.d( TAG, "onRequestFilled" );
             }
 
-            /** Ad request was not filled */
+            *//** Ad request was not filled *//*
             @Override
             public void onRequestNotFilled( AdColonyZone zone )
             {
@@ -371,7 +361,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
                 Log.d( TAG, "onRequestNotFilled");
             }
 
-            /** Ad opened, reset UI to reflect state change */
+            *//** Ad opened, reset UI to reflect state change *//*
             @Override
             public void onOpened( AdColonyInterstitial ad )
             {
@@ -380,7 +370,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
                 Log.d( TAG, "onOpened" );
             }
 
-            /** Request a new ad if ad is expiring */
+            *//** Request a new ad if ad is expiring *//*
             @Override
             public void onExpiring( AdColonyInterstitial ad )
             {
@@ -391,8 +381,8 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
             }
         };
         //ad.show();
-        /** Set up button to show an ad when clicked */
-  /*      show_button = (Button) findViewById( R.id.showbutton );
+        *//** Set up button to show an ad when clicked *//*
+  *//*      show_button = (Button) findViewById( R.id.showbutton );
         show_button.setOnClickListener( new View.OnClickListener()
         {
             @Override
@@ -402,8 +392,8 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
             }
         } );
 
-  */
-    }
+  *//*
+    }*/
 
 
 
@@ -813,6 +803,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
             show_button.setSelected(true);
         }
         else{show_button.setSelected(false);}
+/*
 
 
         show_button.setOnClickListener(new View.OnClickListener() {
@@ -831,6 +822,7 @@ public class PaymentManager extends Activity implements PaymentConfirmationListe
         AlertDialog dialog = builder.create();
         dialog.show();
 
+*/
 
         
        /* view.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {

@@ -52,8 +52,6 @@ import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 
-import org.telegram.calling.*;
-import org.telegram.calling.LoginActivity;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildVars;
@@ -1225,8 +1223,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
         }
     }
 
-    ////////////////////////////////////////Drawer menu list updated and redesigned below/////////////////////////////////
-
     public String getKarmaBal() {
         SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
         bal = p.getString("karmaBal", "0");
@@ -1240,7 +1236,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
         draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat), R.drawable.menu_sectretchat, true, "", 0));
         draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel), R.drawable.menu_broadcast, true, "", 0));
         draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink), R.drawable.menu_wink, true, "", 0));
-        draweritems.add(new MenuItems("  Call", R.drawable.ic_call, true, "", 5));
         if (UserPaymentInfo.getInstatance().getPaymentStatus() != UserPaymentInfo.paidUser
                 && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase(""))) {
             draweritems.add(new MenuItems(LocaleController.getString("Hide Ads", R.string.hide_ads), R.drawable.hide_ad, true, "$2", 4));
@@ -1329,10 +1324,6 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
                     break;
                 case 5:
                     parentLayout.closeDrawer();
-                    logInToSinch();
-                    break;
-                case 6:
-                    parentLayout.closeDrawer();
                     ApplicationLoader.getInstance().trackEvent("Clicked on Get Karma", "clicked", "want to get credit");
                     SharedPreferences pp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
                     if (pp.getString("social_id", "").equals("")) {
@@ -1385,23 +1376,5 @@ public class DialogsActivity extends BaseFragment implements KarmaBalanceListene
     private PayPalPayment getThingToBuy(String paymentIntent, String paymentValue) {
         return new PayPalPayment(new BigDecimal(paymentValue), "USD", "PREMIUM FEATURES",
                 paymentIntent);
-    }
-
-    //TODO  not well organised the flow of sinch
-    public void logInToSinch() {
-        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-        String userName = p.getString("social_id", "1231313");
-        if (userName.isEmpty()) {
-            Toast.makeText(getParentActivity(), "Please enter a name", Toast.LENGTH_LONG).show();
-            return;
-        }
-        openPlaceCallActivity();
-    }
-
-
-    private void openPlaceCallActivity() {
-        Intent mainActivity = new Intent(getParentActivity(), org.telegram.calling.PlaceCallActivity.class);
-        getParentActivity().startActivity(mainActivity);
-
     }
 }

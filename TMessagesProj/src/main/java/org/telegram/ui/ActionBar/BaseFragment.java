@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import org.telegram.calling.SinchService;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
@@ -31,7 +30,7 @@ import org.telegram.messenger.R;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tracker.AnalyticsTrackers;
 
-public class BaseFragment implements ServiceConnection {
+public class BaseFragment  {
 
     private boolean isFinished = false;
     protected Dialog visibleDialog = null;
@@ -43,7 +42,6 @@ public class BaseFragment implements ServiceConnection {
     protected Bundle arguments;
     protected boolean swipeBackEnabled = false;
     protected boolean hasOwnBackground = false;
-    private SinchService.SinchServiceInterface mSinchServiceInterface;
 
 
     public BaseFragment() {
@@ -67,8 +65,7 @@ public class BaseFragment implements ServiceConnection {
 
     public View createView(Context context) {
       //  getParentActivity().startService(new Intent(getParentActivity(), SinchService.class));
-         getParentActivity().bindService(new Intent(getParentActivity(), SinchService.class), this,
-                Context.BIND_AUTO_CREATE);
+              //  Context.BIND_AUTO_CREATE);
         return null;
     }
 
@@ -357,22 +354,6 @@ public class BaseFragment implements ServiceConnection {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        if (SinchService.class.getName().equals(name.getClassName())) {
-            mSinchServiceInterface = (SinchService.SinchServiceInterface) service;
-            onServiceConnected();
-        }
-
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        if (SinchService.class.getName().equals(name.getClassName())) {
-            mSinchServiceInterface = null;
-            onServiceDisconnected();
-        }
-    }
 
     protected void onServiceConnected() {
         // for subclasses
@@ -381,9 +362,5 @@ public class BaseFragment implements ServiceConnection {
     protected void onServiceDisconnected() {
         // for subclasses
     }
-
-    protected SinchService.SinchServiceInterface getSinchServiceInterface() {
-        return mSinchServiceInterface;
-    }
-
 }
+

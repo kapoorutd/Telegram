@@ -7,7 +7,6 @@
  */
 
 package org.telegram.ui;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -82,7 +81,7 @@ public class AudioPlayerActivity extends BaseFragment implements NotificationCen
         public boolean onInterceptTouchEvent(MotionEvent ev) {
             return onTouch(ev);
         }
-
+        
         @Override
         public boolean onTouchEvent(MotionEvent event) {
             return onTouch(event);
@@ -212,7 +211,6 @@ public class AudioPlayerActivity extends BaseFragment implements NotificationCen
         timeTextView.setGravity(Gravity.CENTER);
         timeTextView.setText("0:00");
         seekBarContainer.addView(timeTextView, LayoutHelper.createFrame(44, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
-
         durationTextView = new TextView(context);
         durationTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         durationTextView.setTextColor(0xff8a8a8a);

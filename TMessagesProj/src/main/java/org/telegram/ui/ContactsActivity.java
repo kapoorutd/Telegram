@@ -740,7 +740,6 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
         draweritems.add(new MenuItems(LocaleController.getString("NewSecretChat", R.string.NewSecretChat), R.drawable.menu_sectretchat, true, "", 0));
         draweritems.add(new MenuItems(LocaleController.getString("NewBroadcastList", R.string.CreateChannel), R.drawable.menu_broadcast, true, "", 0));
         draweritems.add(new MenuItems(LocaleController.getString("Wink", R.string.wink), R.drawable.menu_wink, true, "", 0));
-        draweritems.add(new MenuItems("  Call", R.drawable.ic_call, true, "", 5));
         if (UserPaymentInfo.getInstatance().getPaymentStatus() != UserPaymentInfo.paidUser
                 && (!UserPaymentInfo.getInstatance().getUserId().equalsIgnoreCase(""))) {
             draweritems.add(new MenuItems(LocaleController.getString("Hide Ads", R.string.hide_ads), R.drawable.hide_ad, true, "$2", 4));
@@ -813,15 +812,12 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
                         ApplicationLoader.getInstance().trackEvent("Clicked on social friends", "clicked", "want social friends");
                     }
                     break;
+
                 case 4:
-                    parentLayout.closeDrawer();
-                    logInToSinch();
-                    break;
-                case 5:
                     parentLayout.closeDrawer();
                     openDialog();
                     break;
-                case 6:
+                case 5:
                     parentLayout.closeDrawer();
                     ApplicationLoader.getInstance().trackEvent("Clicked on Get Karma", "clicked", "want to get credit");
                     SharedPreferences pp = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
@@ -879,21 +875,5 @@ public class ContactsActivity extends BaseFragment implements KarmaBalanceListen
     private PayPalPayment getThingToBuy(String paymentIntent, String paymentValue) {
         return new PayPalPayment(new BigDecimal(paymentValue), "USD", "PREMIUM FEATURES",
                 paymentIntent);
-    }
-
-    public void logInToSinch() {
-        SharedPreferences p = ApplicationLoader.applicationContext.getSharedPreferences("socialuser", Activity.MODE_PRIVATE);
-        String userName = p.getString("social_id", "1231313");
-
-        if (userName.isEmpty()) {
-            Toast.makeText(getParentActivity(), "Please enter a name", Toast.LENGTH_LONG).show();
-            return;
-        }
-        openPlaceCallActivity();
-    }
-
-    private void openPlaceCallActivity() {
-        Intent mainActivity = new Intent(getParentActivity(), org.telegram.calling.PlaceCallActivity.class);
-        getParentActivity().startActivity(mainActivity);
     }
 }

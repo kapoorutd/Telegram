@@ -12,7 +12,6 @@
                       android:resizeable="true"
                       android:smallScreens="true"
                       android:xlargeScreens="true"/>
-
     <uses-feature android:glEsVersion="0x00020000" android:required="false"/>
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
     <uses-feature android:name="android.hardware.wifi" android:required="false" />
@@ -55,14 +54,10 @@
         android:largeHeap="true"
         android:theme="@style/Theme.TMessages.Start"
         android:manageSpaceActivity="org.telegram.ui.ManageSpaceActivity">
-
-        <service android:name="org.telegram.calling.SinchService"></service>
-
-        <activity
+           <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
-
         <activity
             android:name="org.telegram.ui.LaunchActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -233,45 +228,17 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".WearReplyReceiver" android:enabled="true"/>
-
         <receiver android:name=".ShareBroadcastReceiver" android:enabled="true"/>
-
         <receiver android:name=".NotificationDismissReceiver" android:exported="false"/>
-
         <uses-library android:name="com.sec.android.app.multiwindow" android:required="false" />
         <meta-data android:name="com.sec.android.support.multiwindow" android:value="true" />
         <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_W" android:value="632dp" />
         <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H" android:value="598dp" />
         <meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:value="632dp" />
         <meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:value="598dp" />
-
         <meta-data android:name="com.google.android.gms.car.notification.SmallIcon" android:resource="@drawable/ic_player" />
         <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/automotive_app_desc" />
-
-        //////////////////Heyzap setup//////////////
-
-        <meta-data android:name="applovin.sdk.key" android:value="dfk5Pw2g-MATQrrpwnty_SmFI6SpbdlEHSKhNMNLiXv7NlxHVoEVF_lT5BLgq4v6XDpwaAFIi9Q5vLMP8avOZd"/><!--JdRV_FOXtZc-mX_BuQGEnE7MrSEsRH_mvQFvgeQXC2WzaV8SwPghdp3TGHJiZJSTliMPMoyTrSVPyest3XZgLc-->"  />
-
-        <activity android:name="com.adcolony.sdk.AdColonyInterstitialActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"/>
-        <activity android:name="com.adcolony.sdk.AdColonyAdViewActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
-
-
-   //////////////////////////////////////////////////////////////////////////////////////////
-
-
-        <activity android:name="org.telegram.calling.CallScreenActivity" android:screenOrientation="portrait"/>
-        <activity android:name="org.telegram.calling.PlaceCallActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="org.telegram.calling.LoginActivity"
-            android:screenOrientation="portrait"/>
-
-
-
     </application>
 
 </manifest>
